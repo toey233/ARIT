@@ -1,0 +1,291 @@
+import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import {
+    HiOutlineHome, HiOutlineAcademicCap, HiOutlineClipboardList,
+    HiOutlineStar, HiOutlineDocumentText, HiOutlineNewspaper,
+    HiOutlineChartBar, HiOutlineUsers, HiOutlineCog,
+    HiOutlineQuestionMarkCircle, HiOutlineLogout, HiOutlineMenu,
+    HiOutlineX, HiOutlineUserCircle, HiOutlineExclamation
+} from 'react-icons/hi';
+
+const userMenuItems = [
+    { path: '/dashboard', label: 'หน้าหลัก', icon: HiOutlineHome },
+    { path: '/courses', label: 'หลักสูตรอบรม', icon: HiOutlineAcademicCap },
+    { path: '/my-registrations', label: 'การลงทะเบียนของฉัน', icon: HiOutlineClipboardList },
+    { path: '/certificates', label: 'ประกาศนียบัตร', icon: HiOutlineDocumentText },
+    { path: '/news', label: 'ข่าวสาร/ประกาศ', icon: HiOutlineNewspaper },
+    { path: '/help', label: 'คู่มือการใช้งาน', icon: HiOutlineQuestionMarkCircle },
+];
+
+const staffMenuItems = [
+    { path: '/dashboard', label: 'หน้าหลัก', icon: HiOutlineHome },
+    { path: '/courses', label: 'หลักสูตรอบรม', icon: HiOutlineAcademicCap },
+    { path: '/course-manage', label: 'จัดการหลักสูตร', icon: HiOutlineCog },
+    { path: '/registration-manage', label: 'จัดการลงทะเบียน', icon: HiOutlineClipboardList },
+    { path: '/evaluation-results', label: 'ผลการประเมิน', icon: HiOutlineStar },
+    { path: '/certificate-manage', label: 'ออกประกาศนียบัตร', icon: HiOutlineDocumentText },
+    { path: '/news-manage', label: 'จัดการข่าวสาร', icon: HiOutlineNewspaper },
+    { path: '/help', label: 'คู่มือการใช้งาน', icon: HiOutlineQuestionMarkCircle },
+];
+
+const adminMenuItems = [
+    { path: '/dashboard', label: 'หน้าหลัก', icon: HiOutlineHome },
+    { path: '/courses', label: 'หลักสูตรอบรม', icon: HiOutlineAcademicCap },
+    { path: '/course-manage', label: 'จัดการหลักสูตร', icon: HiOutlineCog },
+    { path: '/registration-manage', label: 'จัดการลงทะเบียน', icon: HiOutlineClipboardList },
+    { path: '/evaluation-results', label: 'ผลการประเมิน', icon: HiOutlineStar },
+    { path: '/certificate-manage', label: 'ออกประกาศนียบัตร', icon: HiOutlineDocumentText },
+    { path: '/news-manage', label: 'จัดการข่าวสาร', icon: HiOutlineNewspaper },
+    { path: '/user-manage', label: 'จัดการผู้ใช้', icon: HiOutlineUsers },
+    { path: '/reports', label: 'รายงาน/สถิติ', icon: HiOutlineChartBar },
+    { path: '/help', label: 'คู่มือการใช้งาน', icon: HiOutlineQuestionMarkCircle },
+];
+
+function getRoleLabel(role) {
+    switch (role) {
+        case 'admin': return 'ผู้ดูแลระบบ';
+        case 'staff': return 'เจ้าหน้าที่';
+        default: return 'ผู้ใช้งาน';
+    }
+}
+
+function getRoleBadgeClass(role) {
+    switch (role) {
+        case 'admin': return 'bg-red-500/20 text-red-400 border-red-500/30';
+        case 'staff': return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+        default: return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+    }
+}
+
+export default function Layout({ children }) {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const { user, logout } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const menuItems = user?.role === 'admin' ? adminMenuItems : user?.role === 'staff' ? staffMenuItems : userMenuItems;
+
+    const handleLogout = () => {
+        setShowLogoutConfirm(true);
+    };
+
+    const confirmLogout = () => {
+        setShowLogoutConfirm(false);
+        logout();
+        navigate('/');
+    };
+
+    return (
+        <div className="min-h-screen flex bg-surface-950">
+            {/* Mobile overlay */}
+            {sidebarOpen && (
+                <div className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+            )}
+
+            {/* Sidebar */}
+            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-surface-900/95 backdrop-blur-xl border-r border-surface-700/50 transform transition-transform duration-300 ease-in-out flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+                {/* Logo */}
+                <div className="p-6 border-b border-surface-700/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg shadow-glow">
+                            A
+                        </div>
+                        <div>
+                            <h1 className="text-lg font-bold text-white leading-tight">ARIT Training</h1>
+                            <p className="text-xs text-surface-400">ระบบจัดการอบรม</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Navigation */}
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+                    {menuItems.map((item) => {
+                        const isActive = location.pathname === item.path;
+                        return (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setSidebarOpen(false)}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
+                                    ? 'bg-primary-600/20 text-primary-400 border border-primary-500/30 shadow-glow'
+                                    : 'text-surface-400 hover:text-white hover:bg-surface-800/50'
+                                    }`}
+                            >
+                                <item.icon className={`w-5 h-5 ${isActive ? 'text-primary-400' : 'text-surface-500 group-hover:text-primary-400'} transition-colors`} />
+                                <span className="font-medium text-sm">{item.label}</span>
+                            </Link>
+                        );
+                    })}
+                </nav>
+
+                {/* User Info */}
+                <div className="p-4 border-t border-surface-700/50">
+                    <div className="flex items-center gap-3 px-3 py-2 mb-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-sm font-bold">
+                            {user?.firstName?.charAt(0) || 'U'}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-white truncate">{user?.firstName} {user?.lastName}</p>
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${getRoleBadgeClass(user?.role)}`}>
+                                {getRoleLabel(user?.role)}
+                            </span>
+                        </div>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-surface-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
+                    >
+                        <HiOutlineLogout className="w-5 h-5" />
+                        <span className="text-sm font-medium">ออกจากระบบ</span>
+                    </button>
+                </div>
+            </aside>
+
+            {/* Main Content */}
+            <div className="flex-1 flex flex-col min-h-screen">
+                {/* Top Bar */}
+                <header className="sticky top-0 z-30 bg-surface-900/80 backdrop-blur-xl border-b border-surface-700/50 px-6 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setSidebarOpen(true)}
+                                className="lg:hidden p-2 rounded-lg text-surface-400 hover:text-white hover:bg-surface-800 transition-colors"
+                            >
+                                <HiOutlineMenu className="w-6 h-6" />
+                            </button>
+                            <div>
+                                <h2 className="text-lg font-semibold text-white">
+                                    {menuItems.find(item => item.path === location.pathname)?.label || 'ระบบจัดการอบรม'}
+                                </h2>
+                                <p className="text-xs text-surface-500">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/50 border border-surface-700/50">
+                                <HiOutlineUserCircle className="w-5 h-5 text-primary-400" />
+                                <span className="text-sm text-surface-300">{user?.firstName}</span>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                {/* Page Content */}
+                <main className="flex-1 p-6 overflow-auto">
+                    {children}
+                </main>
+            </div>
+
+            {/* ===== Logout Confirmation Modal ===== */}
+            {showLogoutConfirm && (
+                <div
+                    style={{
+                        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
+                        zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)',
+                    }}
+                    onClick={() => setShowLogoutConfirm(false)}
+                >
+                    <div
+                        style={{
+                            position: 'relative', overflow: 'hidden',
+                            background: 'linear-gradient(145deg, #ffffff 0%, #fff8f6 100%)',
+                            borderRadius: 24, padding: '48px 36px 40px', textAlign: 'center',
+                            maxWidth: 400, width: '88%',
+                            boxShadow: '0 30px 90px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)',
+                            animation: 'logoutPopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Top gradient bar */}
+                        <div style={{
+                            position: 'absolute', top: 0, left: 0, right: 0, height: 5,
+                            background: 'linear-gradient(90deg, #f59e0b, #ef4444, #f59e0b)',
+                        }} />
+
+                        {/* Glow behind icon */}
+                        <div style={{
+                            position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
+                            width: 180, height: 180, borderRadius: '50%', opacity: 0.12,
+                            background: 'radial-gradient(circle, #f59e0b, transparent 70%)',
+                        }} />
+
+                        {/* Icon */}
+                        <div style={{
+                            width: 88, height: 88, borderRadius: '50%',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            margin: '0 auto 20px',
+                            background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
+                            boxShadow: '0 8px 32px rgba(245,158,11,0.35)',
+                            animation: 'logoutIconBounce 0.6s ease 0.2s both',
+                        }}>
+                            <HiOutlineExclamation size={48} color="#fff" />
+                        </div>
+
+                        {/* Title */}
+                        <div style={{
+                            fontSize: 24, fontWeight: 800, marginBottom: 10, letterSpacing: '-0.5px',
+                            background: 'linear-gradient(135deg, #ef4444, #f59e0b)',
+                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                        }}>
+                            ⚠️ ออกจากระบบ
+                        </div>
+
+                        {/* Message */}
+                        <div style={{ fontSize: 15, color: '#777', marginBottom: 28, lineHeight: 1.6, padding: '0 8px' }}>
+                            คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?
+                        </div>
+
+                        {/* Buttons */}
+                        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                            <button
+                                style={{
+                                    padding: '14px 32px', borderRadius: 14, border: '2px solid #e5e7eb',
+                                    cursor: 'pointer', fontSize: 16, fontWeight: 700, color: '#666',
+                                    background: '#fff', minWidth: 130,
+                                    transition: 'transform 0.2s, box-shadow 0.2s, border-color 0.2s',
+                                }}
+                                onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; e.target.style.borderColor = '#ccc'; }}
+                                onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; e.target.style.borderColor = '#e5e7eb'; }}
+                                onClick={() => setShowLogoutConfirm(false)}
+                            >
+                                ยกเลิก
+                            </button>
+                            <button
+                                style={{
+                                    padding: '14px 32px', borderRadius: 14, border: 'none',
+                                    cursor: 'pointer', fontSize: 16, fontWeight: 700, color: '#fff',
+                                    background: 'linear-gradient(135deg, #ef4444, #f59e0b)',
+                                    boxShadow: '0 6px 24px rgba(239,68,68,0.4)',
+                                    minWidth: 130,
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                }}
+                                onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; }}
+                                onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; }}
+                                onClick={confirmLogout}
+                            >
+                                ออกจากระบบ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* CSS Animations */}
+            <style>{`
+                @keyframes logoutPopIn {
+                    0% { transform: scale(0.5); opacity: 0; }
+                    60% { transform: scale(1.05); opacity: 1; }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                @keyframes logoutIconBounce {
+                    0% { transform: scale(0); opacity: 0; }
+                    50% { transform: scale(1.2); }
+                    70% { transform: scale(0.9); }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+            `}</style>
+        </div>
+    );
+}
