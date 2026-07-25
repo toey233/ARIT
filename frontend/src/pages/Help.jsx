@@ -1,5 +1,7 @@
+// นำเข้าไอคอนที่จำเป็นสำหรับหน้าคู่มือการใช้งาน
 import { HiOutlineQuestionMarkCircle, HiOutlineAcademicCap, HiOutlineClipboardList, HiOutlineDocumentText, HiOutlineStar, HiOutlineUsers, HiOutlineNewspaper } from 'react-icons/hi';
 
+// คอมโพเนนต์หน้า "คู่มือการใช้งาน" (Help) แนะนำวิธีการใช้งานระบบสำหรับผู้ใช้แต่ละกลุ่ม
 export default function Help() {
     const sections = [
         {
@@ -66,8 +68,8 @@ export default function Help() {
                         <div className="space-y-4">
                             {section.items.map((item, i) => (
                                 <div key={i} className={`p-4 rounded-xl bg-surface-800/50 border ${colors.border}`}>
-                                    <h3 className="font-medium text-white mb-1">{i + 1}. {item.title}</h3>
-                                    <p className="text-sm text-surface-400 leading-relaxed">{item.desc}</p>
+                                    <h3 className="font-semibold text-white text-lg mb-2">{i + 1}. {item.title}</h3>
+                                    <p className="text-base text-surface-200 leading-relaxed">{item.desc}</p>
                                 </div>
                             ))}
                         </div>

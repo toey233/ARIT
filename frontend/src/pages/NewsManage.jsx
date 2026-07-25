@@ -1,8 +1,10 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าจัดการข่าวสาร (แอดมิน)
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph } from 'react-icons/hi';
 
+// คอมโพเนนต์สำหรับแอดมิน/สตาฟฟ์ในการ เพิ่ม, แก้ไข, ลบข่าวสาร และปักหมุดข่าว
 export default function NewsManage() {
     const [news, setNews] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -10,6 +12,7 @@ export default function NewsManage() {
     const [form, setForm] = useState({ title: '', content: '', category: 'ประชาสัมพันธ์', isPinned: false, image: '' });
     const [loading, setLoading] = useState(true);
 
+    // โหลดข้อมูลข่าวสารทั้งหมดจากระบบเมื่อเปิดหน้านี้
     useEffect(() => { loadNews(); }, []);
     const loadNews = () => { api.get('/news').then(res => { setNews(res.data); setLoading(false); }); };
     const handleChange = (e) => {
@@ -17,6 +20,7 @@ export default function NewsManage() {
         setForm({ ...form, [e.target.name]: val });
     };
 
+    // ฟังก์ชันสำหรับบันทึกการเพิ่มหรือแก้ไขข่าวสาร
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {

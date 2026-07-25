@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import NotificationDropdown from './NotificationDropdown';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -78,23 +79,34 @@ export default function Layout({ children }) {
     };
 
     return (
-        <div className="min-h-screen flex bg-surface-950">
+        <div className="min-h-screen flex bg-transparent">
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div className="fixed inset-0 bg-black/60 z-40 lg:hidden backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
             )}
 
             {/* Sidebar */}
-            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-surface-900/95 backdrop-blur-xl border-r border-surface-700/50 transform transition-transform duration-300 ease-in-out flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-72 bg-white/95 backdrop-blur-xl border-r border-surface-200/60 shadow-lg transform transition-transform duration-300 ease-in-out flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
                 {/* Logo */}
-                <div className="p-6 border-b border-surface-700/50">
+                <div className="p-6 border-b border-surface-200/60">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg shadow-glow">
-                            A
+                        <div style={{ display: 'flex', alignItems: 'center', height: 40 }}>
+                            <img 
+                                src="/logo.png" 
+                                alt="Logo" 
+                                style={{ height: '100%', width: 'auto', objectFit: 'contain', display: 'block' }}
+                                onError={(e) => { 
+                                    e.target.style.display='none'; 
+                                    e.target.nextSibling.style.display='flex'; 
+                                }} 
+                            />
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-glow" style={{ display: 'none' }}>
+                                A
+                            </div>
                         </div>
                         <div>
-                            <h1 className="text-lg font-bold text-white leading-tight">ARIT Training</h1>
-                            <p className="text-xs text-surface-400">ระบบจัดการอบรม</p>
+                            <h1 className="text-lg font-bold text-surface-900 leading-tight">ARIT Training</h1>
+                            <p className="text-xs text-surface-500">ระบบจัดการอบรม</p>
                         </div>
                     </div>
                 </div>
@@ -109,64 +121,71 @@ export default function Layout({ children }) {
                                 to={item.path}
                                 onClick={() => setSidebarOpen(false)}
                                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${isActive
-                                    ? 'bg-primary-600/20 text-primary-400 border border-primary-500/30 shadow-glow'
-                                    : 'text-surface-400 hover:text-white hover:bg-surface-800/50'
+                                    ? 'bg-primary-50 text-primary-700 border border-primary-200 shadow-sm'
+                                    : 'text-surface-700 hover:text-primary-700 hover:bg-surface-50'
                                     }`}
                             >
-                                <item.icon className={`w-5 h-5 ${isActive ? 'text-primary-400' : 'text-surface-500 group-hover:text-primary-400'} transition-colors`} />
-                                <span className="font-medium text-sm">{item.label}</span>
+                                <item.icon className={`w-5 h-5 ${isActive ? 'text-primary-700' : 'text-surface-500 group-hover:text-primary-700'} transition-colors`} />
+                                <span className="font-semibold text-sm">{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* User Info */}
-                <div className="p-4 border-t border-surface-700/50">
-                    <div className="flex items-center gap-3 px-3 py-2 mb-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-sm font-bold">
-                            {user?.firstName?.charAt(0) || 'U'}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">{user?.firstName} {user?.lastName}</p>
-                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${getRoleBadgeClass(user?.role)}`}>
-                                {getRoleLabel(user?.role)}
-                            </span>
-                        </div>
-                    </div>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-surface-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200"
-                    >
-                        <HiOutlineLogout className="w-5 h-5" />
-                        <span className="text-sm font-medium">ออกจากระบบ</span>
-                    </button>
-                </div>
             </aside>
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-h-screen">
                 {/* Top Bar */}
-                <header className="sticky top-0 z-30 bg-surface-900/80 backdrop-blur-xl border-b border-surface-700/50 px-6 py-4">
+                <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-surface-200/60 px-6 py-4 shadow-sm">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setSidebarOpen(true)}
-                                className="lg:hidden p-2 rounded-lg text-surface-400 hover:text-white hover:bg-surface-800 transition-colors"
+                                className="lg:hidden p-2 rounded-lg text-surface-500 hover:text-primary-600 hover:bg-surface-50 transition-colors"
                             >
                                 <HiOutlineMenu className="w-6 h-6" />
                             </button>
                             <div>
-                                <h2 className="text-lg font-semibold text-white">
+                                <h2 className="text-lg font-semibold text-surface-900">
                                     {menuItems.find(item => item.path === location.pathname)?.label || 'ระบบจัดการอบรม'}
                                 </h2>
                                 <p className="text-xs text-surface-500">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-800/50 border border-surface-700/50">
-                                <HiOutlineUserCircle className="w-5 h-5 text-primary-400" />
-                                <span className="text-sm text-surface-300">{user?.firstName}</span>
-                            </div>
+                        <div className="flex items-center gap-2">
+                            <NotificationDropdown />
+                            <Link to="/profile" className="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-surface-50 transition-colors cursor-pointer group border border-transparent hover:border-surface-200">
+                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white shrink-0 overflow-hidden" style={{ padding: 0 }}>
+                                    <img 
+                                        src={user?.profilePicture || "/default-avatar.png"} 
+                                        alt="Profile" 
+                                        className="w-full h-full object-cover" 
+                                        style={{ display: 'block' }}
+                                        onError={(e) => { 
+                                            e.target.style.display='none'; 
+                                            e.target.nextSibling.style.display='flex'; 
+                                        }} 
+                                    />
+                                    <div style={{ display: 'none', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                        {user?.firstName?.charAt(0) || 'U'}
+                                    </div>
+                                </div>
+                                <div className="hidden sm:flex flex-col min-w-0 items-start text-left">
+                                    <p className="text-sm font-medium text-surface-900 truncate leading-tight">{user?.firstName} {user?.lastName}</p>
+                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${getRoleBadgeClass(user?.role)} bg-white mt-0.5`}>
+                                        {getRoleLabel(user?.role)}
+                                    </span>
+                                </div>
+                            </Link>
+
+                            <button
+                                onClick={handleLogout}
+                                title="ออกจากระบบ"
+                                className="flex items-center justify-center w-10 h-10 rounded-xl text-surface-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200 hover:shadow-sm border border-transparent hover:border-red-100"
+                            >
+                                <HiOutlineLogout className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </header>

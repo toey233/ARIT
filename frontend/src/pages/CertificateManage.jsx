@@ -1,9 +1,11 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าจัดการใบประกาศนียบัตร (แอดมิน)
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import ExcelJS from 'exceljs';
 import { HiOutlineDocumentText, HiOutlineCheck, HiOutlineDownload, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineDocumentDuplicate } from 'react-icons/hi';
 
+// คอมโพเนนต์สำหรับแอดมินใช้ออกใบประกาศนียบัตรให้ผู้ใช้ที่ผ่านการอบรม
 export default function CertificateManage() {
     const [courses, setCourses] = useState([]);
     const [selectedCourse, setSelectedCourse] = useState('');
@@ -13,6 +15,7 @@ export default function CertificateManage() {
     const [confirmModal, setConfirmModal] = useState(null);
     const [resultModal, setResultModal] = useState(null);
 
+    // โหลดข้อมูลหลักสูตรและใบประกาศทั้งหมดเมื่อเปิดหน้านี้
     useEffect(() => {
         Promise.all([api.get('/courses'), api.get('/certificates')]).then(([cRes, certRes]) => {
             setCourses(cRes.data);
@@ -27,12 +30,13 @@ export default function CertificateManage() {
     useEffect(() => {
         if (selectedCourse) {
             api.get('/registrations').then(res => {
-                const approved = res.data.filter(r => r.courseId === selectedCourse && r.status === 'approved');
+                const approved = res.data.filter(r => r.courseId === selectedCourse && r.status === 'approved' && r.hasEvaluated);
                 setRegistrations(approved);
             });
         }
     }, [selectedCourse]);
 
+    // ฟังก์ชันสำหรับออกใบประกาศนียบัตรให้ผู้ใช้งานแบบรายบุคคล
     const issueCertificate = async (userId) => {
         try {
             console.log('=== Issuing Certificate ===');
@@ -107,8 +111,15 @@ export default function CertificateManage() {
             headerRow.alignment = { vertical: 'middle', horizontal: 'center' };
             headerRow.height = 30;
 
+            // Sort certificates by userName alphabetically (A-Z, ก-ฮ)
+            const sortedCertificates = [...certificates].sort((a, b) => {
+                const nameA = a.userName || '';
+                const nameB = b.userName || '';
+                return nameA.localeCompare(nameB, 'th');
+            });
+
             // Add data rows
-            certificates.forEach((cert, index) => {
+            sortedCertificates.forEach((cert, index) => {
                 const row = worksheet.addRow({
                     no: index + 1,
                     certificateNumber: cert.certificateNumber,
@@ -167,7 +178,7 @@ export default function CertificateManage() {
             <h1 className="section-title">ออกประกาศนียบัตร</h1>
 
             <div>
-                <label className="block text-sm text-surface-300 mb-2">เลือกหลักสูตร</label>
+                <label className="block text-sm text-surface-700 font-semibold mb-2">เลือกหลักสูตร</label>
                 <select value={selectedCourse} onChange={e => setSelectedCourse(e.target.value)} className="input-field max-w-md">
                     <option value="">-- เลือกหลักสูตร --</option>
                     {courses.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
@@ -177,7 +188,7 @@ export default function CertificateManage() {
             {selectedCourse && (
                 <div className="glass-card p-6">
                     <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-                        <h2 className="text-lg font-semibold text-white">ผู้เข้าร่วมอบรม (อนุมัติแล้ว)</h2>
+                        <h2 className="text-lg font-bold text-surface-800">ผู้เข้าร่วมอบรม (อนุมัติแล้ว)</h2>
                         {pendingRegs.length > 0 && (
                             <button onClick={issueAllCertificates}
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/25 transition-all"
@@ -188,23 +199,23 @@ export default function CertificateManage() {
                         )}
                     </div>
                     {registrations.length === 0 ? (
-                        <p className="text-surface-500 text-center py-8">ไม่มีผู้เข้าร่วมที่ได้รับอนุมัติ</p>
+                        <p className="text-surface-600 font-medium text-center py-8">ไม่มีผู้เข้าร่วมที่ได้รับอนุมัติ</p>
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b border-surface-700">
-                                        <th className="text-left py-3 px-4 text-surface-400">ชื่อ-สกุล</th>
-                                        <th className="text-left py-3 px-4 text-surface-400 hidden md:table-cell">อีเมล</th>
-                                        <th className="text-center py-3 px-4 text-surface-400">สถานะ</th>
-                                        <th className="text-center py-3 px-4 text-surface-400">จัดการ</th>
+                                    <tr className="border-b border-surface-300">
+                                        <th className="text-left py-3 px-4 text-surface-700 font-bold">ชื่อ-สกุล</th>
+                                        <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">อีเมล</th>
+                                        <th className="text-center py-3 px-4 text-surface-700 font-bold">สถานะ</th>
+                                        <th className="text-center py-3 px-4 text-surface-700 font-bold">จัดการ</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {registrations.map(reg => (
-                                        <tr key={reg.id} className="border-b border-surface-800">
-                                            <td className="py-3 px-4 text-white">{reg.userName}</td>
-                                            <td className="py-3 px-4 text-surface-400 hidden md:table-cell">{reg.userEmail}</td>
+                                        <tr key={reg.id} className="border-b border-surface-200 hover:bg-surface-50 transition-colors">
+                                            <td className="py-3 px-4 text-surface-900 font-semibold">{reg.userName}</td>
+                                            <td className="py-3 px-4 text-surface-700 font-medium hidden md:table-cell">{reg.userEmail}</td>
                                             <td className="py-3 px-4 text-center">
                                                 {hasCertificate(reg.userId) ? <span className="badge-success">ออกแล้ว</span> : <span className="badge-warning">ยังไม่ออก</span>}
                                             </td>
@@ -228,7 +239,7 @@ export default function CertificateManage() {
             {/* All Issued Certificates */}
             <div className="glass-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-white">ประกาศนียบัตรที่ออกแล้วทั้งหมด ({certificates.length})</h2>
+                    <h2 className="text-lg font-bold text-surface-800">ประกาศนียบัตรที่ออกแล้วทั้งหมด ({certificates.length})</h2>
                     {certificates.length > 0 && (
                         <button
                             onClick={exportToExcel}
@@ -242,20 +253,20 @@ export default function CertificateManage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="border-b border-surface-700">
-                                <th className="text-left py-3 px-4 text-surface-400">เลขที่</th>
-                                <th className="text-left py-3 px-4 text-surface-400">ชื่อ</th>
-                                <th className="text-left py-3 px-4 text-surface-400 hidden md:table-cell">หลักสูตร</th>
-                                <th className="text-left py-3 px-4 text-surface-400">วันที่ออก</th>
+                            <tr className="border-b border-surface-300">
+                                <th className="text-left py-3 px-4 text-surface-700 font-bold">เลขที่</th>
+                                <th className="text-left py-3 px-4 text-surface-700 font-bold">ชื่อ</th>
+                                <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">หลักสูตร</th>
+                                <th className="text-left py-3 px-4 text-surface-700 font-bold">วันที่ออก</th>
                             </tr>
                         </thead>
                         <tbody>
                             {certificates.map(cert => (
-                                <tr key={cert.id} className="border-b border-surface-800">
-                                    <td className="py-3 px-4 text-primary-400 font-mono text-xs">{cert.certificateNumber}</td>
-                                    <td className="py-3 px-4 text-white">{cert.userName}</td>
-                                    <td className="py-3 px-4 text-surface-400 hidden md:table-cell">{cert.courseName}</td>
-                                    <td className="py-3 px-4 text-surface-400">{formatDate(cert.issuedAt)}</td>
+                                <tr key={cert.id} className="border-b border-surface-200 hover:bg-surface-50 transition-colors">
+                                    <td className="py-3 px-4 text-primary-600 font-medium font-mono text-xs">{cert.certificateNumber}</td>
+                                    <td className="py-3 px-4 text-surface-900 font-semibold">{cert.userName}</td>
+                                    <td className="py-3 px-4 text-surface-700 font-medium hidden md:table-cell">{cert.courseName}</td>
+                                    <td className="py-3 px-4 text-surface-700 font-medium">{formatDate(cert.issuedAt)}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -1,13 +1,15 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าหลักของเว็บไซต์ (Landing Page)
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import LoginModal from '../components/LoginModal';
-import RegisterModal from '../components/RegisterModal';
 import CourseRegModal from '../components/CourseRegModal';
 import CourseDetailModal from '../components/CourseDetailModal';
 import NewsDetailModal from '../components/NewsDetailModal';
 import EvaluationModal from '../components/EvaluationModal';
+import RegistrantsModal from '../components/RegistrantsModal';
+import ProfileModal from '../components/ProfileModal';
+import NotificationDropdown from '../components/NotificationDropdown';
 import {
     HiOutlineAcademicCap, HiOutlineSearch, HiOutlineClock,
     HiOutlineLocationMarker, HiOutlineUsers, HiOutlineCalendar,
@@ -27,8 +29,8 @@ const NAV_LINKS = [
 const USER_NAV_LINKS = [
     { label: 'หน้าหลัก', href: '#hero' },
     { label: 'หลักสูตรอบรม', href: '#courses' },
-    { label: 'การลงทะเบียน', href: '#my-registrations' },
-    { label: 'ประกาศนียบัตร', href: '#certificates' },
+    { label: 'การลงทะเบียนของฉัน', path: '/my-registrations' },
+    { label: 'ประกาศนียบัตร', path: '/certificates' },
     { label: 'ข่าวสาร', href: '#news' },
 ];
 
@@ -43,6 +45,7 @@ function getCategoryColor(category) {
     return CATEGORY_COLORS[category] || '#2563eb';
 }
 
+// คอมโพเนนต์หน้าแรก (Landing Page) เป็นหน้าต่างบานแรกของเว็บเมื่อคนเข้ามา
 export default function HomePage() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -53,11 +56,10 @@ export default function HomePage() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(true);
     const [scrolled, setScrolled] = useState(false);
-    const [showLogin, setShowLogin] = useState(false);
-    const [showRegister, setShowRegister] = useState(false);
     const [showCourseReg, setShowCourseReg] = useState(null);
     const [showCourseDetail, setShowCourseDetail] = useState(null);
     const [showNewsDetail, setShowNewsDetail] = useState(null);
+    const [showRegistrants, setShowRegistrants] = useState(null);
     const [registrations, setRegistrations] = useState([]);
     const [certificates, setCertificates] = useState([]);
     const [selectedCert, setSelectedCert] = useState(null);
@@ -65,10 +67,14 @@ export default function HomePage() {
     const [evalStatus, setEvalStatus] = useState({});
     const [newsHovered, setNewsHovered] = useState(false);
     const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [scrollY, setScrollY] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
     const newsScrollRef = useRef(null);
 
     const activeNavLinks = (user && user.role === 'user') ? USER_NAV_LINKS : NAV_LINKS;
 
+    // ฟังก์ชันสำหรับกดเมนูแล้วเลื่อนไปยังส่วนต่างๆ ของหน้า
     const handleNavClick = (link) => {
         setMobileMenuOpen(false);
         if (link.path) {
@@ -90,8 +96,12 @@ export default function HomePage() {
         navigate('/');
     };
 
+    // ตรวจจับการเลื่อนเมาส์ (Scroll) เพื่อเปลี่ยนสไตล์เมนูบาร์
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 50);
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+            setScrollY(window.scrollY);
+        };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
@@ -123,6 +133,11 @@ export default function HomePage() {
         return () => clearInterval(timer);
     }, [newsHovered, news]);
 
+    // Reset pagination when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, categoryFilter]);
+
     // Fetch user-specific data when logged in
     useEffect(() => {
         if (user && user.role === 'user') {
@@ -144,7 +159,23 @@ export default function HomePage() {
         const matchSearch = !search || c.title.toLowerCase().includes(search.toLowerCase());
         const matchCat = !categoryFilter || c.category === categoryFilter;
         return matchSearch && matchCat;
+    }).sort((a, b) => {
+        const nowTime = new Date().setHours(0, 0, 0, 0);
+        const dateA = a.startDate ? new Date(a.startDate).getTime() : Infinity;
+        const dateB = b.startDate ? new Date(b.startDate).getTime() : Infinity;
+        
+        const isAUpcoming = dateA >= nowTime;
+        const isBUpcoming = dateB >= nowTime;
+        
+        if (isAUpcoming && !isBUpcoming) return -1;
+        if (!isAUpcoming && isBUpcoming) return 1;
+        
+        return dateA - dateB;
     });
+
+    const coursesPerPage = 6;
+    const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
+    const currentCourses = filteredCourses.slice((currentPage - 1) * coursesPerPage, currentPage * coursesPerPage);
 
     const formatDate = (d) => d ? new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
@@ -164,7 +195,59 @@ export default function HomePage() {
     };
 
     return (
-        <div style={{ fontFamily: "'Noto Sans Thai', 'Inter', system-ui, sans-serif", color: '#333', background: '#fff' }}>
+        <div style={{ position: 'relative', fontFamily: "'Noto Sans Thai', 'Inter', system-ui, sans-serif", color: '#333', background: 'transparent' }}>
+            {/* Parallax Background Elements */}
+            <div style={{
+                position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                zIndex: -1, overflow: 'hidden', pointerEvents: 'none',
+                background: '#fff',
+            }}>
+                <div style={{
+                    position: 'absolute', top: '15%', left: '5%', width: 'min(60vw, 800px)', height: 'min(60vw, 800px)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+                    filter: 'blur(70px)',
+                    transform: `translateY(${scrollY * 0.45}px)`,
+                    transition: 'transform 0.15s ease-out',
+                }} />
+                <div style={{
+                    position: 'absolute', top: '45%', right: '-10%', width: 'min(65vw, 900px)', height: 'min(65vw, 900px)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%)',
+                    filter: 'blur(90px)',
+                    transform: `translateY(${scrollY * -0.35}px)`,
+                    transition: 'transform 0.15s ease-out',
+                }} />
+                <div style={{
+                    position: 'absolute', top: '80%', left: '10%', width: 'min(55vw, 700px)', height: 'min(55vw, 700px)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
+                    filter: 'blur(60px)',
+                    transform: `translateY(${scrollY * 0.3}px)`,
+                    transition: 'transform 0.15s ease-out',
+                }} />
+                
+                {/* Sparkles / Particles */}
+                {[...Array(8)].map((_, i) => (
+                    <div key={i} style={{
+                        position: 'absolute',
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        width: 4, height: 4, background: '#fff',
+                        borderRadius: '50%', boxShadow: '0 0 10px #fff',
+                        opacity: 0.3,
+                        transform: `translateY(${scrollY * (0.1 + Math.random() * 0.3)}px)`,
+                        animation: `pulse ${2 + Math.random() * 3}s infinite`,
+                    }} />
+                ))}
+                
+                {/* Additional subtle patterns */}
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    backgroundImage: `radial-gradient(circle at 2px 2px, rgba(37,99,235,0.03) 1px, transparent 0)`,
+                    backgroundSize: '40px 40px',
+                    opacity: 0.5,
+                }} />
+            </div>
+
+            {showProfile && <ProfileModal user={user} onClose={() => setShowProfile(false)} />}
             {/* ========== NAVBAR ========== */}
             <nav style={{
                 position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
@@ -176,12 +259,23 @@ export default function HomePage() {
                 <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70 }}>
                     {/* Logo */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div style={{
-                            width: 44, height: 44, borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            color: '#fff', fontWeight: 'bold', fontSize: 18, boxShadow: '0 2px 8px rgba(37,99,235,0.3)'
-                        }}>A</div>
+                        <div style={{ display: 'flex', alignItems: 'center', height: 44 }}>
+                            <img 
+                                src="/logo.png" 
+                                alt="Logo" 
+                                style={{ height: '100%', width: 'auto', objectFit: 'contain', display: 'block' }}
+                                onError={(e) => { 
+                                    e.target.style.display='none'; 
+                                    e.target.nextSibling.style.display='flex'; 
+                                }} 
+                            />
+                            <div style={{ 
+                                display: 'none', width: 44, height: 44, borderRadius: '50%',
+                                background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+                                alignItems: 'center', justifyContent: 'center',
+                                color: '#fff', fontWeight: 'bold', fontSize: 18, boxShadow: '0 2px 8px rgba(37,99,235,0.3)'
+                            }}>A</div>
+                        </div>
                         <div>
                             <div style={{ fontWeight: 700, fontSize: 16, color: '#2563eb', lineHeight: 1.2 }}>ระบบบริหารการจัดการอบรม</div>
                             <div style={{ fontSize: 11, color: '#999', letterSpacing: 0.5 }}>ARIT Management Training System</div>
@@ -206,10 +300,24 @@ export default function HomePage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }} className="home-nav-desktop">
                         {user ? (
                             <>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(37,99,235,0.06)' }}>
-                                    <HiOutlineUserCircle size={20} color="#2563eb" />
+                                <NotificationDropdown />
+                                <button onClick={() => setShowProfile(true)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, background: 'rgba(37,99,235,0.06)', border: 'none', cursor: 'pointer', transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(37,99,235,0.12)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(37,99,235,0.06)'}>
+                                    <div style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                        <img 
+                                            src={user?.profilePicture || "/default-avatar.png"} 
+                                            alt="Profile" 
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                            onError={(e) => { 
+                                                e.target.style.display='none'; 
+                                                e.target.nextSibling.style.display='flex'; 
+                                            }} 
+                                        />
+                                        <div style={{ display: 'none', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                            <HiOutlineUserCircle size={24} color="#2563eb" />
+                                        </div>
+                                    </div>
                                     <span style={{ fontSize: 14, color: '#555', fontWeight: 500 }}>{user.firstName}</span>
-                                </div>
+                                </button>
                                 <button onClick={handleLogout} style={{
                                     display: 'inline-flex', alignItems: 'center', gap: 6,
                                     padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
@@ -221,7 +329,7 @@ export default function HomePage() {
                             </>
                         ) : (
                             <>
-                                <button onClick={() => setShowRegister(true)} style={{
+                                <button onClick={() => navigate('/register')} style={{
                                     display: 'inline-flex', alignItems: 'center', gap: 6,
                                     padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 500,
                                     border: '1.5px solid #2563eb', color: '#2563eb', background: 'transparent',
@@ -229,7 +337,7 @@ export default function HomePage() {
                                 }}>
                                     <HiOutlineUserAdd size={16} /> สมัครสมาชิก
                                 </button>
-                                <button onClick={() => setShowLogin(true)} style={{
+                                <button onClick={() => navigate('/login')} style={{
                                     display: 'inline-flex', alignItems: 'center', gap: 6,
                                     padding: '8px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                                     background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff',
@@ -264,18 +372,25 @@ export default function HomePage() {
                         ))}
                         <div style={{ borderTop: '1px solid #eee', paddingTop: 12, display: 'flex', gap: 10, marginTop: 4 }}>
                             {user ? (
-                                <button onClick={() => { setMobileMenuOpen(false); handleLogout(); }} style={{
-                                    flex: 1, textAlign: 'center', padding: '10px 16px', borderRadius: 8,
-                                    border: '1.5px solid #c0392b', color: '#c0392b', background: 'transparent',
-                                    cursor: 'pointer', fontWeight: 500, fontSize: 14,
-                                }}>ออกจากระบบ</button>
+                                <>
+                                    <button onClick={() => { setMobileMenuOpen(false); setShowProfile(true); }} style={{
+                                        flex: 1, textAlign: 'center', padding: '10px 16px', borderRadius: 8,
+                                        background: 'rgba(37,99,235,0.1)', color: '#2563eb', border: 'none',
+                                        cursor: 'pointer', fontWeight: 600, fontSize: 14,
+                                    }}>ข้อมูลส่วนตัว</button>
+                                    <button onClick={() => { setMobileMenuOpen(false); handleLogout(); }} style={{
+                                        flex: 1, textAlign: 'center', padding: '10px 16px', borderRadius: 8,
+                                        border: '1.5px solid #c0392b', color: '#c0392b', background: 'transparent',
+                                        cursor: 'pointer', fontWeight: 500, fontSize: 14,
+                                    }}>ออกจากระบบ</button>
+                                </>
                             ) : (
                                 <>
-                                    <button onClick={() => { setMobileMenuOpen(false); setShowRegister(true); }} style={{
+                                    <button onClick={() => { setMobileMenuOpen(false); navigate('/register'); }} style={{
                                         flex: 1, textAlign: 'center', padding: '10px 16px', borderRadius: 8,
                                         border: '1.5px solid #2563eb', color: '#2563eb', background: 'transparent', cursor: 'pointer', fontWeight: 500, fontSize: 14,
                                     }}>สมัครสมาชิก</button>
-                                    <button onClick={() => { setMobileMenuOpen(false); setShowLogin(true); }} style={{
+                                    <button onClick={() => { setMobileMenuOpen(false); navigate('/login'); }} style={{
                                         flex: 1, textAlign: 'center', padding: '10px 16px', borderRadius: 8,
                                         background: '#2563eb', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14,
                                     }}>เข้าสู่ระบบ</button>
@@ -289,9 +404,39 @@ export default function HomePage() {
             {/* ========== HERO SECTION ========== */}
             <section id="hero" style={{
                 position: 'relative', minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 25%, #2563eb 50%, #1d4ed8 75%, #1e40af 100%)',
+                backgroundImage: 'url(https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2000)',
+                backgroundSize: 'cover', backgroundPosition: 'center',
                 overflow: 'hidden', paddingTop: 70,
             }}>
+                {/* Unified Dark Overlay */}
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(30,58,138,0.75) 50%, rgba(15,23,42,0.88) 100%)',
+                    backdropFilter: 'blur(2px)',
+                }} />
+                
+                {/* Floating Decoration Icons */}
+                <div style={{
+                    position: 'absolute', top: '15%', right: '10%', opacity: 0.3, color: '#fff',
+                    transform: `translateY(${scrollY * 0.15}px) rotate(${scrollY * 0.05}deg)`,
+                    animation: 'float 8s ease-in-out infinite'
+                }}>
+                    <HiOutlineAcademicCap size={150} />
+                </div>
+                <div style={{
+                    position: 'absolute', bottom: '20%', left: '8%', opacity: 0.2, color: '#fff',
+                    transform: `translateY(${scrollY * -0.1}px) rotate(${scrollY * -0.03}deg)`,
+                    animation: 'float 10s ease-in-out infinite reverse'
+                }}>
+                    <HiOutlineDocumentText size={120} />
+                </div>
+                <div style={{
+                    position: 'absolute', top: '25%', left: '12%', opacity: 0.15, color: '#fff',
+                    transform: `translateY(${scrollY * 0.2}px)`,
+                    animation: 'float 12s ease-in-out infinite 2s'
+                }}>
+                    <HiOutlineClipboardList size={100} />
+                </div>
                 {/* Animated background pattern */}
                 <div style={{
                     position: 'absolute', inset: 0,
@@ -324,12 +469,17 @@ export default function HomePage() {
                 <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', maxWidth: 900, padding: '60px 24px' }}>
                     {/* Badge */}
                     <div style={{
-                        display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 20px',
+                        display: 'inline-flex', alignItems: 'center', gap: 10, padding: '6px 20px 6px 8px',
                         borderRadius: 50, background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)',
                         border: '1px solid rgba(255,255,255,0.15)', marginBottom: 24,
                         fontSize: 13, color: 'rgba(255,255,255,0.9)', fontWeight: 500,
                     }}>
-                        <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399', boxShadow: '0 0 8px #34d399', animation: 'pulse 2s infinite' }} />
+                        <div style={{
+                            width: 24, height: 24, borderRadius: '50%', background: '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 2
+                        }}>
+                            <img src="/logo.png" alt="University Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        </div>
                         สำนักวิทยบริการและเทคโนโลยีสารสนเทศ
                     </div>
 
@@ -407,29 +557,30 @@ export default function HomePage() {
                 </svg>
             </section>
 
-            {/* ========== COURSES SECTION ========== */}
             <section id="courses" style={{
                 position: 'relative', overflow: 'hidden',
-                background: 'linear-gradient(180deg, #f8faff 0%, #eef2ff 50%, #f8faff 100%)',
-                padding: '80px 24px 100px',
+                background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(37,99,235,0.03) 1px, transparent 0)',
+                backgroundSize: '24px 24px',
+                padding: '100px 24px 120px',
             }}>
-                {/* Decorative background elements */}
+                {/* Subtle soft blur blobs */}
                 <div style={{
-                    position: 'absolute', top: -80, right: -80, width: 300, height: 300,
-                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)',
-                    animation: 'pulse 6s ease-in-out infinite',
+                    position: 'absolute', top: '10%', left: '10%', width: 'min(400px, 50vw)', height: 'min(400px, 50vw)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)',
+                    filter: 'blur(50px)', pointerEvents: 'none', zIndex: 1
                 }} />
-                <div style={{
-                    position: 'absolute', bottom: -60, left: -60, width: 250, height: 250,
-                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)',
-                    animation: 'pulse 8s ease-in-out infinite 2s',
-                }} />
-                <svg style={{ position: 'absolute', top: '8%', left: '5%', opacity: 0.05, animation: 'float 7s ease-in-out infinite' }} width="60" height="60" viewBox="0 0 24 24" fill="#2563eb">
-                    <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z" />
-                </svg>
-                <svg style={{ position: 'absolute', bottom: '12%', right: '4%', opacity: 0.04, animation: 'float 9s ease-in-out infinite reverse' }} width="70" height="70" viewBox="0 0 24 24" fill="#6366f1">
-                    <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z" />
-                </svg>
+
+                {/* Large Background Decorative Icons */}
+                <div style={{ position: 'absolute', top: '15%', left: '5%', opacity: 0.03, color: '#2563eb', transform: `translateY(${scrollY * 0.1}px)`, pointerEvents: 'none' }}>
+                    <HiOutlineAcademicCap size={350} />
+                </div>
+                <div style={{ position: 'absolute', bottom: '10%', right: '8%', opacity: 0.02, color: '#2563eb', transform: `translateY(${scrollY * -0.05}px)`, pointerEvents: 'none' }}>
+                    <HiOutlineClipboardList size={400} />
+                </div>
+                <div style={{ position: 'absolute', top: '40%', right: '15%', opacity: 0.02, color: '#2563eb', pointerEvents: 'none' }}>
+                    <HiOutlineDocumentText size={250} />
+                </div>
 
                 <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
                     {/* Section Header */}
@@ -446,7 +597,7 @@ export default function HomePage() {
                         </span>
                         <h2 style={{
                             fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.3,
-                            background: 'linear-gradient(135deg, #1e293b, #2563eb)',
+                            background: 'linear-gradient(135deg, #1e293b 30%, #2563eb 100%)',
                             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                         }}>
                             หลักสูตรการอบรม
@@ -455,14 +606,12 @@ export default function HomePage() {
                             เลือกหลักสูตรที่สนใจและลงทะเบียนเพื่อเข้าร่วมการอบรมกับเรา
                         </p>
                     </div>
-
-                    {/* Category Pills */}
                     <div style={{
                         display: 'flex', gap: 10, marginBottom: 40, overflowX: 'auto', paddingBottom: 4,
                         justifyContent: 'center', flexWrap: 'wrap',
                     }}>
                         <button onClick={() => setCategoryFilter('')} style={{
-                            padding: '10px 24px', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                            padding: '10px 24px', cursor: 'pointer', fontSize: 13, fontWeight: 600,
                             borderRadius: 50, transition: 'all 0.3s', whiteSpace: 'nowrap',
                             background: !categoryFilter ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'rgba(255,255,255,0.9)',
                             color: !categoryFilter ? '#fff' : '#64748b',
@@ -472,7 +621,7 @@ export default function HomePage() {
                         }}>✨ ทั้งหมด</button>
                         {categories.map(cat => (
                             <button key={cat} onClick={() => setCategoryFilter(cat)} style={{
-                                padding: '10px 24px', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600,
+                                padding: '10px 24px', cursor: 'pointer', fontSize: 13, fontWeight: 600,
                                 borderRadius: 50, transition: 'all 0.3s', whiteSpace: 'nowrap',
                                 background: categoryFilter === cat ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : 'rgba(255,255,255,0.9)',
                                 color: categoryFilter === cat ? '#fff' : '#64748b',
@@ -493,9 +642,10 @@ export default function HomePage() {
                             <p style={{ fontSize: 14, color: '#94a3b8', fontWeight: 500 }}>กำลังโหลดหลักสูตร...</p>
                         </div>
                     ) : (
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 28 }}>
-                            {filteredCourses.map((course, idx) => {
-                                const registered = course.registeredCount || 0;
+                        <>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 28 }}>
+                                {currentCourses.map((course, idx) => {
+                                    const registered = course.registeredCount || 0;
                                 const max = course.maxParticipants || 30;
                                 const remaining = max - registered;
                                 const progress = Math.min((registered / max) * 100, 100);
@@ -505,7 +655,7 @@ export default function HomePage() {
                                         background: '#fff', borderRadius: 20, overflow: 'hidden',
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                                         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                                        border: '1px solid rgba(0,0,0,0.04)', display: 'flex', flexDirection: 'column',
+                                        border: '1px solid rgba(226, 232, 240, 0.8)', display: 'flex', flexDirection: 'column',
                                         animation: `fadeSlideUp 0.6s ease-out ${idx * 0.1}s both`,
                                         position: 'relative',
                                     }}
@@ -666,7 +816,7 @@ export default function HomePage() {
                                                 </button>
                                                 {(!user || user.role === 'user') && !(course.startDate && new Date(course.startDate) < new Date()) && (
                                                     <button onClick={() => {
-                                                        if (!user) { setShowLogin(true); }
+                                                        if (!user) { navigate('/login'); }
                                                         else { setShowCourseReg(course); }
                                                     }} style={{
                                                         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -696,6 +846,36 @@ export default function HomePage() {
                                 );
                             })}
                         </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', marginTop: 40, gap: 8 }}>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        style={{
+                                            width: 40, height: 40, borderRadius: '50%',
+                                            border: 'none', cursor: 'pointer',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            fontSize: 14, fontWeight: 600, transition: 'all 0.3s',
+                                            background: currentPage === page ? 'linear-gradient(135deg, #2563eb, #3b82f6)' : '#fff',
+                                            color: currentPage === page ? '#fff' : '#64748b',
+                                            boxShadow: currentPage === page ? '0 4px 12px rgba(37,99,235,0.3)' : '0 2px 6px rgba(0,0,0,0.05)',
+                                        }}
+                                        onMouseEnter={e => {
+                                            if (currentPage !== page) e.currentTarget.style.background = '#f8fafc';
+                                        }}
+                                        onMouseLeave={e => {
+                                            if (currentPage !== page) e.currentTarget.style.background = '#fff';
+                                        }}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                        </>
                     )}
 
                     {!loading && filteredCourses.length === 0 && (
@@ -744,156 +924,35 @@ export default function HomePage() {
                 </div>
             </section>
 
-            {/* ========== MY REGISTRATIONS SECTION (user only) ========== */}
-            {user && user.role === 'user' && (
-                <section id="my-registrations" style={{ background: '#fafafa', padding: '60px 24px' }}>
-                    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-                        <h2 style={{ textAlign: 'center', fontSize: 28, fontWeight: 700, color: '#333', marginBottom: 8 }}>
-                            การลงทะเบียนของฉัน
-                        </h2>
-                        <p style={{ textAlign: 'center', fontSize: 15, color: '#888', marginBottom: 32 }}>
-                            ติดตามสถานะการลงทะเบียนอบรมทั้งหมดของคุณ
-                        </p>
+            {/* Removed My Registrations Section as it is now a separate page */}
 
-                        {registrations.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: 60, color: '#999' }}>
-                                <HiOutlineClipboardList size={48} style={{ margin: '0 auto 12px', opacity: 0.3 }} />
-                                <p>ยังไม่มีการลงทะเบียน</p>
-                            </div>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                                {registrations.map(reg => (
-                                    <div key={reg.id} style={{
-                                        background: '#fff', borderRadius: 12, padding: '20px 24px',
-                                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #f0f0f0',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                        flexWrap: 'wrap', gap: 12,
-                                    }}>
-                                        <div style={{ flex: 1, minWidth: 200 }}>
-                                            <h3 style={{ fontSize: 15, fontWeight: 600, color: '#333', marginBottom: 6 }}>{reg.courseName}</h3>
-                                            <div style={{ display: 'flex', gap: 16, fontSize: 13, color: '#888' }}>
-                                                <span>วันที่อบรม: {formatDate(reg.courseStartDate)}</span>
-                                                <span>ลงทะเบียน: {formatDate(reg.registeredAt)}</span>
-                                            </div>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                            <span style={{
-                                                padding: '4px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                                                background: reg.status === 'approved' ? '#d4edda' : reg.status === 'rejected' ? '#f8d7da' : '#fff3cd',
-                                                color: reg.status === 'approved' ? '#155724' : reg.status === 'rejected' ? '#721c24' : '#856404',
-                                            }}>
-                                                {reg.status === 'approved' ? 'อนุมัติแล้ว' : reg.status === 'rejected' ? 'ไม่อนุมัติ' : 'รออนุมัติ'}
-                                            </span>
-                                            {reg.status === 'pending' && (
-                                                <button onClick={async () => {
-                                                    if (!confirm('ยืนยันยกเลิกการลงทะเบียน?')) return;
-                                                    try {
-                                                        await api.delete(`/registrations/${reg.id}`);
-                                                        const res = await api.get('/registrations');
-                                                        setRegistrations(res.data);
-                                                    } catch { }
-                                                }} style={{
-                                                    background: 'none', border: '1px solid #e74c3c', color: '#e74c3c',
-                                                    borderRadius: 8, padding: '4px 12px', fontSize: 12, cursor: 'pointer',
-                                                }}>ยกเลิก</button>
-                                            )}
-                                            {reg.status === 'approved' && !evalStatus[reg.courseId] && (
-                                                <button onClick={() => setShowEvaluation(reg)} style={{
-                                                    background: 'linear-gradient(135deg, #2563eb, #3b82f6)', border: 'none', color: '#fff',
-                                                    borderRadius: 8, padding: '4px 14px', fontSize: 12, cursor: 'pointer', fontWeight: 600,
-                                                }}>ทำแบบประเมิน</button>
-                                            )}
-                                            {reg.status === 'approved' && evalStatus[reg.courseId] && (
-                                                <span style={{
-                                                    padding: '4px 14px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                                                    background: '#e8f5e9', color: '#2e7d32',
-                                                }}>✓ ประเมินแล้ว</span>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </section>
-            )}
-
-            {/* ========== CERTIFICATES SECTION (user only) ========== */}
-            {user && user.role === 'user' && (
-                <section id="certificates" style={{ padding: '60px 24px' }}>
-                    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-                        <h2 style={{ textAlign: 'center', fontSize: 28, fontWeight: 700, color: '#333', marginBottom: 8 }}>
-                            ประกาศนียบัตรของฉัน
-                        </h2>
-                        <p style={{ textAlign: 'center', fontSize: 15, color: '#888', marginBottom: 32 }}>
-                            ดูและดาวน์โหลดประกาศนียบัตรจากการอบรมที่ผ่านมา
-                        </p>
-
-                        {certificates.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: 60, color: '#999' }}>
-                                <HiOutlineDocumentText size={48} style={{ margin: '0 auto 12px', opacity: 0.3 }} />
-                                <p>ยังไม่มีประกาศนียบัตร</p>
-                            </div>
-                        ) : (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
-                                {certificates.map(cert => (
-                                    <div key={cert.id} style={{
-                                        background: '#fff', borderRadius: 12, padding: 24,
-                                        boxShadow: '0 2px 12px rgba(0,0,0,0.06)', border: '1px solid #f0f0f0',
-                                        transition: 'all 0.3s',
-                                    }}
-                                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.1)'; }}
-                                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(0,0,0,0.06)'; }}
-                                    >
-                                        <div style={{ display: 'flex', alignItems: 'start', gap: 12 }}>
-                                            <div style={{
-                                                width: 48, height: 48, borderRadius: 12,
-                                                background: 'rgba(37,99,235,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                                            }}>
-                                                <HiOutlineDocumentText size={24} color="#2563eb" />
-                                            </div>
-                                            <div style={{ flex: 1, minWidth: 0 }}>
-                                                <h3 style={{ fontSize: 15, fontWeight: 600, color: '#333', marginBottom: 4 }}>{cert.courseName}</h3>
-                                                <p style={{ fontSize: 12, color: '#aaa' }}>เลขที่: {cert.certificateNumber}</p>
-                                                <p style={{ fontSize: 12, color: '#aaa' }}>ออกเมื่อ: {formatDate(cert.issuedAt)}</p>
-                                                <button onClick={async () => {
-                                                    try {
-                                                        const res = await api.get(`/certificates/${cert.id}`);
-                                                        setSelectedCert(res.data);
-                                                    } catch { }
-                                                }} style={{
-                                                    marginTop: 10, padding: '6px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600,
-                                                    background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff',
-                                                    border: 'none', cursor: 'pointer',
-                                                }}>ดู / พิมพ์</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </section>
-            )}
-
-            {/* ========== NEWS SECTION ========== */}
+            {/* Removed Certificates Section as it is now a separate page */}
             <section id="news" style={{
                 position: 'relative', overflow: 'hidden',
-                background: 'linear-gradient(180deg, #fff 0%, #f0f4ff 40%, #e8eeff 60%, #f0f4ff 80%, #fff 100%)',
+                background: 'linear-gradient(180deg, #f8fafc 0%, #ffffff 100%)',
+                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(37,99,235,0.03) 1px, transparent 0)',
+                backgroundSize: '24px 24px',
                 padding: '80px 0 100px',
             }}>
+                {/* Subtle soft blur blobs */}
+                <div style={{
+                    position: 'absolute', top: '20%', right: '10%', width: 'min(400px, 50vw)', height: 'min(400px, 50vw)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.04) 0%, transparent 70%)',
+                    filter: 'blur(50px)', pointerEvents: 'none', zIndex: 1
+                }} />
+
                 {/* Decorative elements */}
                 <div style={{
                     position: 'absolute', top: -100, left: -100, width: 300, height: 300,
                     borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.06) 0%, transparent 70%)',
-                    animation: 'pulse 7s ease-in-out infinite',
+                    animation: 'pulse 7s ease-in-out infinite', pointerEvents: 'none'
                 }} />
                 <div style={{
                     position: 'absolute', bottom: -80, right: -80, width: 280, height: 280,
                     borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.05) 0%, transparent 70%)',
-                    animation: 'pulse 9s ease-in-out infinite 3s',
+                    animation: 'pulse 9s ease-in-out infinite 3s', pointerEvents: 'none'
                 }} />
-                <svg style={{ position: 'absolute', top: '12%', right: '6%', opacity: 0.04, animation: 'float 8s ease-in-out infinite' }} width="55" height="55" viewBox="0 0 24 24" fill="#6366f1">
+                <svg style={{ position: 'absolute', top: '12%', right: '6%', opacity: 0.04, animation: 'float 8s ease-in-out infinite', pointerEvents: 'none' }} width="55" height="55" viewBox="0 0 24 24" fill="#2563eb">
                     <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                 </svg>
 
@@ -903,8 +962,8 @@ export default function HomePage() {
                         <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
                             padding: '6px 18px', borderRadius: 50,
-                            fontSize: 12, fontWeight: 600, color: '#6366f1',
-                            background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.12)',
+                            fontSize: 12, fontWeight: 600, color: '#2563eb',
+                            background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.12)',
                             marginBottom: 16, letterSpacing: 0.5,
                         }}>
                             <HiOutlineBell size={14} />
@@ -912,7 +971,7 @@ export default function HomePage() {
                         </span>
                         <h2 style={{
                             fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.3,
-                            background: 'linear-gradient(135deg, #1e293b, #6366f1)',
+                            background: 'linear-gradient(135deg, #1e293b 30%, #2563eb 100%)',
                             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                         }}>
                             ข่าวสารและประกาศ
@@ -946,10 +1005,9 @@ export default function HomePage() {
                         return (
                             <div key={`${item.id}-${idx}`} onClick={() => setShowNewsDetail(item)} style={{
                                 minWidth: 340, maxWidth: 340, flexShrink: 0,
-                                background: 'rgba(255,255,255,0.85)', borderRadius: 20, padding: '28px 24px',
-                                backdropFilter: 'blur(12px)',
-                                boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
-                                border: '1px solid rgba(255,255,255,0.6)',
+                                background: '#fff', borderRadius: 20, padding: '28px 24px',
+                                boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
+                                border: '1px solid rgba(226, 232, 240, 0.8)',
                                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', cursor: 'pointer',
                                 position: 'relative', overflow: 'hidden',
                             }}
@@ -1045,15 +1103,37 @@ export default function HomePage() {
             </section>
 
             {/* ========== FEATURES / WHY US SECTION ========== */}
-            <section id="features" style={{ background: 'linear-gradient(180deg, #f0f7ff 0%, #fff 100%)', padding: '80px 24px' }}>
-                <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+            <section id="features" style={{
+                position: 'relative', overflow: 'hidden',
+                background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(37,99,235,0.03) 1px, transparent 0)',
+                backgroundSize: '24px 24px',
+                padding: '80px 24px'
+            }}>
+                {/* Subtle soft blur blobs */}
+                <div style={{
+                    position: 'absolute', bottom: '10%', left: '5%', width: 'min(400px, 50vw)', height: 'min(400px, 50vw)',
+                    borderRadius: '50%', background: 'radial-gradient(circle, rgba(37,99,235,0.03) 0%, transparent 70%)',
+                    filter: 'blur(50px)', pointerEvents: 'none', zIndex: 1
+                }} />
+
+                <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
                     <div style={{ textAlign: 'center', marginBottom: 48 }}>
                         <span style={{
-                            display: 'inline-block', padding: '6px 16px', borderRadius: 50,
-                            fontSize: 12, fontWeight: 600, color: '#2563eb', background: 'rgba(37,99,235,0.08)',
-                            marginBottom: 12, letterSpacing: 1,
-                        }}>ทำไมต้องเรา</span>
-                        <h2 style={{ fontSize: 30, fontWeight: 800, color: '#1e293b', marginBottom: 12 }}>
+                            display: 'inline-flex', alignItems: 'center', gap: 8,
+                            padding: '6px 18px', borderRadius: 50,
+                            fontSize: 12, fontWeight: 600, color: '#2563eb',
+                            background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.12)',
+                            marginBottom: 16, letterSpacing: 0.5,
+                        }}>
+                            <HiOutlineAcademicCap size={14} />
+                            SERVICES & FEATURES
+                        </span>
+                        <h2 style={{
+                            fontSize: 'clamp(24px, 4vw, 34px)', fontWeight: 800, marginBottom: 12, lineHeight: 1.3,
+                            background: 'linear-gradient(135deg, #1e293b 30%, #2563eb 100%)',
+                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                        }}>
                             บริการของสำนักวิทยบริการฯ
                         </h2>
                         <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>
@@ -1070,7 +1150,7 @@ export default function HomePage() {
                         ].map((feature, i) => (
                             <div key={i} style={{
                                 background: '#fff', borderRadius: 20, padding: '36px 28px', textAlign: 'center',
-                                boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid #f0f0f0',
+                                boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid rgba(226, 232, 240, 0.8)',
                                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', position: 'relative', overflow: 'hidden',
                             }}
                                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = `0 20px 40px ${feature.color}18`; }}
@@ -1128,9 +1208,9 @@ export default function HomePage() {
                         <div>
                             <h4 style={{ fontSize: 14, fontWeight: 700, marginBottom: 16, color: '#93c5fd' }}>ติดต่อเรา</h4>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-                                <span>📍 80 ถ.นครสวรรค์ ต.ตลาด อ.เมือง จ.มหาสารคาม</span>
-                                <span>📞 042-123-0000</span>
-                                <span>📧 arit@rmu.ac.th</span>
+                                <span>📍 80 ถนนนครสวรรค์ ตำบลตลาด อำเภอเมือง จังหวัดมหาสารคาม</span>
+                                <span>📞 0-4371-3618 , 0-4372-2118-9 ต่อ 160 โทรสาร 0-4372-5433</span>
+                                <span>📧 lib@rmu.ac.th</span>
                                 <span>🕐 จันทร์-ศุกร์ 08:30-16:30 น.</span>
                             </div>
                         </div>
@@ -1144,18 +1224,6 @@ export default function HomePage() {
             </footer>
 
             {/* ========== MODALS ========== */}
-            {showLogin && (
-                <LoginModal
-                    onClose={() => setShowLogin(false)}
-                    onSwitchToRegister={() => { setShowLogin(false); setShowRegister(true); }}
-                />
-            )}
-            {showRegister && (
-                <RegisterModal
-                    onClose={() => setShowRegister(false)}
-                    onSwitchToLogin={() => { setShowRegister(false); setShowLogin(true); }}
-                />
-            )}
             {showCourseReg && (
                 <CourseRegModal
                     course={showCourseReg}
@@ -1171,7 +1239,7 @@ export default function HomePage() {
                     user={user}
                     onClose={() => setShowCourseDetail(null)}
                     onRegister={() => {
-                        if (!user) { setShowCourseDetail(null); setShowLogin(true); }
+                        if (!user) { setShowCourseDetail(null); navigate('/login'); }
                         else { setShowCourseDetail(null); setShowCourseReg(showCourseDetail); }
                     }}
                 />
@@ -1182,57 +1250,14 @@ export default function HomePage() {
                     onClose={() => setShowNewsDetail(null)}
                 />
             )}
-            {selectedCert && (
-                <div style={{
-                    position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
-                }} onClick={() => setSelectedCert(null)}>
-                    <div style={{
-                        background: '#fff', borderRadius: 16, padding: 32, maxWidth: 700, width: '90%', position: 'relative',
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-                    }} onClick={e => e.stopPropagation()}>
-                        <div style={{ textAlign: 'center', border: '3px solid #2563eb', borderRadius: 12, padding: '40px 32px', position: 'relative' }}>
-                            <p style={{ color: '#2563eb', fontSize: 13, letterSpacing: 3 }}>CERTIFICATE OF COMPLETION</p>
-                            <h2 style={{ fontSize: 32, fontWeight: 700, color: '#333', margin: '8px 0' }}>ประกาศนียบัตร</h2>
-                            <p style={{ color: '#888', marginTop: 16 }}>ขอมอบให้แก่</p>
-                            <p style={{ fontSize: 24, fontWeight: 700, color: '#2563eb', borderBottom: '2px solid #2563eb', display: 'inline-block', paddingBottom: 4, margin: '8px 0 16px' }}>{selectedCert.userName}</p>
-                            <p style={{ color: '#666' }}>ได้ผ่านการอบรมหลักสูตร</p>
-                            <p style={{ fontSize: 18, fontWeight: 600, color: '#333', margin: '4px 0' }}>"{selectedCert.courseName}"</p>
-                            <p style={{ color: '#aaa', fontSize: 13, marginTop: 12 }}>วันที่ {formatDate(selectedCert.courseDate)}</p>
-                            <p style={{ color: '#888', fontSize: 12, marginTop: 8 }}>สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
-                            <p style={{ color: '#bbb', fontSize: 11, marginTop: 4 }}>เลขที่ {selectedCert.certificateNumber}</p>
-                        </div>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 20 }}>
-                            <button onClick={() => {
-                                const pw = window.open('', '_blank');
-                                pw.document.write(`<html><head><title>E-Certificate</title>
-                                <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
-                                <style>*{margin:0;padding:0;box-sizing:border-box}body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f0f0f0;font-family:'Sarabun',sans-serif}.cert{width:842px;height:595px;background:white;position:relative;overflow:hidden}.cert-border{position:absolute;inset:15px;border:3px solid #2563eb;border-radius:8px}.cert-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:60px 80px;text-align:center}@media print{body{background:white}}</style></head><body>
-                                <div class="cert"><div class="cert-border"></div><div class="cert-content">
-                                <p style="color:#2563eb;font-size:14px;letter-spacing:3px">CERTIFICATE OF COMPLETION</p>
-                                <h2 style="font-size:36px;font-weight:700;color:#333;margin:10px 0">ประกาศนียบัตร</h2>
-                                <p style="color:#888;margin-top:20px">ขอมอบให้แก่</p>
-                                <p style="font-size:28px;font-weight:700;color:#2563eb;border-bottom:2px solid #2563eb;padding-bottom:5px;margin:10px 0 20px">${selectedCert.userName}</p>
-                                <p style="color:#666">ได้ผ่านการอบรมหลักสูตร</p>
-                                <p style="font-size:18px;font-weight:600;color:#333;margin:5px 0">"${selectedCert.courseName}"</p>
-                                <p style="color:#aaa;font-size:13px;margin-top:15px">วันที่ ${formatDate(selectedCert.courseDate)}</p>
-                                <p style="color:#888;font-size:12px;margin-top:8px">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
-                                <p style="color:#bbb;font-size:11px;margin-top:4px">เลขที่ ${selectedCert.certificateNumber}</p>
-                                </div></div><script>setTimeout(()=>window.print(),500)<\/script></body></html>`);
-                                pw.document.close();
-                            }} style={{
-                                padding: '10px 24px', borderRadius: 8, border: 'none', cursor: 'pointer',
-                                fontSize: 14, fontWeight: 600, color: '#fff',
-                                background: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-                            }}>ดาวน์โหลด / พิมพ์</button>
-                            <button onClick={() => setSelectedCert(null)} style={{
-                                padding: '10px 24px', borderRadius: 8, border: '1.5px solid #ddd', cursor: 'pointer',
-                                fontSize: 14, fontWeight: 500, color: '#666', background: '#fff',
-                            }}>ปิด</button>
-                        </div>
-                    </div>
-                </div>
+            {showRegistrants && (
+                <RegistrantsModal
+                    courseId={showRegistrants.courseId}
+                    courseName={showRegistrants.courseName}
+                    onClose={() => setShowRegistrants(null)}
+                />
             )}
+            {/* Removed inline Certificate Modal */}
             {showEvaluation && (
                 <EvaluationModal
                     courseId={showEvaluation.courseId}

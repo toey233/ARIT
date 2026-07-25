@@ -44,6 +44,28 @@ router.post('/', authenticateToken, async (req, res) => {
              VALUES ($1,$2,$3,$4,$5) RETURNING *`,
             [id, req.user.id, courseId, 'pending', now]
         );
+
+        try {
+            const userCheck = await query('SELECT email, "firstName", "lastName" FROM users WHERE id = $1', [req.user.id]);
+            if (userCheck.rows.length > 0) {
+                const user = userCheck.rows[0];
+                const course = courseCheck.rows[0];
+                const { sendRegistrationEmail } = require('../utils/email');
+                
+                // Send email asynchronously
+                sendRegistrationEmail(
+                    user.email,
+                    user.firstName,
+                    user.lastName,
+                    course.title,
+                    course.trainingDate || course.startDate,
+                    course.duration
+                ).catch(err => console.error('Failed to send registration email:', err));
+            }
+        } catch (emailErr) {
+            console.error('Error in registration email process:', emailErr);
+        }
+
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Register error:', error);
@@ -56,8 +78,9 @@ router.get('/', authenticateToken, async (req, res) => {
     try {
         let sql = `
             SELECT r.*,
-                c.title AS "courseName", c."startDate" AS "courseStartDate", c."endDate" AS "courseEndDate", c.category AS "courseCategory",
-                u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail", u."studentId" AS "userStudentId"
+                c.title AS "courseName", c."startDate" AS "courseStartDate", c."endDate" AS "courseEndDate", c.category AS "courseCategory", c.duration AS "courseDuration",
+                u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail", u."studentId" AS "userStudentId",
+                EXISTS (SELECT 1 FROM evaluations e WHERE e."userId" = r."userId" AND e."courseId" = r."courseId") AS "hasEvaluated"
             FROM registrations r
             LEFT JOIN courses c ON r."courseId" = c.id
             LEFT JOIN users u ON r."userId" = u.id
@@ -100,7 +123,7 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
             try {
                 // Fetch the user's email and course details to send the notification
                 const regDetails = await query(`
-                    SELECT u.email, u."firstName", u."lastName", c.title, c."startDate"
+                    SELECT u.id AS "userId", u.email, u."firstName", u."lastName", c.title, c."startDate", c."trainingDate"
                     FROM registrations r
                     JOIN users u ON r."userId" = u.id
                     JOIN courses c ON r."courseId" = c.id
@@ -108,12 +131,22 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
                 `, [req.params.id]);
 
                 if (regDetails.rows.length > 0) {
-                    const { email, firstName, lastName, title, startDate } = regDetails.rows[0];
+                    const { userId, email, firstName, lastName, title, startDate, trainingDate } = regDetails.rows[0];
                     const { sendApprovalEmail } = require('../utils/email');
+                    const { createNotification } = require('./notifications');
                     
                     // Run email sending asynchronously so it doesn't block the API response
-                    sendApprovalEmail(email, firstName, lastName, title, startDate)
+                    sendApprovalEmail(email, firstName, lastName, title, trainingDate || startDate)
                         .catch(err => console.error('Failed to send email:', err));
+                        
+                    // Send notification
+                    createNotification(
+                        userId,
+                        'อนุมัติการลงทะเบียน',
+                        `การลงทะเบียนในหลักสูตร "${title}" ของคุณได้รับการอนุมัติแล้ว`,
+                        'approval',
+                        '/my-registrations'
+                    );
                 }
             } catch (emailErr) {
                 console.error('Error fetching details for email:', emailErr);
@@ -123,6 +156,30 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
                 'UPDATE registrations SET status = $1 WHERE id = $2 RETURNING *',
                 [status, req.params.id]
             );
+            
+            if (status === 'rejected') {
+                try {
+                    const regDetails = await query(`
+                        SELECT r."userId", c.title
+                        FROM registrations r
+                        JOIN courses c ON r."courseId" = c.id
+                        WHERE r.id = $1
+                    `, [req.params.id]);
+                    if (regDetails.rows.length > 0) {
+                        const { userId, title } = regDetails.rows[0];
+                        const { createNotification } = require('./notifications');
+                        createNotification(
+                            userId,
+                            'ปฏิเสธการลงทะเบียน',
+                            `การลงทะเบียนในหลักสูตร "${title}" ของคุณถูกปฏิเสธ หากมีข้อสงสัยโปรดติดต่อเจ้าหน้าที่`,
+                            'rejection',
+                            '/my-registrations'
+                        );
+                    }
+                } catch (e) {
+                    console.error('Error sending rejection notification:', e);
+                }
+            }
         }
         res.json(result.rows[0]);
     } catch (error) {

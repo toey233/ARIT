@@ -1,9 +1,11 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าทำแบบประเมิน
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { HiOutlineStar, HiOutlineArrowLeft } from 'react-icons/hi';
 
+// คอมโพเนนต์สำหรับให้ผู้ใช้เข้ามาทำแบบประเมินหลังเรียนจบ
 export default function Evaluation() {
     const { courseId } = useParams();
     const navigate = useNavigate();
@@ -13,6 +15,7 @@ export default function Evaluation() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
 
+    // โหลดข้อมูลหลักสูตร และเช็คว่าผู้ใช้นี้เคยประเมินไปแล้วหรือยัง
     useEffect(() => {
         Promise.all([
             api.get(`/courses/${courseId}`),
@@ -24,6 +27,7 @@ export default function Evaluation() {
         }).catch(() => { setLoading(false); navigate('/my-registrations'); });
     }, [courseId]);
 
+    // ฟังก์ชันสำหรับส่งคะแนนและข้อเสนอแนะเข้าสู่ระบบ
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);

@@ -1,118 +1,155 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าเข้าสู่ระบบ
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
-import { HiOutlineMail, HiOutlineLockClosed, HiOutlineAcademicCap, HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import toast from 'react-hot-toast';
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineAcademicCap, HiOutlineDocumentText, HiOutlineArrowLeft } from 'react-icons/hi';
 
+// คอมโพเนนต์หลักสำหรับหน้า Login (เข้าสู่ระบบ)
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [resultModal, setResultModal] = useState(null);
-    const [loginResult, setLoginResult] = useState(null);
     const { login, googleLogin } = useAuth();
     const navigate = useNavigate();
 
+    // ฟังก์ชันจัดการเมื่อผู้ใช้กดล็อกอินด้วย Google สำเร็จ
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
             const res = await googleLogin(credentialResponse.credential);
-            setLoginResult(res);
-            setResultModal({ type: 'success', message: 'เข้าสู่ระบบด้วย Google สำเร็จ! ยินดีต้อนรับ' });
+            toast.success('เข้าสู่ระบบด้วย Google สำเร็จ! ยินดีต้อนรับ');
+            if (res.user?.role === 'staff' || res.user?.role === 'admin') {
+                navigate('/dashboard');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
-            setResultModal({ type: 'error', message: err.response?.data?.message || 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ' });
+            toast.error(err.response?.data?.message || 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ');
         }
     };
 
+    // ฟังก์ชันจัดการเมื่อผู้ใช้กรอกอีเมลและรหัสผ่าน แล้วกดปุ่มเข้าสู่ระบบ
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         try {
             const res = await login(email, password);
-            setLoginResult(res);
-            setResultModal({ type: 'success', message: 'เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับเข้าสู่ระบบ' });
+            toast.success('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับเข้าสู่ระบบ');
+            if (res.user?.role === 'staff' || res.user?.role === 'admin') {
+                navigate('/dashboard');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
-            setResultModal({ type: 'error', message: err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน' });
+            toast.error(err.response?.data?.message || 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบอีเมลและรหัสผ่าน');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleResultDismiss = () => {
-        if (resultModal?.type === 'success') {
-            if (loginResult?.user?.role === 'staff' || loginResult?.user?.role === 'admin') {
-                navigate('/dashboard');
-            } else {
-                navigate('/');
-            }
-        }
-        setResultModal(null);
-    };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-surface-950 relative overflow-hidden">
-            {/* Background Effects */}
-            <div className="absolute inset-0">
-                <div className="absolute top-1/4 -left-20 w-96 h-96 bg-primary-600/20 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-accent-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-3xl"></div>
+        <div style={{
+            position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundImage: 'url(https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2000)',
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            overflow: 'hidden', padding: '40px 20px',
+        }}>
+            {/* Back to Home Button */}
+            <Link to="/" className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 backdrop-blur-md transition-all border border-white/20 shadow-lg">
+                <HiOutlineArrowLeft className="w-5 h-5" />
+                <span className="font-medium text-sm hidden sm:inline">กลับหน้าหลัก</span>
+            </Link>
+
+            {/* Unified Dark Overlay */}
+            <div style={{
+                position: 'absolute', inset: 0, zIndex: 0,
+                background: 'linear-gradient(135deg, rgba(15,23,42,0.88) 0%, rgba(30,58,138,0.75) 50%, rgba(15,23,42,0.88) 100%)',
+                backdropFilter: 'blur(2px)',
+            }} />
+            
+            {/* Floating Decoration Icons */}
+            <div style={{ position: 'absolute', top: '15%', right: '10%', opacity: 0.3, color: '#fff', animation: 'float 8s ease-in-out infinite', zIndex: 0 }}>
+                <HiOutlineAcademicCap size={150} />
+            </div>
+            <div style={{ position: 'absolute', bottom: '20%', left: '8%', opacity: 0.2, color: '#fff', animation: 'float 10s ease-in-out infinite reverse', zIndex: 0 }}>
+                <HiOutlineDocumentText size={120} />
             </div>
 
+            {/* Animated background pattern */}
+            <div style={{
+                position: 'absolute', inset: 0, zIndex: 0,
+                backgroundImage: `
+                    radial-gradient(circle at 15% 85%, rgba(59,130,246,0.25) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 15%, rgba(99,102,241,0.2) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 50%, rgba(37,99,235,0.15) 0%, transparent 60%)
+                `,
+            }} />
+
             <div className="relative z-10 w-full max-w-md mx-4">
-                {/* Logo Section */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 shadow-glow-lg mb-4">
-                        <HiOutlineAcademicCap className="w-10 h-10 text-white" />
+                <div className="text-center mb-6">
+                    <div className="inline-flex items-center justify-center mb-4" style={{ height: 100 }}>
+                        <img 
+                            src="/logo.png" 
+                            alt="Logo" 
+                            style={{ height: '100%', width: 'auto', objectFit: 'contain', display: 'block' }}
+                            onError={(e) => { 
+                                e.target.style.display='none'; 
+                                e.target.nextSibling.style.display='flex'; 
+                            }} 
+                        />
+                        <div className="rounded-full bg-gradient-to-br from-primary-500 to-accent-500 shadow-glow-lg" style={{ display: 'none', width: 96, height: 96, alignItems: 'center', justifyContent: 'center' }}>
+                            <HiOutlineAcademicCap className="w-10 h-10 text-white" />
+                        </div>
                     </div>
-                    <h1 className="text-3xl font-bold text-white mb-2">ARIT Training</h1>
-                    <p className="text-surface-400">ระบบบริหารการจัดการอบรม</p>
-                    <p className="text-surface-500 text-sm">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
+                    <h1 className="text-2xl font-bold text-white mb-1">เข้าสู่ระบบ</h1>
+                    <p className="text-surface-300 text-sm">ระบบบริหารการจัดการอบรม ARIT</p>
                 </div>
 
-                {/* Login Form */}
-                <div className="glass-card p-8">
-                    <h2 className="text-xl font-semibold text-white mb-6 text-center">เข้าสู่ระบบ</h2>
-
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="p-8 rounded-2xl border" style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    backdropFilter: 'blur(20px)',
+                    borderColor: 'rgba(255, 255, 255, 0.1)',
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                }}>
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-surface-300 mb-2">อีเมล</label>
+                            <label className="block text-sm font-medium text-surface-300 mb-1.5">อีเมล *</label>
                             <div className="relative">
-                                <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-500" />
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="example@email.com"
-                                    required
+                                <HiOutlineMail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
+                                <input 
+                                    type="email" 
+                                    value={email} 
+                                    onChange={e => setEmail(e.target.value)} 
+                                    className="input-field pl-10 py-2.5 text-sm" 
+                                    placeholder="example@email.com" 
+                                    required 
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-surface-300 mb-2">รหัสผ่าน</label>
+                            <div className="flex justify-between items-center mb-1.5">
+                                <label className="block text-sm font-medium text-surface-300">รหัสผ่าน *</label>
+                                <Link to="/forgot-password" className="text-xs text-primary-400 hover:text-primary-300 transition-colors">
+                                    ลืมรหัสผ่าน?
+                                </Link>
+                            </div>
                             <div className="relative">
-                                <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-surface-500" />
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="••••••••"
-                                    required
+                                <HiOutlineLockClosed className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
+                                <input 
+                                    type="password" 
+                                    value={password} 
+                                    onChange={e => setPassword(e.target.value)} 
+                                    className="input-field pl-10 py-2.5 text-sm" 
+                                    placeholder="••••••••" 
+                                    required 
                                 />
                             </div>
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn-primary w-full flex items-center justify-center gap-2 py-3 disabled:opacity-50"
-                        >
-                            {loading ? (
-                                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
-                            ) : (
-                                'เข้าสู่ระบบ'
-                            )}
+                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3 mt-4 disabled:opacity-50">
+                            {loading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div> : 'เข้าสู่ระบบ'}
                         </button>
                     </form>
 
@@ -127,7 +164,7 @@ export default function Login() {
                     <div className="flex justify-center">
                         <GoogleLogin
                             onSuccess={handleGoogleSuccess}
-                            onError={() => setResultModal({ type: 'error', message: 'เข้าสู่ระบบด้วย Google ไม่สำเร็จ' })}
+                            onError={() => toast.error('เข้าสู่ระบบด้วย Google ไม่สำเร็จ')}
                             theme="filled_black"
                             size="large"
                             width="100%"
@@ -140,126 +177,11 @@ export default function Login() {
                     <div className="mt-6 text-center">
                         <p className="text-surface-400 text-sm">
                             ยังไม่มีบัญชี?{' '}
-                            <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
-                                สมัครสมาชิก
-                            </Link>
+                            <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">สมัครสมาชิก</Link>
                         </p>
                     </div>
                 </div>
-
-
             </div>
-
-            {/* ===== Result Modal ===== */}
-            {resultModal && (
-                <div
-                    style={{
-                        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-                        zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)',
-                    }}
-                    onClick={handleResultDismiss}
-                >
-                    <div
-                        style={{
-                            position: 'relative', overflow: 'hidden',
-                            background: 'linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%)',
-                            borderRadius: 24, padding: '48px 36px 40px', textAlign: 'center',
-                            maxWidth: 380, width: '88%',
-                            boxShadow: '0 30px 90px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1)',
-                            animation: 'loginPopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)',
-                        }}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        {/* Top gradient bar */}
-                        <div style={{
-                            position: 'absolute', top: 0, left: 0, right: 0, height: 5,
-                            background: resultModal.type === 'success'
-                                ? 'linear-gradient(90deg, #22c55e, #10b981, #34d399)'
-                                : 'linear-gradient(90deg, #ef4444, #f97316, #ef4444)',
-                        }} />
-
-                        {/* Glow behind icon */}
-                        <div style={{
-                            position: 'absolute', top: -20, left: '50%', transform: 'translateX(-50%)',
-                            width: 180, height: 180, borderRadius: '50%', opacity: 0.12,
-                            background: resultModal.type === 'success'
-                                ? 'radial-gradient(circle, #22c55e, transparent 70%)'
-                                : 'radial-gradient(circle, #ef4444, transparent 70%)',
-                        }} />
-
-                        {/* Icon */}
-                        <div style={{
-                            width: 88, height: 88, borderRadius: '50%',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            margin: '0 auto 20px',
-                            background: resultModal.type === 'success'
-                                ? 'linear-gradient(135deg, #22c55e, #10b981)'
-                                : 'linear-gradient(135deg, #ef4444, #f97316)',
-                            boxShadow: resultModal.type === 'success'
-                                ? '0 8px 32px rgba(34,197,94,0.35)'
-                                : '0 8px 32px rgba(239,68,68,0.35)',
-                            animation: 'loginIconBounce 0.6s ease 0.2s both',
-                        }}>
-                            {resultModal.type === 'success'
-                                ? <HiCheckCircle size={48} color="#fff" />
-                                : <HiXCircle size={48} color="#fff" />
-                            }
-                        </div>
-
-                        {/* Title */}
-                        <div style={{
-                            fontSize: 24, fontWeight: 800, marginBottom: 10, letterSpacing: '-0.5px',
-                            background: resultModal.type === 'success'
-                                ? 'linear-gradient(135deg, #16a34a, #22c55e)'
-                                : 'linear-gradient(135deg, #dc2626, #f97316)',
-                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                        }}>
-                            {resultModal.type === 'success' ? '🎉 สำเร็จ!' : '⚠️ ไม่สำเร็จ'}
-                        </div>
-
-                        {/* Message */}
-                        <div style={{ fontSize: 15, color: '#777', marginBottom: 28, lineHeight: 1.6, padding: '0 8px' }}>
-                            {resultModal.message}
-                        </div>
-
-                        {/* Button */}
-                        <button
-                            style={{
-                                padding: '14px 40px', borderRadius: 14, border: 'none', cursor: 'pointer',
-                                fontSize: 16, fontWeight: 700, color: '#fff', minWidth: 160,
-                                transition: 'transform 0.2s, box-shadow 0.2s', letterSpacing: '0.3px',
-                                background: resultModal.type === 'success'
-                                    ? 'linear-gradient(135deg, #22c55e, #10b981)'
-                                    : 'linear-gradient(135deg, #ef4444, #f97316)',
-                                boxShadow: resultModal.type === 'success'
-                                    ? '0 6px 24px rgba(34,197,94,0.4)'
-                                    : '0 6px 24px rgba(239,68,68,0.4)',
-                            }}
-                            onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; }}
-                            onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; }}
-                            onClick={handleResultDismiss}
-                        >
-                            {resultModal.type === 'success' ? '✓ ตกลง' : '↻ ลองอีกครั้ง'}
-                        </button>
-                    </div>
-                </div>
-            )}
-
-            {/* CSS Animations */}
-            <style>{`
-                @keyframes loginPopIn {
-                    0% { transform: scale(0.5); opacity: 0; }
-                    60% { transform: scale(1.05); opacity: 1; }
-                    100% { transform: scale(1); opacity: 1; }
-                }
-                @keyframes loginIconBounce {
-                    0% { transform: scale(0); opacity: 0; }
-                    50% { transform: scale(1.2); }
-                    70% { transform: scale(0.9); }
-                    100% { transform: scale(1); opacity: 1; }
-                }
-            `}</style>
         </div>
     );
 }

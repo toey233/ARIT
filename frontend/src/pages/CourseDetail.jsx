@@ -1,3 +1,4 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าดูรายละเอียดหลักสูตร
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -19,6 +20,7 @@ const TABS = [
     { id: 'outcomes', label: 'ผลลัพธ์', icon: HiOutlineCheckCircle },
 ];
 
+// คอมโพเนนต์สำหรับแสดงรายละเอียดของหลักสูตรแบบเจาะลึก
 export default function CourseDetail() {
     const { id } = useParams();
     const { user } = useAuth();
@@ -28,10 +30,12 @@ export default function CourseDetail() {
     const [registering, setRegistering] = useState(false);
     const [activeTab, setActiveTab] = useState('detail');
 
+    // ดึงข้อมูลหลักสูตรตาม ID ที่แนบมากับ URL
     useEffect(() => {
         api.get(`/courses/${id}`).then(res => { setCourse(res.data); setLoading(false); }).catch(() => { setLoading(false); navigate('/courses'); });
     }, [id]);
 
+    // ฟังก์ชันสำหรับกดปุ่ม "ลงทะเบียน"
     const handleRegister = async () => {
         if (!user) {
             navigate('/login');

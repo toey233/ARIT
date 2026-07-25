@@ -67,8 +67,13 @@ export function AuthProvider({ children }) {
         setUser(null);
     };
 
+    const updateUser = (newUserData) => {
+        localStorage.setItem('user', JSON.stringify(newUserData));
+        setUser(newUserData);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, googleLogin, googleLoginWithToken, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, googleLogin, googleLoginWithToken, logout, updateUser, loading }}>
             {children}
         </AuthContext.Provider>
     );

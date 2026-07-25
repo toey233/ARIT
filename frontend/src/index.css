@@ -1,3 +1,4 @@
+/* นำเข้าเครื่องมือและคลาสพื้นฐานของ Tailwind CSS */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,10 +9,13 @@
   box-sizing: border-box;
 }
 
+/* กำหนดสไตล์พื้นฐานของเว็บไซต์ (ฟอนต์, สีพื้นหลัง) */
 body {
   font-family: 'Noto Sans Thai', 'Inter', system-ui, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #f8fafc;
+  background-image: radial-gradient(circle at 1px 1px, rgba(37,99,235,0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+  color: #1e293b;
   min-height: 100vh;
 }
 
@@ -19,54 +23,55 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #1e293b;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #4f46e5;
+  background: #6366f1;
   border-radius: 3px;
 }
 
+/* สร้างคลาส (Classes) แบบกำหนดเอง (Custom Components) สำหรับใช้งานซ้ำในโปรเจค */
 @layer components {
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-glow active:scale-95;
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-glow active:scale-95 border border-primary-500/50;
   }
   .btn-secondary {
-    @apply bg-surface-700 hover:bg-surface-600 text-surface-200 font-medium py-2.5 px-6 rounded-xl transition-all duration-300 border border-surface-600 hover:border-surface-500;
+    @apply bg-white hover:bg-surface-50 text-surface-600 font-medium py-2.5 px-6 rounded-xl transition-all duration-300 border border-surface-300 hover:border-surface-400 shadow-sm;
   }
   .btn-danger {
-    @apply bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300;
+    @apply bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[0_0_15px_rgba(239,68,68,0.4)];
   }
   .btn-success {
-    @apply bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300;
+    @apply bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-medium py-2.5 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-[0_0_15px_rgba(16,185,129,0.4)];
   }
   .card {
-    @apply bg-surface-800/50 backdrop-blur-sm border border-surface-700/50 rounded-2xl p-6 transition-all duration-300 hover:border-primary-500/30 hover:shadow-glow;
+    @apply bg-white border border-surface-200/80 rounded-2xl p-6 transition-all duration-300 hover:border-primary-400/40 hover:shadow-glow shadow-sm;
   }
   .input-field {
-    @apply w-full bg-surface-800 border border-surface-600 rounded-xl px-4 py-3 text-surface-200 placeholder-surface-500 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-300;
+    @apply w-full bg-white border border-surface-300 rounded-xl px-4 py-3 text-surface-700 placeholder-surface-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all duration-300 shadow-sm;
   }
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
   }
   .badge-success {
-    @apply badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+    @apply badge bg-emerald-100 text-emerald-600 border border-emerald-200;
   }
   .badge-warning {
-    @apply badge bg-amber-500/20 text-amber-400 border border-amber-500/30;
+    @apply badge bg-amber-100 text-amber-600 border border-amber-200;
   }
   .badge-danger {
-    @apply badge bg-red-500/20 text-red-400 border border-red-500/30;
+    @apply badge bg-red-100 text-red-600 border border-red-200;
   }
   .badge-info {
-    @apply badge bg-blue-500/20 text-blue-400 border border-blue-500/30;
+    @apply badge bg-blue-100 text-blue-600 border border-blue-200;
   }
   .section-title {
-    @apply text-2xl font-bold bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent;
+    @apply text-xl font-bold bg-gradient-to-r from-surface-800 to-surface-600 bg-clip-text text-transparent;
   }
   .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+    @apply bg-white/80 backdrop-blur-xl border border-white/60 rounded-2xl shadow-sm;
   }
   .stat-card {
-    @apply glass-card p-6 flex flex-col gap-2 hover:bg-white/10 transition-all duration-300;
+    @apply glass-card p-6 flex flex-col gap-2 hover:bg-white transition-all duration-300 hover:shadow-glow border-surface-200/50 hover:border-primary-300/50 hover:-translate-y-1;
   }
 }

@@ -1,3 +1,4 @@
+// นำเข้าไลบรารีและ Component ที่จำเป็นสำหรับการสร้างหน้าจัดการหลักสูตร
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -14,12 +15,15 @@ const CATEGORY_COLORS = {
 };
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
-const emptyForm = { title: '', description: '', instructor: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '' };
+const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '' };
 
+// คอมโพเนนต์หลักสำหรับหน้า "จัดการหลักสูตร" (สำหรับผู้ดูแลระบบ เพื่อเพิ่ม/แก้ไข/ลบหลักสูตร)
 export default function CourseManage() {
-    const { user } = useAuth();
-    const [courses, setCourses] = useState([]);
-    const [showForm, setShowForm] = useState(false);
+    const { user } = useAuth(); // ดึงข้อมูลผู้ใช้งานปัจจุบัน (เอาไว้เช็คสิทธิ์)
+    
+    // ชุดตัวแปร (State) สำหรับเก็บข้อมูลต่างๆ ในหน้าจอนี้
+    const [courses, setCourses] = useState([]); // เก็บรายชื่อหลักสูตรทั้งหมด
+    const [showForm, setShowForm] = useState(false); // ควบคุมการเปิด/ปิดฟอร์มเพิ่ม-แก้ไข
     const [editId, setEditId] = useState(null);
     const [form, setForm] = useState(emptyForm);
     const [loading, setLoading] = useState(true);
@@ -28,9 +32,13 @@ export default function CourseManage() {
     const [categoryFilter, setCategoryFilter] = useState('');
     const [resultModal, setResultModal] = useState(null);
     const [deleteModal, setDeleteModal] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 15;
 
+    // ทำงานอัตโนมัติเมื่อเปิดหน้านี้ขึ้นมาครั้งแรก โดยสั่งให้โหลดข้อมูลหลักสูตร
     useEffect(() => { loadCourses(); }, []);
 
+    // ฟังก์ชันสำหรับเรียก API ไปดึงข้อมูลหลักสูตรทั้งหมดจาก Backend มาเก็บไว้ใน state
     const loadCourses = () => {
         api.get('/courses').then(res => { setCourses(res.data); setLoading(false); });
     };
@@ -42,6 +50,7 @@ export default function CourseManage() {
         return `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
     };
 
+    // ฟังก์ชันจัดการเวลาพิมพ์ข้อมูลลงในฟอร์ม
     const handleChange = (e) => {
         const updated = { ...form, [e.target.name]: e.target.value };
         // Auto-generate trainingDate string from date pickers
@@ -75,6 +84,19 @@ export default function CourseManage() {
         reader.readAsDataURL(file);
     };
 
+    const handleCertBgChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('ไฟล์พื้นหลังใบเกียรติบัตรต้องไม่เกิน 5MB');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onloadend = () => setForm(prev => ({ ...prev, certificateBackground: reader.result }));
+        reader.readAsDataURL(file);
+    };
+
+    // ฟังก์ชันสำหรับบันทึกฟอร์ม (ทั้งสร้างใหม่ และ แก้ไข)
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -92,17 +114,17 @@ export default function CourseManage() {
         }
     };
 
+    // ฟังก์ชันเมื่อกดปุ่ม "แก้ไข" จะดึงข้อมูลหลักสูตรเดิมมาใส่ในฟอร์ม
     const handleEdit = (course) => {
         setForm({
-            title: course.title, description: course.description, instructor: course.instructor,
+            title: course.title, description: course.description, instructor: course.instructor, instructorSignature: course.instructorSignature || '', director: course.director || '', directorSignature: course.directorSignature || '',
             startDate: course.startDate?.slice(0, 16), endDate: course.endDate?.slice(0, 16),
-            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials,
-            image: course.image || '',
-            topics: course.topics || '', trainingDate: course.trainingDate || '', duration: course.duration || ''
+            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || ''
         });
         setEditId(course.id); setShowForm(true);
     };
 
+    // ฟังก์ชันเมื่อกดปุ่ม "ลบ" จะเปิดแจ้งเตือนยืนยันการลบ
     const handleDelete = async (id) => {
         const course = courses.find(c => c.id === id);
         setDeleteModal({
@@ -137,44 +159,44 @@ export default function CourseManage() {
             {showForm && (
                 <div className="glass-card p-6">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-lg font-semibold text-white">{editId ? 'แก้ไขหลักสูตร' : 'สร้างหลักสูตรใหม่'}</h2>
-                        <button onClick={() => { setShowForm(false); setEditId(null); }} className="text-surface-400 hover:text-white"><HiOutlineX className="w-5 h-5" /></button>
+                        <h2 className="text-lg font-bold text-surface-800">{editId ? 'แก้ไขหลักสูตร' : 'สร้างหลักสูตรใหม่'}</h2>
+                        <button onClick={() => { setShowForm(false); setEditId(null); }} className="text-surface-500 hover:text-surface-800"><HiOutlineX className="w-5 h-5" /></button>
                     </div>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="md:col-span-2">
-                                <label className="block text-sm text-surface-300 mb-1">ชื่อหลักสูตร *</label>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ชื่อหลักสูตร *</label>
                                 <input name="title" value={form.title} onChange={handleChange} className="input-field" required />
                             </div>
                             <div className="md:col-span-2">
-                                <label className="block text-sm text-surface-300 mb-1">รายละเอียด *</label>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">รายละเอียด *</label>
                                 <textarea name="description" value={form.description} onChange={handleChange} className="input-field h-24 resize-none" required />
                             </div>
                             <div className="md:col-span-2">
-                                <label className="block text-sm text-surface-300 mb-1">หัวข้อการอบรม</label>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">หัวข้อการอบรม</label>
                                 <textarea name="topics" value={form.topics} onChange={handleChange} className="input-field h-20 resize-none" placeholder="ระบุหัวข้อการอบรม (แต่ละหัวข้อขึ้นบรรทัดใหม่)" />
                             </div>
-                            <div><label className="block text-sm text-surface-300 mb-1">วันที่ทำการอบรม</label>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">วันที่ทำการอบรม</label>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                     <input type="date" name="trainingDateStart" value={form.trainingDateStart} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
-                                    <span className="text-surface-400 text-sm">ถึง</span>
+                                    <span className="text-surface-700 font-medium text-sm">ถึง</span>
                                     <input type="date" name="trainingDateEnd" value={form.trainingDateEnd} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
                                 </div>
                             </div>
-                            <div><label className="block text-sm text-surface-300 mb-1">ระยะเวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
-                            <div><label className="block text-sm text-surface-300 mb-1">ผู้สอน</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
-                            <div><label className="block text-sm text-surface-300 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
-                            <div><label className="block text-sm text-surface-300 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" required /></div>
-                            <div><label className="block text-sm text-surface-300 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
-                            <div><label className="block text-sm text-surface-300 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
-                            <div className="md:col-span-2"><label className="block text-sm text-surface-300 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ระยะเวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
+
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" required /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
+                            <div className="md:col-span-2"><label className="block text-sm font-semibold text-surface-700 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2">
-                                <label className="block text-sm text-surface-300 mb-1">รูปภาพหลักสูตร</label>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">รูปภาพหลักสูตร</label>
                                 <div className="flex items-start gap-4">
                                     <label className="flex-1 cursor-pointer">
-                                        <div className="border-2 border-dashed border-surface-600 rounded-xl p-4 text-center hover:border-primary-400 transition-colors">
-                                            <HiOutlinePhotograph className="w-8 h-8 text-surface-500 mx-auto mb-2" />
-                                            <p className="text-sm text-surface-400">คลิกเพื่อเลือกรูปภาพ</p>
+                                        <div className="border-2 border-dashed border-surface-600 rounded-xl p-4 text-center hover:border-primary-500 transition-colors bg-surface-50">
+                                            <HiOutlinePhotograph className="w-8 h-8 text-surface-600 mx-auto mb-2" />
+                                            <p className="text-sm font-medium text-surface-700">คลิกเพื่อเลือกรูปภาพ</p>
                                             <p className="text-xs text-surface-500 mt-1">JPG, PNG (ไม่เกิน 2MB)</p>
                                         </div>
                                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
@@ -187,6 +209,51 @@ export default function CourseManage() {
                                             </button>
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                            
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ภาพพื้นหลังใบเกียรติบัตร ขนาด A4 แนวนอน (297 x 210 มิลลิเมตร หรือประมาณ 11.69 x 8.27 นิ้ว)</label>
+                                <div className="flex items-start gap-4">
+                                    <label className="flex-1 cursor-pointer">
+                                        <div className="border-2 border-dashed border-surface-600 rounded-xl p-4 text-center hover:border-primary-500 transition-colors bg-surface-50">
+                                            <HiOutlinePhotograph className="w-8 h-8 text-surface-600 mx-auto mb-2" />
+                                            <p className="text-sm font-medium text-surface-700">คลิกเพื่อเลือกภาพพื้นหลัง (Template)</p>
+                                            <p className="text-xs text-surface-500 mt-1">JPG, PNG สัดส่วน A4 แนวนอน (ไม่เกิน 5MB)</p>
+                                        </div>
+                                        <input type="file" accept="image/*" onChange={handleCertBgChange} className="hidden" />
+                                    </label>
+                                    {form.certificateBackground && (
+                                        <div className="relative w-40 h-28 rounded-xl overflow-hidden border border-surface-600 flex-shrink-0">
+                                            <img src={form.certificateBackground} alt="cert-bg-preview" className="w-full h-full object-cover" />
+                                            <button type="button" onClick={() => setForm(prev => ({ ...prev, certificateBackground: '' }))} className="absolute top-1 right-1 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs">
+                                                <HiOutlineX className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-xs text-surface-500 mt-2">หากอัปโหลดภาพพื้นหลัง ระบบจะใช้ภาพนี้เป็นใบเกียรติบัตรและพิมพ์ชื่อผู้เข้าอบรมทับลงไปตรงกลาง หากไม่อัปโหลด ระบบจะใช้รูปแบบมาตรฐานของ ARIT</p>
+                            </div>
+                            
+                            <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                <h3 className="text-md font-semibold text-surface-700 mb-3">ชื่อ วิทยากร / แนบรูป ลายเซ็น</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้สอน</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-surface-700 mb-1">รูปลายเซ็นผู้สอน (URL รูปภาพ พื้นหลังใส .png)</label>
+                                        <input name="instructorSignature" value={form.instructorSignature} onChange={handleChange} className="input-field" placeholder="เช่น https://example.com/signature.png" />
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                <h3 className="text-md font-semibold text-surface-700 mb-3">ชื่อ ผู้อำนวยการ / แนบรูปลายเซ็น</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้อำนวยการ</label><input name="director" value={form.director} onChange={handleChange} className="input-field" /></div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-surface-700 mb-1">รูปลายเซ็นผู้อำนวยการ (URL รูปภาพ พื้นหลังใส .png)</label>
+                                        <input name="directorSignature" value={form.directorSignature} onChange={handleChange} className="input-field" placeholder="เช่น https://example.com/signature2.png" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,7 +271,7 @@ export default function CourseManage() {
                     <HiOutlineSearch style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={16} />
                     <input
                         value={search}
-                        onChange={e => setSearch(e.target.value)}
+                        onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
                         placeholder="ค้นหาชื่อหลักสูตร..."
                         className="input-field"
                         style={{ paddingLeft: 36 }}
@@ -214,7 +281,7 @@ export default function CourseManage() {
                     <HiOutlineFilter style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} size={16} />
                     <select
                         value={categoryFilter}
-                        onChange={e => setCategoryFilter(e.target.value)}
+                        onChange={e => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
                         className="input-field"
                         style={{ paddingLeft: 36, appearance: 'auto' }}
                     >
@@ -229,31 +296,39 @@ export default function CourseManage() {
             <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead>
-                        <tr className="border-b border-surface-700">
-                            <th className="text-left py-3 px-4 text-surface-400 font-medium">หลักสูตร</th>
-                            <th className="text-left py-3 px-4 text-surface-400 font-medium hidden md:table-cell">หมวดหมู่</th>
-                            <th className="text-left py-3 px-4 text-surface-400 font-medium hidden md:table-cell">วันที่อบรม</th>
-                            <th className="text-left py-3 px-4 text-surface-400 font-medium hidden lg:table-cell">ระยะเวลา</th>
-                            <th className="text-center py-3 px-4 text-surface-400 font-medium">สถานะ</th>
-                            <th className="text-center py-3 px-4 text-surface-400 font-medium">จัดการ</th>
+                        <tr className="border-b border-surface-300">
+                            <th className="text-left py-3 px-4 text-surface-700 font-bold">หลักสูตร</th>
+                            <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">หมวดหมู่</th>
+                            <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">วันที่อบรม</th>
+                            <th className="text-left py-3 px-4 text-surface-700 font-bold hidden lg:table-cell">ระยะเวลา</th>
+                            <th className="text-center py-3 px-4 text-surface-700 font-bold">สถานะ</th>
+                            <th className="text-center py-3 px-4 text-surface-700 font-bold">จัดการ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {courses
-                            .filter(c => !search || c.title.toLowerCase().includes(search.toLowerCase()))
-                            .filter(c => !categoryFilter || c.category === categoryFilter)
-                            .sort((a, b) => {
-                                const getDay = (str) => {
-                                    if (!str) return 9999;
-                                    const m = str.match(/(\d+)/);
-                                    return m ? parseInt(m[1]) : 9999;
-                                };
-                                return getDay(a.trainingDate || a.startDate) - getDay(b.trainingDate || b.startDate);
-                            })
-                            .map(course => {
+                        {(() => {
+                            const filteredCourses = courses
+                                .filter(c => !search || c.title.toLowerCase().includes(search.toLowerCase()))
+                                .filter(c => !categoryFilter || c.category === categoryFilter)
+                                .sort((a, b) => {
+                                    const getDay = (str) => {
+                                        if (!str) return 9999;
+                                        const m = str.match(/(\d+)/);
+                                        return m ? parseInt(m[1]) : 9999;
+                                    };
+                                    return getDay(a.trainingDate || a.startDate) - getDay(b.trainingDate || b.startDate);
+                                });
+                                
+                            const paginatedCourses = filteredCourses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+                            
+                            if (filteredCourses.length === 0) {
+                                return <tr><td colSpan="6" className="text-center py-10 text-surface-500">ไม่พบหลักสูตร</td></tr>;
+                            }
+                            
+                            return paginatedCourses.map(course => {
                                 const catColor = getCatColor(course.category);
                                 return (
-                                    <tr key={course.id} className="border-b border-surface-800 hover:bg-surface-800/30 transition-colors">
+                                    <tr key={course.id} className="border-b border-surface-200 hover:bg-surface-50 transition-colors">
                                         <td className="py-3 px-4">
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                                                 <div style={{ width: 4, height: 28, borderRadius: 4, background: catColor, flexShrink: 0 }} />
@@ -269,8 +344,8 @@ export default function CourseManage() {
                                                 color: catColor, background: `${catColor}15`, border: `1px solid ${catColor}30`,
                                             }}>{course.category || 'ทั่วไป'}</span>
                                         </td>
-                                        <td className="py-3 px-4 text-surface-400 hidden md:table-cell">{course.trainingDate || formatDate(course.startDate)}</td>
-                                        <td className="py-3 px-4 text-surface-400 hidden lg:table-cell">{course.duration || '-'}</td>
+                                        <td className="py-3 px-4 text-surface-700 font-medium hidden md:table-cell">{course.trainingDate || formatDate(course.startDate)}</td>
+                                        <td className="py-3 px-4 text-surface-700 font-medium hidden lg:table-cell">{course.duration || '-'}</td>
                                         <td className="py-3 px-4 text-center">{course.status === 'open' ? <span className="badge-success">เปิด</span> : <span className="badge-danger">ปิด</span>}</td>
                                         <td className="py-3 px-4 text-center">
                                             <div className="flex items-center justify-center gap-2">
@@ -281,10 +356,40 @@ export default function CourseManage() {
                                         </td>
                                     </tr>
                                 );
-                            })}
+                            });
+                        })()}
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {(() => {
+                const filteredLength = courses
+                    .filter(c => !search || c.title.toLowerCase().includes(search.toLowerCase()))
+                    .filter(c => !categoryFilter || c.category === categoryFilter)
+                    .length;
+                const totalPages = Math.ceil(filteredLength / itemsPerPage);
+                
+                if (totalPages <= 1) return null;
+                
+                return (
+                    <div className="flex justify-center gap-2 mt-6">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <button 
+                                key={page} 
+                                onClick={() => setCurrentPage(page)}
+                                className={`w-10 h-10 rounded-xl font-medium transition-all ${
+                                    currentPage === page 
+                                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' 
+                                    : 'bg-surface-50 text-surface-600 hover:bg-surface-200 hover:scale-105'
+                                }`}
+                            >
+                                {page}
+                            </button>
+                        ))}
+                    </div>
+                );
+            })()}
 
             {showCourseDetail && (
                 <CourseDetailModal

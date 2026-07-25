@@ -88,10 +88,19 @@ router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req
             if (info.rows.length > 0) {
                 const { email, firstName, lastName, title } = info.rows[0];
                 const { sendCertificateEmail } = require('../utils/email');
+                const { createNotification } = require('./notifications');
                 
                 // Send asynchronously
                 sendCertificateEmail(email, firstName, lastName, title, certNumber)
                     .catch(err => console.error('Failed to send certificate email:', err));
+                    
+                createNotification(
+                    userId,
+                    'ได้รับประกาศนียบัตรใหม่',
+                    `คุณได้รับประกาศนียบัตรจากหลักสูตร "${title}" แล้ว สามารถดาวน์โหลดได้ทันที`,
+                    'certificate',
+                    '/certificates'
+                );
             }
         } catch (emailErr) {
             console.error('Error fetching details for certificate email:', emailErr);
@@ -108,7 +117,7 @@ router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req
 router.get('/my', authenticateToken, async (req, res) => {
     try {
         const result = await query(
-            `SELECT cert.*, c.title AS "courseName", c."startDate" AS "courseDate", c.instructor
+            `SELECT cert.*, c.title AS "courseName", c."startDate" AS "courseDate", c.instructor, c."instructorSignature", c.director, c."directorSignature", c."certificateBackground"
              FROM certificates cert
              LEFT JOIN courses c ON cert."courseId" = c.id
              WHERE cert."userId" = $1
@@ -126,7 +135,7 @@ router.get('/my', authenticateToken, async (req, res) => {
 router.get('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req, res) => {
     try {
         const result = await query(
-            `SELECT cert.*, c.title AS "courseName",
+            `SELECT cert.*, c.title AS "courseName", c."certificateBackground",
                     u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail"
              FROM certificates cert
              LEFT JOIN courses c ON cert."courseId" = c.id
@@ -144,8 +153,7 @@ router.get('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req,
 router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const result = await query(
-            `SELECT cert.*, c.title AS "courseName", c."startDate" AS "courseDate",
-                    c."endDate" AS "courseEndDate", c.instructor,
+            `SELECT cert.*, c.title AS "courseName", c."startDate" AS "courseDate", c."endDate" AS "courseEndDate", c.instructor, c."instructorSignature", c.director, c."directorSignature", c."certificateBackground",
                     u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail"
              FROM certificates cert
              LEFT JOIN courses c ON cert."courseId" = c.id

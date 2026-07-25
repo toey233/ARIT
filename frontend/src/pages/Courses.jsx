@@ -1,3 +1,4 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าแสดงรายการหลักสูตรทั้งหมด
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -20,6 +21,7 @@ const CATEGORY_COLORS = {
 
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
+// คอมโพเนนต์หลักสำหรับหน้าแสดงรายการหลักสูตรทั้งหมด (ให้ผู้ใช้ทั่วไปเข้ามาดูและลงทะเบียน)
 export default function Courses() {
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -29,6 +31,7 @@ export default function Courses() {
     const [showCourseDetail, setShowCourseDetail] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // โหลดข้อมูลหลักสูตรเมื่อเปิดหน้าเว็บ
     useEffect(() => {
         api.get('/courses').then(res => { setCourses(res.data); setLoading(false); }).catch(() => setLoading(false));
     }, []);
@@ -42,6 +45,7 @@ export default function Courses() {
 
     const formatDate = (d) => d ? new Date(d).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
+    // ฟังก์ชันสำหรับผู้ใช้กดปุ่ม "ลงทะเบียน"
     const handleRegister = async (courseId) => {
         if (!user) {
             navigate('/login');
@@ -114,7 +118,7 @@ export default function Courses() {
                         display: 'flex', gap: 12, justifyContent: 'center', marginTop: 32,
                         flexWrap: 'wrap',
                     }}>
-                        <div style={{ position: 'relative', flex: '0 1 400px' }}>
+                        <div style={{ position: 'relative', flex: '1 1 280px', maxWidth: '100%' }}>
                             <HiOutlineSearch size={18} style={{
                                 position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)',
                                 color: '#94a3b8',
@@ -133,7 +137,7 @@ export default function Courses() {
                                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
                             />
                         </div>
-                        <div style={{ position: 'relative' }}>
+                        <div style={{ position: 'relative', flex: '1 1 180px', maxWidth: '100%' }}>
                             <HiOutlineFilter size={16} style={{
                                 position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
                                 color: '#94a3b8', pointerEvents: 'none',
@@ -174,7 +178,7 @@ export default function Courses() {
             <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px 60px' }}>
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
                     gap: 24,
                 }}>
                     {filtered.map((course, idx) => {

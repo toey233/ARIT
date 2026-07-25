@@ -1,11 +1,14 @@
+// นำเข้าไลบรารีที่จำเป็นสำหรับหน้าแสดงข่าวสารและประกาศ
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { HiOutlineNewspaper, HiOutlineBookmarkAlt } from 'react-icons/hi';
 
+// คอมโพเนนต์สำหรับแสดงรายการข่าวสารและประกาศให้ผู้ใช้ทั่วไปดู
 export default function News() {
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // โหลดข้อมูลข่าวสารทั้งหมดจากระบบเมื่อเปิดหน้านี้
     useEffect(() => {
         api.get('/news').then(res => { setNews(res.data); setLoading(false); }).catch(() => setLoading(false));
     }, []);
@@ -27,7 +30,7 @@ export default function News() {
                                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${item.isPinned ? 'bg-amber-500/20' : 'bg-blue-500/20'}`}>
                                     {item.isPinned ? <HiOutlineBookmarkAlt className="w-6 h-6 text-amber-400" /> : <HiOutlineNewspaper className="w-6 h-6 text-blue-400" />}
                                 </div>
-                                <div className="flex-1">
+                                <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-1">
                                         {item.isPinned && <span className="badge-warning text-xs">ปักหมุด</span>}
                                         <span className="badge-info text-xs">{item.category}</span>

@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS courses (
     title VARCHAR(500) NOT NULL,
     description TEXT DEFAULT '',
     instructor VARCHAR(255) DEFAULT '',
+    "instructorSignature" TEXT DEFAULT '',
+    director VARCHAR(255) DEFAULT '',
+    "directorSignature" TEXT DEFAULT '',
     "startDate" VARCHAR(50),
     "endDate" VARCHAR(50),
     location VARCHAR(500) DEFAULT '',
@@ -32,6 +35,7 @@ CREATE TABLE IF NOT EXISTS courses (
     topics TEXT DEFAULT '',
     "trainingDate" VARCHAR(255) DEFAULT '',
     duration VARCHAR(255) DEFAULT '',
+    "certificateBackground" TEXT DEFAULT '',
     "createdBy" TEXT REFERENCES users(id) ON DELETE SET NULL,
     "createdAt" TIMESTAMPTZ DEFAULT NOW()
 );
@@ -90,3 +94,17 @@ CREATE INDEX IF NOT EXISTS idx_registrations_course ON registrations("courseId")
 CREATE INDEX IF NOT EXISTS idx_evaluations_course ON evaluations("courseId");
 CREATE INDEX IF NOT EXISTS idx_certificates_user ON certificates("userId");
 CREATE INDEX IF NOT EXISTS idx_news_pinned ON news("isPinned");
+
+-- ========== NOTIFICATIONS ==========
+CREATE TABLE IF NOT EXISTS notifications (
+    id TEXT PRIMARY KEY,
+    "userId" TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title VARCHAR(500) NOT NULL,
+    message TEXT NOT NULL,
+    type VARCHAR(50) DEFAULT 'system',
+    "isRead" BOOLEAN DEFAULT FALSE,
+    link TEXT DEFAULT '',
+    "createdAt" TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications("userId");

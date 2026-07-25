@@ -24,7 +24,6 @@ const S = {
         width: '100%', padding: '10px 14px', border: '1px solid #ddd', borderRadius: 8,
         fontSize: 14, outline: 'none', boxSizing: 'border-box', color: '#333',
     },
-    row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 12 },
     field: { marginBottom: 12 },
     submitBtn: {
         width: '100%', padding: '12px', borderRadius: 8, border: 'none', cursor: 'pointer',
@@ -313,18 +312,18 @@ export default function CourseRegModal({ course, onClose, onSuccess }) {
 
                 <form onSubmit={handleSubmit}>
                     <h3 style={S.sectionTitle}>ข้อมูลส่วนตัว</h3>
-                    <div style={S.row}>
+                    <div className="course-modal-row">
                         <div><label style={S.label}>ชื่อ <span style={{ color: 'red' }}>*</span></label><input style={S.input} name="firstName" value={form.firstName} onChange={handleChange} placeholder="ชื่อจริง" required /></div>
                         <div><label style={S.label}>นามสกุล <span style={{ color: 'red' }}>*</span></label><input style={S.input} name="lastName" value={form.lastName} onChange={handleChange} placeholder="นามสกุล" required /></div>
                     </div>
-                    <div style={S.row}>
+                    <div className="course-modal-row">
                         <div><label style={S.label}>อีเมล <span style={{ color: 'red' }}>*</span></label><input style={S.input} type="email" name="email" value={form.email} onChange={handleChange} placeholder="example@email.com" required /></div>
                         <div><label style={S.label}>เบอร์โทรศัพท์ <span style={{ color: 'red' }}>*</span></label><input style={S.input} name="phone" value={form.phone} onChange={handleChange} placeholder="0xx-xxx-xxxx" required /></div>
                     </div>
 
                     <h3 style={{ ...S.sectionTitle, marginTop: 20 }}>ข้อมูลหน่วยงาน</h3>
                     <div style={S.field}><label style={S.label}>หน่วยงาน/สถาบัน</label><input style={S.input} name="organization" value={form.organization} onChange={handleChange} placeholder="ชื่อหน่วยงานหรือสถาบัน" /></div>
-                    <div style={S.row}>
+                    <div className="course-modal-row">
                         <div><label style={S.label}>ภาควิชา/แผนก</label><input style={S.input} name="department" value={form.department} onChange={handleChange} placeholder="ภาควิชาหรือแผนก" /></div>
                         <div><label style={S.label}>ตำแหน่ง</label><input style={S.input} name="position" value={form.position} onChange={handleChange} placeholder="ตำแหน่งงาน" /></div>
                     </div>
@@ -339,6 +338,10 @@ export default function CourseRegModal({ course, onClose, onSuccess }) {
                         {loading ? 'กำลังลงทะเบียน...' : 'ลงทะเบียนเข้าอบรม'}
                     </button>
                 </form>
+                <style>{`
+                    .course-modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+                    @media (max-width: 640px) { .course-modal-row { grid-template-columns: 1fr; } }
+                `}</style>
             </div>
         </div>
     );
