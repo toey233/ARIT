@@ -501,29 +501,6 @@ export default function HomePage() {
                         พร้อมรับประกาศนียบัตรอิเล็กทรอนิกส์ได้ทันที
                     </p>
 
-                    {/* Search Bar */}
-                    <form onSubmit={handleSearch} style={{
-                        display: 'flex', alignItems: 'center', maxWidth: 620, margin: '0 auto 48px',
-                        background: 'rgba(255,255,255,0.95)', borderRadius: 16, overflow: 'hidden',
-                        boxShadow: '0 12px 48px rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.3)',
-                    }}>
-                        <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}>
-                            <HiOutlineSearch size={20} color="#94a3b8" />
-                        </div>
-                        <input
-                            type="text" value={search} onChange={e => setSearch(e.target.value)}
-                            placeholder="ค้นหาหลักสูตรหรือชื่อการอบรม..."
-                            style={{
-                                flex: 1, border: 'none', outline: 'none', padding: '16px 0',
-                                fontSize: 15, color: '#333', background: 'transparent',
-                            }}
-                        />
-                        <button type="submit" style={{
-                            padding: '12px 28px', background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff', border: 'none',
-                            cursor: 'pointer', fontWeight: 700, fontSize: 14, margin: 6, borderRadius: 12,
-                            boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
-                        }}>ค้นหา</button>
-                    </form>
 
 
                 </div>
@@ -561,7 +538,7 @@ export default function HomePage() {
 
                 <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
                     {/* Section Header */}
-                    <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                    <div style={{ textAlign: 'left', marginBottom: 32 }}>
                         <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
                             padding: '6px 18px', borderRadius: 50,
@@ -579,14 +556,41 @@ export default function HomePage() {
                         }}>
                             หลักสูตรการอบรม
                         </h2>
-                        <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500, margin: '0 auto', lineHeight: 1.7 }}>
+                        <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500, lineHeight: 1.7 }}>
                             เลือกหลักสูตรที่สนใจและลงทะเบียนเพื่อเข้าร่วมการอบรมกับเรา
                         </p>
                     </div>
+                    {/* Search & Categories */}
                     <div style={{
-                        display: 'flex', gap: 10, marginBottom: 40, overflowX: 'auto', paddingBottom: 4,
-                        justifyContent: 'center', flexWrap: 'wrap',
+                        display: 'flex', gap: 16, marginBottom: 40,
+                        justifyContent: 'flex-start', flexWrap: 'wrap', alignItems: 'center'
                     }}>
+                        {/* Search Bar */}
+                        <div style={{
+                            display: 'flex', alignItems: 'center', flex: '1 1 400px', maxWidth: 500,
+                            background: '#fff', borderRadius: 16, overflow: 'hidden',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.05)',
+                        }}>
+                            <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}>
+                                <HiOutlineSearch size={20} color="#94a3b8" />
+                            </div>
+                            <input
+                                type="text" value={search} onChange={e => setSearch(e.target.value)}
+                                placeholder="ค้นหาหลักสูตรหรือชื่อการอบรม..."
+                                style={{
+                                    flex: 1, border: 'none', outline: 'none', padding: '14px 0',
+                                    fontSize: 15, color: '#1e293b', background: 'transparent',
+                                }}
+                            />
+                            <button type="button" style={{
+                                padding: '10px 24px', background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff', border: 'none',
+                                cursor: 'pointer', fontWeight: 700, fontSize: 14, margin: 6, borderRadius: 12,
+                                boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                            }}>ค้นหา</button>
+                        </div>
+                        
+                        {/* Category Pills */}
+                        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', overflowX: 'auto', paddingBottom: 4 }}>
                         <button onClick={() => setCategoryFilter('')} style={{
                             padding: '10px 24px', cursor: 'pointer', fontSize: 13, fontWeight: 600,
                             borderRadius: 50, transition: 'all 0.3s', whiteSpace: 'nowrap',
@@ -607,6 +611,7 @@ export default function HomePage() {
                                 border: categoryFilter === cat ? 'none' : '1px solid rgba(0,0,0,0.06)',
                             }}>{cat}</button>
                         ))}
+                        </div>
                     </div>
 
                     {/* Course Cards */}
