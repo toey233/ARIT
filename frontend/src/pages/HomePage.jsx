@@ -404,7 +404,7 @@ export default function HomePage() {
             {/* ========== HERO SECTION ========== */}
             <section id="hero" style={{
                 position: 'relative', minHeight: '85vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backgroundImage: 'url(https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2000)',
+                backgroundImage: 'url(/hero-bg.jpg)',
                 backgroundSize: 'cover', backgroundPosition: 'center',
                 overflow: 'hidden', paddingTop: 70,
             }}>
