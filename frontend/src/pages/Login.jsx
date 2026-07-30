@@ -41,14 +41,17 @@ export default function Login() {
     // ฟังก์ชันจัดการเมื่อผู้ใช้กรอกอีเมลและรหัสผ่าน แล้วกดปุ่มเข้าสู่ระบบ
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // บันทึกอีเมลทันทีที่กดปุ่ม (เผื่อกรณีพิมพ์รหัสผิด จะได้ไม่ต้องพิมพ์อีเมลใหม่)
+        if (rememberMe) {
+            localStorage.setItem('rememberedEmail', email);
+        } else {
+            localStorage.removeItem('rememberedEmail');
+        }
+
         setLoading(true);
         try {
             const res = await login(email, password);
-            if (rememberMe) {
-                localStorage.setItem('rememberedEmail', email);
-            } else {
-                localStorage.removeItem('rememberedEmail');
-            }
             toast.success('เข้าสู่ระบบสำเร็จ! ยินดีต้อนรับเข้าสู่ระบบ');
             if (res.user?.role === 'staff' || res.user?.role === 'admin') {
                 navigate('/dashboard');
