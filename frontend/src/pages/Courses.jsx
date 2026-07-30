@@ -81,7 +81,7 @@ export default function Courses() {
                 position: 'relative', overflow: 'hidden',
             }}>
                 <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ textAlign: 'left' }}>
                         <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
                             padding: '6px 18px', borderRadius: 50,
@@ -98,54 +98,53 @@ export default function Courses() {
                         }}>
                             หลักสูตรการอบรมทั้งหมด
                         </h1>
-                        <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500, margin: '0 auto' }}>
+                        <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500 }}>
                             เลือกหลักสูตรที่สนใจและลงทะเบียนเข้าอบรมได้ทันที
                         </p>
                     </div>
 
                     {/* Search & Filter */}
                     <div style={{
-                        display: 'flex', gap: 12, justifyContent: 'center', marginTop: 32,
+                        display: 'flex', gap: 16, justifyContent: 'flex-start', marginTop: 32,
                         flexWrap: 'wrap',
                     }}>
-                        <div style={{ position: 'relative', flex: '1 1 280px', maxWidth: '100%' }}>
-                            <HiOutlineSearch size={18} style={{
-                                position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)',
-                                color: '#94a3b8',
-                            }} />
+                        <div style={{
+                            display: 'flex', alignItems: 'center', flex: '1 1 400px', maxWidth: 620,
+                            background: '#fff', borderRadius: 16, overflow: 'hidden',
+                            boxShadow: '0 12px 30px rgba(0,0,0,0.06)', border: '1px solid rgba(0,0,0,0.05)',
+                        }}>
+                            <div style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}>
+                                <HiOutlineSearch size={20} color="#94a3b8" />
+                            </div>
                             <input
                                 type="text" value={search} onChange={e => setSearch(e.target.value)}
-                                placeholder="ค้นหาหลักสูตร..."
+                                placeholder="ค้นหาหลักสูตรหรือชื่อการอบรม..."
                                 style={{
-                                    width: '100%', padding: '12px 16px 12px 44px', borderRadius: 12,
-                                    border: '1px solid #e2e8f0',
-                                    background: '#fff', color: '#1e293b',
-                                    fontSize: 14, outline: 'none',
-                                    transition: 'border-color 0.3s, box-shadow 0.3s',
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                                    flex: 1, border: 'none', outline: 'none', padding: '16px 0',
+                                    fontSize: 15, color: '#1e293b', background: 'transparent',
                                 }}
-                                onFocus={e => { e.target.style.borderColor = '#2563eb'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.1)'; }}
-                                onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)'; }}
                             />
+                            <button type="button" style={{
+                                padding: '12px 28px', background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff', border: 'none',
+                                cursor: 'pointer', fontWeight: 700, fontSize: 14, margin: 6, borderRadius: 12,
+                                boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+                            }}>ค้นหา</button>
                         </div>
-                        <div style={{ position: 'relative', flex: '1 1 180px', maxWidth: '100%' }}>
-                            <HiOutlineFilter size={16} style={{
-                                position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)',
+                        <div style={{ position: 'relative', flex: '0 0 auto' }}>
+                            <HiOutlineFilter size={18} style={{
+                                position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)',
                                 color: '#94a3b8', pointerEvents: 'none',
                             }} />
                             <select
                                 value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}
                                 style={{
-                                    padding: '12px 24px 12px 38px', borderRadius: 12,
-                                    border: '1px solid #e2e8f0',
+                                    padding: '0 24px 0 44px', borderRadius: 16,
+                                    border: '1px solid rgba(0,0,0,0.05)',
                                     background: '#fff', color: '#1e293b',
-                                    fontSize: 14, outline: 'none', cursor: 'pointer',
-                                    appearance: 'none', minWidth: 160,
-                                    transition: 'border-color 0.3s, box-shadow 0.3s',
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
+                                    fontSize: 15, outline: 'none', cursor: 'pointer',
+                                    appearance: 'none', minWidth: 180, height: '100%', minHeight: 60,
+                                    boxShadow: '0 12px 30px rgba(0,0,0,0.06)', fontWeight: 500,
                                 }}
-                                onFocus={e => { e.target.style.borderColor = '#2563eb'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.1)'; }}
-                                onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)'; }}
                             >
                                 <option value="">ทุกหมวดหมู่</option>
                                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
