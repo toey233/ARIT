@@ -72,4 +72,10 @@ app.listen(PORT, () => {
     
     // Initialize background jobs (เริ่มรันระบบอัตโนมัติต่างๆ)
     initCronJobs();
+
+    // Auto-migrate database (เพิ่มคอลัมน์ที่ขาดหายไป)
+    const pool = require('./db');
+    pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS "profilePicture" TEXT DEFAULT \'\';')
+        .then(() => console.log('✅ Database schema checked/updated.'))
+        .catch(err => console.error('❌ Database schema update failed:', err.message));
 });
