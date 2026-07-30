@@ -1,5 +1,5 @@
 // นำเข้าไลบรารีที่จำเป็นสำหรับหน้าเข้าสู่ระบบ
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
@@ -10,18 +10,9 @@ import { HiOutlineMail, HiOutlineLockClosed, HiOutlineAcademicCap, HiOutlineDocu
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
     const [loading, setLoading] = useState(false);
     const { login, googleLogin } = useAuth();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const savedEmail = localStorage.getItem('rememberedEmail');
-        if (savedEmail) {
-            setEmail(savedEmail);
-            setRememberMe(true);
-        }
-    }, []);
 
     // ฟังก์ชันจัดการเมื่อผู้ใช้กดล็อกอินด้วย Google สำเร็จ
     const handleGoogleSuccess = async (credentialResponse) => {
@@ -41,14 +32,6 @@ export default function Login() {
     // ฟังก์ชันจัดการเมื่อผู้ใช้กรอกอีเมลและรหัสผ่าน แล้วกดปุ่มเข้าสู่ระบบ
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // บันทึกอีเมลทันทีที่กดปุ่ม (เผื่อกรณีพิมพ์รหัสผิด จะได้ไม่ต้องพิมพ์อีเมลใหม่)
-        if (rememberMe) {
-            localStorage.setItem('rememberedEmail', email);
-        } else {
-            localStorage.removeItem('rememberedEmail');
-        }
-
         setLoading(true);
         try {
             const res = await login(email, password);
@@ -165,20 +148,7 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mt-4 mb-2">
-                            <input 
-                                type="checkbox" 
-                                id="rememberMe"
-                                checked={rememberMe}
-                                onChange={(e) => setRememberMe(e.target.checked)}
-                                className="w-4 h-4 rounded border-surface-600 bg-surface-800/50 text-primary-500 focus:ring-primary-500/50 cursor-pointer"
-                            />
-                            <label htmlFor="rememberMe" className="text-sm text-surface-300 cursor-pointer select-none">
-                                จดจำการเข้าสู่ระบบ
-                            </label>
-                        </div>
-
-                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3 disabled:opacity-50">
+                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3 mt-4 disabled:opacity-50">
                             {loading ? <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div> : 'เข้าสู่ระบบ'}
                         </button>
                     </form>
