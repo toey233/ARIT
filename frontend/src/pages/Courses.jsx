@@ -76,39 +76,29 @@ export default function Courses() {
         <div style={{ minHeight: '100vh', background: 'linear-gradient(180deg, #f0f4ff 0%, #ffffff 100%)' }}>
             {/* Header Section */}
             <div style={{
-                background: 'linear-gradient(135deg, #1e3a5f 0%, #0d2137 60%, #0a1628 100%)',
-                padding: '48px 24px 56px',
+                background: 'transparent',
+                padding: '48px 24px 24px',
                 position: 'relative', overflow: 'hidden',
             }}>
-                {/* Decorative circles */}
-                <div style={{
-                    position: 'absolute', top: -60, right: -60, width: 200, height: 200,
-                    borderRadius: '50%', border: '1px solid rgba(255,255,255,0.06)',
-                }} />
-                <div style={{
-                    position: 'absolute', bottom: -40, left: -40, width: 160, height: 160,
-                    borderRadius: '50%', border: '1px solid rgba(255,255,255,0.04)',
-                }} />
-
                 <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 2 }}>
                     <div style={{ textAlign: 'center' }}>
                         <span style={{
                             display: 'inline-flex', alignItems: 'center', gap: 8,
                             padding: '6px 18px', borderRadius: 50,
-                            fontSize: 12, fontWeight: 600, color: '#93c5fd',
-                            background: 'rgba(147,197,253,0.1)', border: '1px solid rgba(147,197,253,0.15)',
+                            fontSize: 12, fontWeight: 600, color: '#2563eb',
+                            background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.15)',
                             marginBottom: 16, letterSpacing: 0.5,
                         }}>
                             <HiOutlineAcademicCap size={14} />
                             TRAINING COURSES
                         </span>
                         <h1 style={{
-                            fontSize: 'clamp(26px, 4vw, 36px)', fontWeight: 800, color: '#fff',
+                            fontSize: 'clamp(26px, 4vw, 36px)', fontWeight: 800, color: '#1e293b',
                             marginBottom: 8, letterSpacing: '-0.5px',
                         }}>
                             หลักสูตรการอบรมทั้งหมด
                         </h1>
-                        <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.5)', maxWidth: 500, margin: '0 auto' }}>
+                        <p style={{ fontSize: 15, color: '#64748b', maxWidth: 500, margin: '0 auto' }}>
                             เลือกหลักสูตรที่สนใจและลงทะเบียนเข้าอบรมได้ทันที
                         </p>
                     </div>
@@ -128,13 +118,14 @@ export default function Courses() {
                                 placeholder="ค้นหาหลักสูตร..."
                                 style={{
                                     width: '100%', padding: '12px 16px 12px 44px', borderRadius: 12,
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    background: 'rgba(255,255,255,0.08)', color: '#fff',
-                                    fontSize: 14, outline: 'none', backdropFilter: 'blur(8px)',
-                                    transition: 'border-color 0.3s',
+                                    border: '1px solid #e2e8f0',
+                                    background: '#fff', color: '#1e293b',
+                                    fontSize: 14, outline: 'none',
+                                    transition: 'border-color 0.3s, box-shadow 0.3s',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                                 }}
-                                onFocus={e => e.target.style.borderColor = 'rgba(147,197,253,0.4)'}
-                                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                onFocus={e => { e.target.style.borderColor = '#2563eb'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.1)'; }}
+                                onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)'; }}
                             />
                         </div>
                         <div style={{ position: 'relative', flex: '1 1 180px', maxWidth: '100%' }}>
@@ -146,15 +137,18 @@ export default function Courses() {
                                 value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}
                                 style={{
                                     padding: '12px 24px 12px 38px', borderRadius: 12,
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                    background: 'rgba(255,255,255,0.08)', color: '#fff',
+                                    border: '1px solid #e2e8f0',
+                                    background: '#fff', color: '#1e293b',
                                     fontSize: 14, outline: 'none', cursor: 'pointer',
-                                    backdropFilter: 'blur(8px)', appearance: 'none',
-                                    minWidth: 160,
+                                    appearance: 'none', minWidth: 160,
+                                    transition: 'border-color 0.3s, box-shadow 0.3s',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
                                 }}
+                                onFocus={e => { e.target.style.borderColor = '#2563eb'; e.target.style.boxShadow = '0 0 0 3px rgba(37,99,235,0.1)'; }}
+                                onBlur={e => { e.target.style.borderColor = '#e2e8f0'; e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.02)'; }}
                             >
-                                <option value="" style={{ color: '#333' }}>ทุกหมวดหมู่</option>
-                                {categories.map(c => <option key={c} value={c} style={{ color: '#333' }}>{c}</option>)}
+                                <option value="">ทุกหมวดหมู่</option>
+                                {categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
                         </div>
                     </div>
