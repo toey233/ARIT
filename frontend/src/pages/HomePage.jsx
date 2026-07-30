@@ -525,30 +525,7 @@ export default function HomePage() {
                         }}>ค้นหา</button>
                     </form>
 
-                    {/* Stats Counter */}
-                    <div style={{
-                        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, maxWidth: 560, margin: '0 auto',
-                    }}>
-                        {[
-                            { number: courses.length || '10+', label: 'หลักสูตรอบรม', icon: '📚' },
-                            { number: '500+', label: 'ผู้เข้าร่วมอบรม', icon: '👨‍🎓' },
-                            { number: '300+', label: 'ใบประกาศนียบัตร', icon: '🏆' },
-                        ].map((stat, i) => (
-                            <div key={i} style={{
-                                padding: '20px 12px', borderRadius: 16,
-                                background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(10px)',
-                                border: '1px solid rgba(255,255,255,0.1)', textAlign: 'center',
-                                transition: 'all 0.3s',
-                            }}
-                                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.transform = 'translateY(0)'; }}
-                            >
-                                <div style={{ fontSize: 28, marginBottom: 4 }}>{stat.icon}</div>
-                                <div style={{ fontSize: 26, fontWeight: 800, color: '#fff' }}>{stat.number}</div>
-                                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>{stat.label}</div>
-                            </div>
-                        ))}
-                    </div>
+
                 </div>
 
                 {/* Bottom wave */}
