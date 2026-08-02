@@ -75,8 +75,8 @@ export default function CourseManage() {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error('ไฟล์รูปภาพต้องไม่เกิน 2MB');
+        if (file.size > 10 * 1024 * 1024) {
+            toast.error('ไฟล์รูปภาพต้องไม่เกิน 10MB');
             return;
         }
         const reader = new FileReader();
@@ -191,13 +191,13 @@ export default function CourseManage() {
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2"><label className="block text-sm font-semibold text-surface-700 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2">
-                                <label className="block text-sm font-semibold text-surface-700 mb-1">รูปภาพหลักสูตร</label>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">รูปภาพหลักสูตร ขนาด 16:9 แนวนอน (แนะนำ 1280 x 720 พิกเซล)</label>
                                 <div className="flex items-start gap-4">
                                     <label className="flex-1 cursor-pointer">
                                         <div className="border-2 border-dashed border-surface-600 rounded-xl p-4 text-center hover:border-primary-500 transition-colors bg-surface-50">
                                             <HiOutlinePhotograph className="w-8 h-8 text-surface-600 mx-auto mb-2" />
                                             <p className="text-sm font-medium text-surface-700">คลิกเพื่อเลือกรูปภาพ</p>
-                                            <p className="text-xs text-surface-500 mt-1">JPG, PNG (ไม่เกิน 2MB)</p>
+                                            <p className="text-xs text-surface-500 mt-1">JPG, PNG (ไม่เกิน 10MB)</p>
                                         </div>
                                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                                     </label>
