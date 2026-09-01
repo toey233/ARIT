@@ -1,6 +1,10 @@
 import React from 'react';
 
 export default function CertificateModal({ cert, onClose }) {
+    // กำหนดตำแหน่งความสูงของชื่อผู้รับบนภาพพื้นหลัง (ปรับตัวเลข % เพื่อขยับขึ้น-ลง)
+    // 50% = กลางเป๊ะ, 55% = ขยับลงมาด้านล่างเล็กน้อย
+    const customNameTopPosition = '55%';
+
     if (!cert) return null;
 
     const formatDate = (dateStr) => {
@@ -20,10 +24,10 @@ export default function CertificateModal({ cert, onClose }) {
                 {cert.certificateBackground ? (
                     <div style={{
                         position: 'relative', width: '100%', aspectRatio: '297/210', 
-                        backgroundImage: `url(${cert.certificateBackground})`, backgroundSize: 'cover', backgroundPosition: 'center',
+                        backgroundImage: `url(${cert.certificateBackground})`, backgroundSize: '100% 100%', backgroundPosition: 'center',
                         borderRadius: 4, overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
                     }}>
-                        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '100%' }}>
+                        <div style={{ position: 'absolute', top: customNameTopPosition, left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '100%' }}>
                             <p style={{ fontSize: 'clamp(24px, 4vw, 42px)', fontWeight: 700, color: '#1e293b', fontFamily: '"Sarabun", sans-serif' }}>
                                 {cert.userName}
                             </p>
@@ -72,7 +76,7 @@ export default function CertificateModal({ cert, onClose }) {
                         const pw = window.open('', '_blank');
                         pw.document.write(`<html><head><title>E-Certificate</title>
                         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-                        <style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact;margin:0;padding:0;box-sizing:border-box}body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#52525b;font-family:'Sarabun',sans-serif}.cert{width:297mm;height:210mm;background:#fffcf5;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.2)}.cert-bg{background-image:url('${cert.certificateBackground || ''}');background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;background-color:#fff}.cert-bg .name{font-size:56px;font-weight:700;color:#1e293b;text-align:center;width:100%;}.cert-outer-border{position:absolute;inset:10mm;border:2px solid #1e293b}.cert-inner-border{position:absolute;inset:12mm;border:1px solid #1e293b}.cert-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20mm 25mm;text-align:center}.cert h1{font-family:'Playfair Display',serif;color:#1e293b;font-size:32px;letter-spacing:6px;margin-bottom:8px;text-transform:uppercase}.cert h2{font-size:54px;font-weight:700;color:#1e293b;margin:0 0 30px}.recipient-name{font-size:46px;font-weight:700;color:#b45309;margin:20px 0 30px;border-bottom:2px solid #b45309;padding:0 60px 10px;display:inline-block}.signatures{display:flex;justify-content:space-between;width:100%;margin-top:20mm;padding:0 20mm;align-items:flex-end}.sig-block{width:260px;text-align:center}.sig-line{border-bottom:1px solid #1e293b;height:60px;margin-bottom:12px}.badge{width:110px;height:110px;background:#b45309;border-radius:50%;display:flex;align-items:center;justify-content:center;border:6px double #fffcf5;box-shadow:0 4px 10px rgba(0,0,0,0.1);color:#fffcf5;font-size:16px;font-weight:bold;margin:0 auto 16px}@media print{body{background:none;margin:0;padding:0}.cert{box-shadow:none;width:297mm;height:210mm}@page{size:A4 landscape;margin:0}}</style></head><body>
+                        <style>*{-webkit-print-color-adjust:exact;print-color-adjust:exact;margin:0;padding:0;box-sizing:border-box}body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#52525b;font-family:'Sarabun',sans-serif}.cert{width:297mm;height:210mm;background:#fffcf5;position:relative;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.2)}.cert-bg{background-image:url('${cert.certificateBackground || ''}');background-size:100% 100%;background-position:center;display:block;position:relative;background-color:#fff}.cert-bg .name{position:absolute;top:${customNameTopPosition};left:50%;transform:translate(-50%,-50%);font-size:56px;font-weight:700;color:#1e293b;text-align:center;width:100%;}.cert-outer-border{position:absolute;inset:10mm;border:2px solid #1e293b}.cert-inner-border{position:absolute;inset:12mm;border:1px solid #1e293b}.cert-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20mm 25mm;text-align:center}.cert h1{font-family:'Playfair Display',serif;color:#1e293b;font-size:32px;letter-spacing:6px;margin-bottom:8px;text-transform:uppercase}.cert h2{font-size:54px;font-weight:700;color:#1e293b;margin:0 0 30px}.recipient-name{font-size:46px;font-weight:700;color:#b45309;margin:20px 0 30px;border-bottom:2px solid #b45309;padding:0 60px 10px;display:inline-block}.signatures{display:flex;justify-content:space-between;width:100%;margin-top:20mm;padding:0 20mm;align-items:flex-end}.sig-block{width:260px;text-align:center}.sig-line{border-bottom:1px solid #1e293b;height:60px;margin-bottom:12px}.badge{width:110px;height:110px;background:#b45309;border-radius:50%;display:flex;align-items:center;justify-content:center;border:6px double #fffcf5;box-shadow:0 4px 10px rgba(0,0,0,0.1);color:#fffcf5;font-size:16px;font-weight:bold;margin:0 auto 16px}@media print{body{background:none;margin:0;padding:0}.cert{box-shadow:none;width:297mm;height:210mm}@page{size:A4 landscape;margin:0}}</style></head><body>
                         ${cert.certificateBackground ? `
                         <div class="cert cert-bg">
                             <div class="name">${cert.userName}</div>

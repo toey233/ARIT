@@ -2,6 +2,7 @@ import { useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { HiOutlineX, HiOutlineCheckCircle, HiOutlineExclamationCircle } from 'react-icons/hi';
+import { useAuth } from '../context/AuthContext';
 
 const S = {
     overlay: {
@@ -33,9 +34,17 @@ const S = {
 };
 
 export default function CourseRegModal({ course, onClose, onSuccess }) {
+    const { user } = useAuth();
+    
     const [form, setForm] = useState({
-        firstName: '', lastName: '', email: '', phone: '',
-        organization: '', department: '', position: '', reason: '',
+        firstName: user?.firstName || '', 
+        lastName: user?.lastName || '', 
+        email: user?.email || '', 
+        phone: user?.phone || '',
+        organization: '', 
+        department: user?.department || '', 
+        position: '', 
+        reason: '',
     });
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
