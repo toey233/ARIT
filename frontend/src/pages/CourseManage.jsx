@@ -96,6 +96,85 @@ export default function CourseManage() {
         reader.readAsDataURL(file);
     };
 
+    const processSignature = (file, fieldName) => {
+        if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('ไฟล์รูปภาพต้องไม่เกิน 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const targetWidth = 400;
+                const targetHeight = (img.height / img.width) * targetWidth;
+                
+                // Offscreen canvas for pixel processing
+                const offCanvas = document.createElement('canvas');
+                offCanvas.width = targetWidth;
+                offCanvas.height = targetHeight;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.drawImage(img, 0, 0, targetWidth, targetHeight);
+                
+                const imageData = offCtx.getImageData(0, 0, targetWidth, targetHeight);
+                const data = imageData.data;
+                
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    // Threshold for white background
+                    if (r > 160 && g > 160 && b > 160) {
+                        data[i + 3] = 0; 
+                    } else {
+                        // Darken strokes
+                        data[i] = Math.max(0, r - 80);
+                        data[i + 1] = Math.max(0, g - 80);
+                        data[i + 2] = Math.max(0, b - 50);
+                    }
+                }
+                offCtx.putImageData(imageData, 0, 0);
+                
+                // Main canvas for final output
+                const mainCanvas = document.createElement('canvas');
+                mainCanvas.width = targetWidth;
+                mainCanvas.height = targetHeight;
+                const mainCtx = mainCanvas.getContext('2d');
+                
+                // 1. Draw Placeholder Seal
+                mainCtx.save();
+                mainCtx.globalAlpha = 0.15; // Opacity for watermark
+                mainCtx.translate(targetWidth / 2, targetHeight / 2);
+                mainCtx.beginPath();
+                mainCtx.arc(0, 0, Math.min(targetHeight, targetWidth) * 0.4, 0, Math.PI * 2);
+                mainCtx.lineWidth = 3;
+                mainCtx.strokeStyle = '#2c3e50';
+                mainCtx.stroke();
+                
+                mainCtx.beginPath();
+                mainCtx.arc(0, 0, Math.min(targetHeight, targetWidth) * 0.35, 0, Math.PI * 2);
+                mainCtx.lineWidth = 1;
+                mainCtx.stroke();
+                
+                mainCtx.font = 'bold ' + (Math.min(targetHeight, targetWidth) * 0.12) + 'px sans-serif';
+                mainCtx.fillStyle = '#2c3e50';
+                mainCtx.textAlign = 'center';
+                mainCtx.textBaseline = 'middle';
+                mainCtx.fillText('UNIVERSITY SEAL', 0, 0);
+                mainCtx.restore();
+                
+                // 2. Draw processed signature on top
+                mainCtx.drawImage(offCanvas, 0, 0);
+                
+                const finalDataUrl = mainCanvas.toDataURL('image/png');
+                setForm(prev => ({ ...prev, [fieldName]: finalDataUrl }));
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    };
+
     // ฟังก์ชันสำหรับบันทึกฟอร์ม (ทั้งสร้างใหม่ และ แก้ไข)
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -240,8 +319,24 @@ export default function CourseManage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้สอน</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-surface-700 mb-1">รูปลายเซ็นผู้สอน (URL รูปภาพ พื้นหลังใส .png)</label>
-                                        <input name="instructorSignature" value={form.instructorSignature} onChange={handleChange} className="input-field" placeholder="เช่น https://example.com/signature.png" />
+                                        <label className="block text-sm font-semibold text-surface-700 mb-1">อัปโหลดรูปลายเซ็นผู้สอน (ตัดพื้นหลังและประทับตราอัตโนมัติ)</label>
+                                        <div className="flex items-start gap-4">
+                                            <label className="flex-1 cursor-pointer">
+                                                <div className="border-2 border-dashed border-surface-600 rounded-xl p-3 text-center hover:border-primary-500 transition-colors bg-surface-50">
+                                                    <HiOutlinePhotograph className="w-6 h-6 text-surface-600 mx-auto mb-1" />
+                                                    <p className="text-xs font-medium text-surface-700">คลิกเพื่ออัปโหลดลายเซ็น</p>
+                                                </div>
+                                                <input type="file" accept="image/*" onChange={(e) => processSignature(e.target.files[0], 'instructorSignature')} className="hidden" />
+                                            </label>
+                                            {form.instructorSignature && (
+                                                <div className="relative w-32 h-16 rounded-lg overflow-hidden border border-surface-600 flex-shrink-0 bg-white" style={{ backgroundImage: 'linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)', backgroundSize: '10px 10px', backgroundPosition: '0 0, 0 5px, 5px -5px, -5px 0px' }}>
+                                                    <img src={form.instructorSignature} alt="instructor-sig" className="w-full h-full object-contain relative z-10" />
+                                                    <button type="button" onClick={() => setForm(prev => ({ ...prev, instructorSignature: '' }))} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs z-20 shadow-md">
+                                                        <HiOutlineX className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -251,8 +346,24 @@ export default function CourseManage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้อำนวยการ</label><input name="director" value={form.director} onChange={handleChange} className="input-field" /></div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-surface-700 mb-1">รูปลายเซ็นผู้อำนวยการ (URL รูปภาพ พื้นหลังใส .png)</label>
-                                        <input name="directorSignature" value={form.directorSignature} onChange={handleChange} className="input-field" placeholder="เช่น https://example.com/signature2.png" />
+                                        <label className="block text-sm font-semibold text-surface-700 mb-1">อัปโหลดรูปลายเซ็นผู้อำนวยการ (ตัดพื้นหลังและประทับตราอัตโนมัติ)</label>
+                                        <div className="flex items-start gap-4">
+                                            <label className="flex-1 cursor-pointer">
+                                                <div className="border-2 border-dashed border-surface-600 rounded-xl p-3 text-center hover:border-primary-500 transition-colors bg-surface-50">
+                                                    <HiOutlinePhotograph className="w-6 h-6 text-surface-600 mx-auto mb-1" />
+                                                    <p className="text-xs font-medium text-surface-700">คลิกเพื่ออัปโหลดลายเซ็น</p>
+                                                </div>
+                                                <input type="file" accept="image/*" onChange={(e) => processSignature(e.target.files[0], 'directorSignature')} className="hidden" />
+                                            </label>
+                                            {form.directorSignature && (
+                                                <div className="relative w-32 h-16 rounded-lg overflow-hidden border border-surface-600 flex-shrink-0 bg-white" style={{ backgroundImage: 'linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)', backgroundSize: '10px 10px', backgroundPosition: '0 0, 0 5px, 5px -5px, -5px 0px' }}>
+                                                    <img src={form.directorSignature} alt="director-sig" className="w-full h-full object-contain relative z-10" />
+                                                    <button type="button" onClick={() => setForm(prev => ({ ...prev, directorSignature: '' }))} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs z-20 shadow-md">
+                                                        <HiOutlineX className="w-3 h-3" />
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
