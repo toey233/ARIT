@@ -156,15 +156,16 @@ export default function Layout({ children }) {
                         <div className="flex items-center gap-2">
                             <NotificationDropdown />
                             <Link to="/profile" className="flex items-center gap-3 px-2 py-1.5 rounded-xl hover:bg-surface-50 transition-colors cursor-pointer group border border-transparent hover:border-surface-200">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold text-lg shadow-sm border-2 border-white shrink-0 overflow-hidden" style={{ padding: 0 }}>
+                                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-primary-600 shadow-sm border-2 border-primary-100 shrink-0 overflow-hidden" style={{ padding: 2 }}>
                                     <img 
-                                        src={user?.profilePicture || "/default-avatar.png"} 
+                                        src={user?.profilePicture || "/logo.png"} 
                                         alt="Profile" 
-                                        className="w-full h-full object-cover" 
+                                        className="w-full h-full object-contain" 
                                         style={{ display: 'block' }}
                                         onError={(e) => { 
-                                            e.target.style.display='none'; 
-                                            e.target.nextSibling.style.display='flex'; 
+                                            if (e.target.src !== window.location.origin + '/logo.png') {
+                                                e.target.src = '/logo.png';
+                                            }
                                         }} 
                                     />
                                     <div style={{ display: 'none', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
