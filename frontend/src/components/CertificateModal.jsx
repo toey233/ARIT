@@ -47,7 +47,12 @@ export default function CertificateModal({ cert, onClose }) {
                             <p style={{ fontSize: 32, fontWeight: 700, color: '#0f172a', borderBottom: '1.5px solid #c5a059', display: 'inline-block', padding: '0 60px 8px', margin: '0 0 24px' }}>{cert.userName}</p>
                             
                             <p style={{ color: '#475569', fontSize: 16 }}>ได้ผ่านการอบรมหลักสูตร</p>
-                            <p style={{ fontSize: 26, fontWeight: 700, color: '#c5a059', margin: '12px 0 32px', fontFamily: '"Playfair Display", "Sarabun", serif' }}>"{cert.courseName}"</p>
+                            <p style={{ fontSize: 26, fontWeight: 700, color: '#c5a059', margin: '12px 0 16px', fontFamily: '"Playfair Display", "Sarabun", serif' }}>"{cert.courseName}"</p>
+                            
+                            <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginBottom: 24 }}>
+                                <p>ให้ไว้ ณ วันที่ {formatDate(cert.courseDate)}</p>
+                                <p style={{ marginTop: 4 }}>เลขที่ {cert.certificateNumber}</p>
+                            </div>
                             
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '0 10px', alignItems: 'flex-end', marginTop: 10 }}>
                                 <div style={{ textAlign: 'center', width: '35%', flexShrink: 0 }}>
@@ -58,10 +63,6 @@ export default function CertificateModal({ cert, onClose }) {
                                     </div>
                                     <p style={{ color: '#0f172a', fontSize: 14, fontWeight: 600 }}>{cert.instructor || 'วิทยากร'}</p>
                                     <p style={{ color: '#64748b', fontSize: 12 }}>วิทยากรประจำหลักสูตร</p>
-                                </div>
-                                <div style={{ textAlign: 'center', color: '#64748b', fontSize: 12, width: '30%', flexShrink: 0 }}>
-                                    <p>ให้ไว้ ณ วันที่ {formatDate(cert.courseDate)}</p>
-                                    <p style={{ marginTop: 2 }}>เลขที่ {cert.certificateNumber}</p>
                                 </div>
                                 <div style={{ textAlign: 'center', width: '35%', flexShrink: 0 }}>
                                     <div style={{ borderBottom: '1px solid #94a3b8', height: 50, marginBottom: 10, position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
@@ -93,7 +94,11 @@ export default function CertificateModal({ cert, onClose }) {
                         <p style="color:#64748b;font-size:24px;font-style:italic">ขอมอบให้เพื่อแสดงว่า</p>
                         <div class="recipient-name">${cert.userName}</div>
                         <p style="color:#475569;font-size:22px">ได้ผ่านการอบรมหลักสูตร</p>
-                        <p style="font-size:36px;font-weight:700;color:#c5a059;margin:16px 0;font-family:'Playfair Display', 'Sarabun', serif">"${cert.courseName}"</p>
+                        <p style="font-size:36px;font-weight:700;color:#c5a059;margin:16px 0 20px;font-family:'Playfair Display', 'Sarabun', serif">"${cert.courseName}"</p>
+                        <div style="text-align:center;color:#64748b;font-size:18px;margin-bottom:32px">
+                            <p>ให้ไว้ ณ วันที่ ${formatDate(cert.courseDate)}</p>
+                            <p style="margin-top:6px">เลขที่ประกาศนียบัตร: ${cert.certificateNumber}</p>
+                        </div>
                         <div class="signatures">
                             <div class="sig-block">
                                 <div class="sig-line">
@@ -101,10 +106,6 @@ export default function CertificateModal({ cert, onClose }) {
                                 </div>
                                 <p style="color:#0f172a;font-size:20px;font-weight:600">${cert.instructor || '-'}</p>
                                 <p style="color:#64748b;font-size:16px">วิทยากรประจำหลักสูตร</p>
-                            </div>
-                            <div style="text-align:center;color:#64748b;font-size:16px">
-                                <p>ให้ไว้ ณ วันที่ ${formatDate(cert.courseDate)}</p>
-                                <p style="margin-top:6px">เลขที่ประกาศนียบัตร: ${cert.certificateNumber}</p>
                             </div>
                             <div class="sig-block">
                                 <div class="sig-line">
