@@ -76,6 +76,8 @@ app.listen(PORT, () => {
     // Auto-migrate database (เพิ่มคอลัมน์ที่ขาดหายไป)
     const pool = require('./db');
     pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS "profilePicture" TEXT DEFAULT \'\';')
+        .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "customNamePosY" VARCHAR(255) DEFAULT \'55%\';'))
+        .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "hideAutoText" BOOLEAN DEFAULT false;'))
         .then(() => console.log('✅ Database schema checked/updated.'))
         .catch(err => console.error('❌ Database schema update failed:', err.message));
 });
