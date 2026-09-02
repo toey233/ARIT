@@ -46,6 +46,7 @@ export default function CertificateModal({ cert, onClose }) {
                             <div style={{ position: 'absolute', bottom: '8px', right: '12px', color: '#94a3b8', fontSize: 11 }}>
                                 เลขที่ {cert.certificateNumber}
                             </div>
+                            <img src="/logo.png" alt="University Logo" style={{ width: 70, height: 'auto', marginBottom: 16 }} />
                             <p style={{ color: '#c5a059', fontSize: 13, letterSpacing: 5, fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>CERTIFICATE OF COMPLETION</p>
                             <h2 style={{ fontSize: 40, fontWeight: 700, color: '#0f172a', margin: '6px 0 16px' }}>ประกาศนียบัตร</h2>
                             <p style={{ color: '#64748b', fontSize: 16, fontStyle: 'italic', marginBottom: 16 }}>ขอมอบให้เพื่อแสดงว่า</p>
@@ -95,6 +96,7 @@ export default function CertificateModal({ cert, onClose }) {
                         </div>
                         ` : `
                         <div class="cert"><div class="cert-outer-border"></div><div class="cert-inner-border"></div><div class="cert-content">
+                        <img src="${window.location.origin}/logo.png" alt="University Logo" style="width:90px;height:auto;margin-bottom:24px;" />
                         <h1>Certificate of Completion</h1>
                         <h2>ประกาศนียบัตร</h2>
                         <p style="color:#64748b;font-size:24px;font-style:italic">ขอมอบให้เพื่อแสดงว่า</p>
