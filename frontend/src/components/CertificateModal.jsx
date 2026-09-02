@@ -32,8 +32,8 @@ export default function CertificateModal({ cert, onClose }) {
                                 {cert.userName}
                             </p>
                         </div>
-                        <div style={{ position: 'absolute', bottom: '12px', right: '16px', color: '#94a3b8', fontSize: 11 }}>
-                            เลขที่ {cert.certificateNumber}
+                        <div style={{ position: 'absolute', bottom: '12px', left: '50%', transform: 'translateX(-50%)', color: '#94a3b8', fontSize: 11 }}>
+                            เลขที่: {cert.certificateNumber}
                         </div>
                     </div>
                 ) : (
@@ -52,8 +52,8 @@ export default function CertificateModal({ cert, onClose }) {
                                          linear-gradient(45deg, #2c1e16 3%, #c5a059 3%, #c5a059 7%, #fdf5d3 7%, #fdf5d3 8%, #c5a059 8%, #c5a059 11%, transparent 11%)`
                         }}></div>
                         <div style={{ padding: '3% 5%', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative', flex: 1, zIndex: 2 }}>
-                            <div style={{ position: 'absolute', bottom: '8px', right: '12px', color: '#94a3b8', fontSize: 11 }}>
-                                เลขที่ {cert.certificateNumber}
+                            <div style={{ position: 'absolute', bottom: '8px', left: '50%', transform: 'translateX(-50%)', color: '#94a3b8', fontSize: 11, zIndex: 10 }}>
+                                เลขที่: {cert.certificateNumber}
                             </div>
                             <img src="/logo.png" alt="University Logo" style={{ width: '8%', minWidth: 40, height: 'auto', marginBottom: '2%' }} />
                             <h1 style={{ color: '#9a7b4f', fontSize: 'clamp(14px, 2vw, 24px)', fontWeight: 700, margin: '0 0 1%' }}>สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</h1>
@@ -103,7 +103,7 @@ export default function CertificateModal({ cert, onClose }) {
                         ${cert.certificateBackground ? `
                         <div class="cert cert-bg">
                             <div class="name">${cert.userName}</div>
-                            <div style="position:absolute; bottom:15mm; right:20mm; font-size:14px; color:#94a3b8;">เลขที่: ${cert.certificateNumber}</div>
+                            <div style="position:absolute; bottom:15mm; left:50%; transform:translateX(-50%); font-size:14px; color:#94a3b8;">เลขที่: ${cert.certificateNumber}</div>
                         </div>
                         ` : `
                         <div class="cert"><div class="cert-outer-border"></div><div class="cert-inner-border"></div><div class="cert-content">
@@ -135,7 +135,7 @@ export default function CertificateModal({ cert, onClose }) {
                                 <p style="color:#4b5563;font-size:12px">ผู้อำนวยการสำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
                             </div>
                         </div>
-                        <div style="position:absolute; bottom:20mm; right:22mm; font-size:14px; color:#94a3b8; z-index:10;">เลขที่: ${cert.certificateNumber}</div>
+                        <div style="position:absolute; bottom:12mm; left:50%; transform:translateX(-50%); font-size:14px; color:#94a3b8; z-index:10;">เลขที่: ${cert.certificateNumber}</div>
                         </div></div>`}
                         <script>setTimeout(()=>window.print(),800)<\/script></body></html>`);
                         pw.document.close();
