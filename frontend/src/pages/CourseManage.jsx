@@ -15,7 +15,7 @@ const CATEGORY_COLORS = {
 };
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
-const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '' };
+const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false };
 
 // คอมโพเนนต์หลักสำหรับหน้า "จัดการหลักสูตร" (สำหรับผู้ดูแลระบบ เพื่อเพิ่ม/แก้ไข/ลบหลักสูตร)
 export default function CourseManage() {
@@ -174,12 +174,11 @@ export default function CourseManage() {
         }
     };
 
-    // ฟังก์ชันเมื่อกดปุ่ม "แก้ไข" จะดึงข้อมูลหลักสูตรเดิมมาใส่ในฟอร์ม
     const handleEdit = (course) => {
         setForm({
             title: course.title, description: course.description, instructor: course.instructor, instructorSignature: course.instructorSignature || '', director: course.director || '', directorSignature: course.directorSignature || '',
             startDate: course.startDate?.slice(0, 16), endDate: course.endDate?.slice(0, 16),
-            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || ''
+            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || '', customNamePosY: course.customNamePosY || '55%', hideAutoText: course.hideAutoText || false
         });
         setEditId(course.id); setShowForm(true);
     };
@@ -296,6 +295,32 @@ export default function CourseManage() {
                                     )}
                                 </div>
                                 <p className="text-xs text-surface-500 mt-2">หากอัปโหลดภาพพื้นหลัง ระบบจะใช้ภาพนี้เป็นใบเกียรติบัตรและพิมพ์ชื่อผู้เข้าอบรมทับลงไปตรงกลาง หากไม่อัปโหลด ระบบจะใช้รูปแบบมาตรฐานของ ARIT</p>
+                                
+                                {form.certificateBackground && (
+                                    <div className="mt-4 p-4 rounded-xl border border-surface-200 bg-surface-50 space-y-4">
+                                        <div>
+                                            <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-surface-700">
+                                                <input type="checkbox" name="hideAutoText" checked={form.hideAutoText} onChange={(e) => setForm(prev => ({ ...prev, hideAutoText: e.target.checked }))} className="w-4 h-4 text-primary-600 rounded border-surface-300 focus:ring-primary-500" />
+                                                ซ่อนข้อความอัตโนมัติ (เลือกเมื่อพื้นหลังมีชื่อผู้รับ/เนื้อหาครบอยู่แล้ว)
+                                            </label>
+                                        </div>
+                                        {!form.hideAutoText && (
+                                            <div>
+                                                <label className="block text-sm font-medium text-surface-700 mb-2">
+                                                    ปรับตำแหน่งแนวตั้งของชื่อผู้รับ (ปัจจุบัน: {form.customNamePosY || '55%'})
+                                                </label>
+                                                <input 
+                                                    type="range" 
+                                                    min="10" 
+                                                    max="90" 
+                                                    value={parseInt(form.customNamePosY || '55')} 
+                                                    onChange={(e) => setForm(prev => ({ ...prev, customNamePosY: e.target.value + '%' }))}
+                                                    className="w-full h-2 bg-surface-200 rounded-lg appearance-none cursor-pointer"
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                             
                             <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">

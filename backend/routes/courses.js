@@ -66,7 +66,7 @@ router.get('/:id/registrants', authenticateToken, async (req, res) => {
 // Create course (staff/admin)
 router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req, res) => {
     try {
-    const { title, description, instructor, instructorSignature, director, directorSignature, startDate, endDate, location, maxParticipants, category, materials, image, topics, trainingDate, duration, certificateBackground } = req.body;
+    const { title, description, instructor, instructorSignature, director, directorSignature, startDate, endDate, location, maxParticipants, category, materials, image, topics, trainingDate, duration, certificateBackground, customNamePosY, hideAutoText } = req.body;
 
         if (!title || !description || !startDate) {
             return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
@@ -74,9 +74,9 @@ router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req
 
         const id = uuidv4();
         const result = await query(
-            `INSERT INTO courses (id, title, description, instructor, "instructorSignature", director, "directorSignature", "startDate", "endDate", location, "maxParticipants", category, status, image, materials, topics, "trainingDate", duration, "certificateBackground", "createdBy", "createdAt")
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21) RETURNING *`,
-            [id, title, description, instructor || '', instructorSignature || '', director || '', directorSignature || '', startDate, endDate || startDate, location || '', maxParticipants || 30, category || 'ทั่วไป', 'open', image || '', materials || '', topics || '', trainingDate || '', duration || '', certificateBackground || '', req.user.id, new Date().toISOString()]
+            `INSERT INTO courses (id, title, description, instructor, "instructorSignature", director, "directorSignature", "startDate", "endDate", location, "maxParticipants", category, status, image, materials, topics, "trainingDate", duration, "certificateBackground", "customNamePosY", "hideAutoText", "createdBy", "createdAt")
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23) RETURNING *`,
+            [id, title, description, instructor || '', instructorSignature || '', director || '', directorSignature || '', startDate, endDate || startDate, location || '', maxParticipants || 30, category || 'ทั่วไป', 'open', image || '', materials || '', topics || '', trainingDate || '', duration || '', certificateBackground || '', customNamePosY || '55%', hideAutoText || false, req.user.id, new Date().toISOString()]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -93,7 +93,7 @@ router.put('/:id', authenticateToken, authorizeRoles('staff', 'admin'), async (r
             return res.status(404).json({ message: 'ไม่พบหลักสูตร' });
         }
 
-        const { title, description, instructor, instructorSignature, director, directorSignature, startDate, endDate, location, maxParticipants, category, status, materials, image, topics, trainingDate, duration, certificateBackground } = req.body;
+        const { title, description, instructor, instructorSignature, director, directorSignature, startDate, endDate, location, maxParticipants, category, status, materials, image, topics, trainingDate, duration, certificateBackground, customNamePosY, hideAutoText } = req.body;
         const updates = {};
         if (title) updates.title = title;
         if (description) updates.description = description;
@@ -113,6 +113,8 @@ router.put('/:id', authenticateToken, authorizeRoles('staff', 'admin'), async (r
         if (trainingDate !== undefined) updates.trainingDate = trainingDate;
         if (duration !== undefined) updates.duration = duration;
         if (certificateBackground !== undefined) updates.certificateBackground = certificateBackground;
+        if (customNamePosY !== undefined) updates.customNamePosY = customNamePosY;
+        if (hideAutoText !== undefined) updates.hideAutoText = hideAutoText;
 
         if (Object.keys(updates).length === 0) {
             return res.json(check.rows[0]);
