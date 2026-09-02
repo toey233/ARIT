@@ -228,11 +228,11 @@ export default function CourseManage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">ชื่อหลักสูตร *</label>
-                                <input name="title" value={form.title} onChange={handleChange} className="input-field" required />
+                                <input name="title" value={form.title} onChange={handleChange} className="input-field" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">รายละเอียด *</label>
-                                <textarea name="description" value={form.description} onChange={handleChange} className="input-field h-24 resize-none" required />
+                                <textarea name="description" value={form.description} onChange={handleChange} className="input-field h-24 resize-none" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">หัวข้อการอบรม</label>
@@ -248,7 +248,7 @@ export default function CourseManage() {
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">ระยะเวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
 
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
-                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} min={editId ? undefined : todayDateTimeStr} onChange={handleChange} className="input-field" required /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2"><label className="block text-sm font-semibold text-surface-700 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>
