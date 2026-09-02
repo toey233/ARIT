@@ -60,13 +60,6 @@ export default function CertificateModal({ cert, onClose }) {
                                     <p style={{ color: '#64748b', fontSize: 12 }}>วิทยากรประจำหลักสูตร</p>
                                 </div>
                                 <div style={{ textAlign: 'center', color: '#64748b', fontSize: 12 }}>
-                                    <div style={{ 
-                                        width: 76, height: 76, margin: '0 auto 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                        color: '#fff', fontSize: 16, fontWeight: 'bold', fontFamily: '"Playfair Display", serif', letterSpacing: 2,
-                                        background: 'linear-gradient(135deg, #d4af37 0%, #aa771c 100%)',
-                                        borderRadius: '50%',
-                                        boxShadow: '0 0 0 4px #fff, 0 0 0 6px #d4af37, 0 6px 16px rgba(0,0,0,0.15)'
-                                    }}>ARIT</div>
                                     <p>ให้ไว้ ณ วันที่ {formatDate(cert.courseDate)}</p>
                                     <p style={{ marginTop: 2 }}>เลขที่ {cert.certificateNumber}</p>
                                 </div>
@@ -110,7 +103,6 @@ export default function CertificateModal({ cert, onClose }) {
                                 <p style="color:#64748b;font-size:16px">วิทยากรประจำหลักสูตร</p>
                             </div>
                             <div style="text-align:center;color:#64748b;font-size:16px">
-                                <div class="badge">ARIT</div>
                                 <p>ให้ไว้ ณ วันที่ ${formatDate(cert.courseDate)}</p>
                                 <p style="margin-top:6px">เลขที่ประกาศนียบัตร: ${cert.certificateNumber}</p>
                             </div>
