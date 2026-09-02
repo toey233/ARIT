@@ -170,7 +170,8 @@ export default function CourseManage() {
             setShowForm(false); setEditId(null); setForm(emptyForm);
             loadCourses();
         } catch (err) {
-            setResultModal({ type: 'error', message: err.response?.data?.message || 'เกิดข้อผิดพลาด' });
+            const exactError = err.message + (err.response ? ` (Status: ${err.response.status})` : '');
+            setResultModal({ type: 'error', message: err.response?.data?.message ? `${err.response.data.message} | ${exactError}` : exactError });
         }
     };
 
