@@ -32,6 +32,9 @@ export default function CertificateModal({ cert, onClose }) {
                                 {cert.userName}
                             </p>
                         </div>
+                        <div style={{ position: 'absolute', bottom: '12px', right: '16px', color: '#94a3b8', fontSize: 11 }}>
+                            เลขที่ {cert.certificateNumber}
+                        </div>
                     </div>
                 ) : (
                     <div style={{
@@ -39,7 +42,10 @@ export default function CertificateModal({ cert, onClose }) {
                         border: '14px solid #0f172a', position: 'relative', overflow: 'hidden', fontFamily: '"Sarabun", sans-serif',
                         padding: '10px'
                     }}>
-                        <div style={{ border: '2px solid #c5a059', padding: '40px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <div style={{ border: '2px solid #c5a059', padding: '40px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' }}>
+                            <div style={{ position: 'absolute', bottom: '8px', right: '12px', color: '#94a3b8', fontSize: 11 }}>
+                                เลขที่ {cert.certificateNumber}
+                            </div>
                             <p style={{ color: '#c5a059', fontSize: 13, letterSpacing: 5, fontFamily: '"Playfair Display", serif', fontWeight: 700 }}>CERTIFICATE OF COMPLETION</p>
                             <h2 style={{ fontSize: 40, fontWeight: 700, color: '#0f172a', margin: '6px 0 16px' }}>ประกาศนียบัตร</h2>
                             <p style={{ color: '#64748b', fontSize: 16, fontStyle: 'italic', marginBottom: 16 }}>ขอมอบให้เพื่อแสดงว่า</p>
@@ -51,7 +57,6 @@ export default function CertificateModal({ cert, onClose }) {
                             
                             <div style={{ textAlign: 'center', color: '#64748b', fontSize: 14, marginBottom: 24 }}>
                                 <p>ให้ไว้ ณ วันที่ {formatDate(cert.courseDate)}</p>
-                                <p style={{ marginTop: 4 }}>เลขที่ {cert.certificateNumber}</p>
                             </div>
                             
                             <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', padding: '0 10px', alignItems: 'flex-end', marginTop: 10 }}>
@@ -86,6 +91,7 @@ export default function CertificateModal({ cert, onClose }) {
                         ${cert.certificateBackground ? `
                         <div class="cert cert-bg">
                             <div class="name">${cert.userName}</div>
+                            <div style="position:absolute; bottom:15mm; right:20mm; font-size:14px; color:#94a3b8;">เลขที่: ${cert.certificateNumber}</div>
                         </div>
                         ` : `
                         <div class="cert"><div class="cert-outer-border"></div><div class="cert-inner-border"></div><div class="cert-content">
@@ -97,7 +103,6 @@ export default function CertificateModal({ cert, onClose }) {
                         <p style="font-size:36px;font-weight:700;color:#c5a059;margin:16px 0 20px;font-family:'Playfair Display', 'Sarabun', serif">"${cert.courseName}"</p>
                         <div style="text-align:center;color:#64748b;font-size:18px;margin-bottom:32px">
                             <p>ให้ไว้ ณ วันที่ ${formatDate(cert.courseDate)}</p>
-                            <p style="margin-top:6px">เลขที่ประกาศนียบัตร: ${cert.certificateNumber}</p>
                         </div>
                         <div class="signatures">
                             <div class="sig-block">
@@ -115,6 +120,7 @@ export default function CertificateModal({ cert, onClose }) {
                                 <p style="color:#64748b;font-size:16px">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
                             </div>
                         </div>
+                        <div style="position:absolute; bottom:24mm; right:24mm; font-size:14px; color:#94a3b8; z-index:10;">เลขที่: ${cert.certificateNumber}</div>
                         </div></div>`}
                         <script>setTimeout(()=>window.print(),800)<\/script></body></html>`);
                         pw.document.close();
