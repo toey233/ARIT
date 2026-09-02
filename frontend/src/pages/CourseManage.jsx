@@ -142,27 +142,8 @@ export default function CourseManage() {
                 mainCanvas.height = targetHeight;
                 const mainCtx = mainCanvas.getContext('2d');
                 
-                // 1. Draw Placeholder Seal
-                mainCtx.save();
-                mainCtx.globalAlpha = 0.15; // Opacity for watermark
-                mainCtx.translate(targetWidth / 2, targetHeight / 2);
-                mainCtx.beginPath();
-                mainCtx.arc(0, 0, Math.min(targetHeight, targetWidth) * 0.4, 0, Math.PI * 2);
-                mainCtx.lineWidth = 3;
-                mainCtx.strokeStyle = '#2c3e50';
-                mainCtx.stroke();
-                
-                mainCtx.beginPath();
-                mainCtx.arc(0, 0, Math.min(targetHeight, targetWidth) * 0.35, 0, Math.PI * 2);
-                mainCtx.lineWidth = 1;
-                mainCtx.stroke();
-                
-                mainCtx.font = 'bold ' + (Math.min(targetHeight, targetWidth) * 0.12) + 'px sans-serif';
-                mainCtx.fillStyle = '#2c3e50';
-                mainCtx.textAlign = 'center';
-                mainCtx.textBaseline = 'middle';
-                mainCtx.fillText('UNIVERSITY SEAL', 0, 0);
-                mainCtx.restore();
+                // 1. Removed Placeholder Seal (Watermark)
+
                 
                 // 2. Draw processed signature on top
                 mainCtx.drawImage(offCanvas, 0, 0);
