@@ -226,6 +226,9 @@ export default function CourseManage() {
 
     if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div></div>;
 
+    const todayDateStr = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    const todayDateTimeStr = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
@@ -257,15 +260,15 @@ export default function CourseManage() {
                             </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">วันที่ทำการอบรม</label>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                    <input type="date" name="trainingDateStart" value={form.trainingDateStart} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
+                                    <input type="date" name="trainingDateStart" value={form.trainingDateStart} min={todayDateStr} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
                                     <span className="text-surface-700 font-medium text-sm">ถึง</span>
-                                    <input type="date" name="trainingDateEnd" value={form.trainingDateEnd} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
+                                    <input type="date" name="trainingDateEnd" value={form.trainingDateEnd} min={form.trainingDateStart || todayDateStr} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
                                 </div>
                             </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">ระยะเวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
 
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
-                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" required /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} min={todayDateTimeStr} onChange={handleChange} className="input-field" required /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2"><label className="block text-sm font-semibold text-surface-700 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>
