@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash, HiOutlineExclamation } from 'react-icons/hi';
 
 // คอมโพเนนต์หลักสำหรับจัดการข้อมูลผู้ใช้งาน (ค้นหา, เปลี่ยนสิทธิ์, ลบผู้ใช้)
 export default function UserManage() {
@@ -26,11 +26,24 @@ export default function UserManage() {
         } catch (err) { toast.error(err.response?.data?.message || 'เกิดข้อผิดพลาด'); }
     };
 
-    // ฟังก์ชันสำหรับลบผู้ใช้งานออกจากระบบ
-    const deleteUser = async (id) => {
-        if (!confirm('ลบผู้ใช้นี้?')) return;
-        try { await api.delete(`/users/${id}`); toast.success('ลบสำเร็จ'); loadUsers(); }
-        catch (err) { toast.error(err.response?.data?.message || 'ลบไม่สำเร็จ'); }
+    const [deleteModal, setDeleteModal] = useState(null);
+
+    // ฟังก์ชันเมื่อกดปุ่ม "ลบ" จะเปิดแจ้งเตือนยืนยันการลบ
+    const handleDelete = (user) => {
+        setDeleteModal({
+            id: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+            onConfirm: async () => {
+                setDeleteModal(null);
+                try {
+                    await api.delete(`/users/${user.id}`);
+                    toast.success('ลบสำเร็จ');
+                    loadUsers();
+                } catch (err) {
+                    toast.error(err.response?.data?.message || 'ลบไม่สำเร็จ');
+                }
+            },
+        });
     };
 
     const getRoleBadge = (role) => {
@@ -129,7 +142,7 @@ export default function UserManage() {
                                     </td>
                                     <td className="py-3 px-6 text-surface-700 font-medium text-xs text-center hidden md:table-cell">{formatDate(user.createdAt)}</td>
                                     <td className="py-3 px-6 text-center">
-                                        <button onClick={() => deleteUser(user.id)} className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors">
+                                        <button onClick={() => handleDelete(user)} className="p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors">
                                             <HiOutlineTrash className="w-4 h-4" />
                                         </button>
                                     </td>
@@ -165,6 +178,89 @@ export default function UserManage() {
                     </div>
                 );
             })()}
+
+            {/* ===== Delete Confirm Modal ===== */}
+            {deleteModal && (
+                <div style={{
+                    position: 'fixed', inset: 0, zIndex: 99999,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(10,20,40,0.7)', backdropFilter: 'blur(8px)',
+                    animation: 'rmFadeIn 0.2s ease',
+                }} onClick={() => setDeleteModal(null)}>
+                    <div style={{
+                        overflow: 'hidden',
+                        background: 'linear-gradient(145deg, #1e293b 0%, #0f172a 100%)',
+                        borderRadius: 24, textAlign: 'center',
+                        maxWidth: 420, width: '90%',
+                        boxShadow: '0 30px 90px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08)',
+                        animation: 'rmPopIn 0.4s cubic-bezier(0.34,1.56,0.64,1)',
+                    }} onClick={e => e.stopPropagation()}>
+                        <div style={{ height: 4, background: 'linear-gradient(90deg, #ef4444, #f97316, #ef4444)' }} />
+                        <div style={{ padding: '36px 32px 32px' }}>
+                            <div style={{
+                                width: 72, height: 72, borderRadius: '50%',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                margin: '0 auto 20px',
+                                background: 'linear-gradient(135deg, rgba(239,68,68,0.2), rgba(249,115,22,0.1))',
+                                border: '2px solid rgba(239,68,68,0.3)',
+                                animation: 'rmIconPop 0.5s ease 0.15s both',
+                            }}>
+                                <HiOutlineExclamation size={36} color="#ef4444" />
+                            </div>
+                            <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8, color: '#f87171' }}>
+                                ยืนยันการลบ
+                            </h3>
+                            <p style={{ fontSize: 15, color: '#94a3b8', marginBottom: 6, lineHeight: 1.6 }}>
+                                คุณต้องการลบผู้ใช้นี้หรือ?
+                            </p>
+                            <div style={{
+                                display: 'inline-block',
+                                padding: '8px 20px', borderRadius: 12,
+                                fontSize: 14, fontWeight: 700, color: '#f87171',
+                                background: 'rgba(239,68,68,0.1)',
+                                border: '1px solid rgba(239,68,68,0.2)',
+                                marginBottom: 24, maxWidth: '100%',
+                                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                            }}>
+                                &quot;{deleteModal.name}&quot;
+                            </div>
+                            <p style={{ fontSize: 12, color: '#64748b', marginBottom: 24 }}>
+                                การดำเนินการนี้ไม่สามารถย้อนกลับได้
+                            </p>
+                            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                                <button
+                                    onClick={() => setDeleteModal(null)}
+                                    style={{
+                                        padding: '12px 28px', borderRadius: 14,
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        background: 'rgba(255,255,255,0.05)', color: '#94a3b8',
+                                        fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
+                                    }}
+                                    onMouseEnter={e => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#fff'; }}
+                                    onMouseLeave={e => { e.target.style.background = 'rgba(255,255,255,0.05)'; e.target.style.color = '#94a3b8'; }}
+                                >
+                                    ยกเลิก
+                                </button>
+                                <button
+                                    onClick={deleteModal.onConfirm}
+                                    style={{
+                                        padding: '12px 28px', borderRadius: 14, border: 'none',
+                                        background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                                        color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                                        boxShadow: '0 6px 24px rgba(239,68,68,0.35)',
+                                        transition: 'all 0.2s', display: 'flex', alignItems: 'center', gap: 6,
+                                    }}
+                                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                                >
+                                    <HiOutlineTrash size={16} />
+                                    ลบผู้ใช้
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

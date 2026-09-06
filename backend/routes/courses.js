@@ -7,6 +7,7 @@ const router = express.Router();
 
 // Get all courses (public)
 router.get('/', async (req, res) => {
+    console.log(`[${new Date().toISOString()}] GET /api/courses`);
     try {
         const result = await query(`
             SELECT c.*, COALESCE(r.cnt, 0)::int AS "registeredCount"
@@ -87,6 +88,7 @@ router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req
 
 // Update course (staff/admin)
 router.put('/:id', authenticateToken, authorizeRoles('staff', 'admin'), async (req, res) => {
+    console.log(`[${new Date().toISOString()}] PUT /api/courses/${req.params.id}`);
     try {
         const check = await query('SELECT * FROM courses WHERE id = $1', [req.params.id]);
         if (check.rows.length === 0) {
@@ -151,3 +153,4 @@ router.delete('/:id', authenticateToken, authorizeRoles('staff', 'admin'), async
 });
 
 module.exports = router;
+ 
