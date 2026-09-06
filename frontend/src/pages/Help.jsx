@@ -58,7 +58,7 @@ export default function Help() {
                     <HiOutlineQuestionMarkCircle className="w-10 h-10 text-primary-400" />
                 </div>
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-3 relative z-10">คู่มือการใช้งานระบบ</h1>
-                <p className="text-surface-400 text-lg max-w-2xl mx-auto relative z-10">ระบบบริหารการจัดการอบรม สำนักวิทยบริการและเทคโนโลยีสารสนเทศ (ARIT-RMU) ครอบคลุมการใช้งานสำหรับทุกระดับสิทธิ์</p>
+                <p className="text-surface-200 text-lg max-w-2xl mx-auto relative z-10">ระบบบริหารการจัดการอบรม สำนักวิทยบริการและเทคโนโลยีสารสนเทศ (ARIT-RMU) ครอบคลุมการใช้งานสำหรับทุกระดับสิทธิ์</p>
             </div>
 
             {sections.map((section, idx) => {
@@ -81,7 +81,7 @@ export default function Help() {
                                         <span className={`flex-shrink-0 w-7 h-7 rounded-full ${colors.bg} ${colors.icon} flex items-center justify-center text-sm mt-0.5 shadow-inner`}>{i + 1}</span>
                                         <span className="group-hover:text-primary-300 transition-colors">{item.title}</span>
                                     </h3>
-                                    <p className="text-sm md:text-base text-surface-300 leading-relaxed ml-10">{item.desc}</p>
+                                    <p className="text-sm md:text-base text-surface-100 leading-relaxed ml-10">{item.desc}</p>
                                 </div>
                             ))}
                         </div>
