@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash, HiOutlineExclamation } from 'react-icons/hi';
+import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash, HiOutlineExclamation, HiOutlineSearch } from 'react-icons/hi';
 
 // คอมโพเนนต์หลักสำหรับจัดการข้อมูลผู้ใช้งาน (ค้นหา, เปลี่ยนสิทธิ์, ลบผู้ใช้)
 export default function UserManage() {
@@ -11,6 +11,7 @@ export default function UserManage() {
     const [editUser, setEditUser] = useState(null);
     const [filterRole, setFilterRole] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
     const itemsPerPage = 15;
 
     // โหลดข้อมูลผู้ใช้งานทั้งหมดเมื่อเปิดหน้านี้ขึ้นมาครั้งแรก
@@ -96,6 +97,20 @@ export default function UserManage() {
                 </div>
             </div>
 
+            {/* Search Bar */}
+            <div className="glass-card p-4 flex items-center">
+                <div className="relative w-full max-w-md">
+                    <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-500 w-5 h-5" />
+                    <input 
+                        type="text" 
+                        placeholder="ค้นหาชื่อ-สกุล..." 
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                        className="input-field pl-10 w-full"
+                    />
+                </div>
+            </div>
+
             <div className="overflow-x-auto glass-card p-0">
                 <table className="w-full text-sm">
                     <thead>
@@ -110,7 +125,8 @@ export default function UserManage() {
                     </thead>
                     <tbody>
                         {(() => {
-                            const filteredUsers = filterRole === 'all' ? users : users.filter(u => u.role === filterRole);
+                            const filteredUsers = (filterRole === 'all' ? users : users.filter(u => u.role === filterRole))
+                                .filter(u => `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase().includes(searchQuery.toLowerCase()));
                             const paginatedUsers = filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
                             
                             if (filteredUsers.length === 0) {
@@ -155,7 +171,8 @@ export default function UserManage() {
 
             {/* Pagination Controls */}
             {(() => {
-                const filteredLength = (filterRole === 'all' ? users : users.filter(u => u.role === filterRole)).length;
+                const filteredLength = (filterRole === 'all' ? users : users.filter(u => u.role === filterRole))
+                    .filter(u => `${u.firstName || ''} ${u.lastName || ''}`.toLowerCase().includes(searchQuery.toLowerCase())).length;
                 const totalPages = Math.ceil(filteredLength / itemsPerPage);
                 
                 if (totalPages <= 1) return null;

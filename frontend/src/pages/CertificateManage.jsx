@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import ExcelJS from 'exceljs';
-import { HiOutlineDocumentText, HiOutlineCheck, HiOutlineDownload, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineDocumentDuplicate } from 'react-icons/hi';
+import { HiOutlineDocumentText, HiOutlineCheck, HiOutlineDownload, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineDocumentDuplicate, HiOutlineSearch } from 'react-icons/hi';
 
 // คอมโพเนนต์สำหรับแอดมินใช้ออกใบประกาศนียบัตรให้ผู้ใช้ที่ผ่านการอบรม
 export default function CertificateManage() {
@@ -14,6 +14,8 @@ export default function CertificateManage() {
     const [loading, setLoading] = useState(true);
     const [confirmModal, setConfirmModal] = useState(null);
     const [resultModal, setResultModal] = useState(null);
+    const [searchReg, setSearchReg] = useState('');
+    const [searchCert, setSearchCert] = useState('');
 
     // โหลดข้อมูลหลักสูตรและใบประกาศทั้งหมดเมื่อเปิดหน้านี้
     useEffect(() => {
@@ -188,7 +190,19 @@ export default function CertificateManage() {
             {selectedCourse && (
                 <div className="glass-card p-6">
                     <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-                        <h2 className="text-lg font-bold text-surface-800">ผู้เข้าร่วมอบรม (อนุมัติแล้ว)</h2>
+                        <div className="flex items-center gap-4 flex-wrap">
+                            <h2 className="text-lg font-bold text-surface-800">ผู้เข้าร่วมอบรม (อนุมัติแล้ว)</h2>
+                            <div className="relative">
+                                <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-500 w-4 h-4" />
+                                <input 
+                                    type="text" 
+                                    placeholder="ค้นหาชื่อ..." 
+                                    value={searchReg}
+                                    onChange={(e) => setSearchReg(e.target.value)}
+                                    className="input-field pl-9 py-1.5 text-sm"
+                                />
+                            </div>
+                        </div>
                         {pendingRegs.length > 0 && (
                             <button onClick={issueAllCertificates}
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/25 transition-all"
@@ -212,7 +226,7 @@ export default function CertificateManage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {registrations.map(reg => (
+                                    {registrations.filter(r => (r.userName || '').toLowerCase().includes(searchReg.toLowerCase())).map(reg => (
                                         <tr key={reg.id} className="border-b border-surface-200 hover:bg-surface-50 transition-colors">
                                             <td className="py-3 px-4 text-surface-900 font-semibold">{reg.userName}</td>
                                             <td className="py-3 px-4 text-surface-700 font-medium hidden md:table-cell">{reg.userEmail}</td>
@@ -238,8 +252,20 @@ export default function CertificateManage() {
 
             {/* All Issued Certificates */}
             <div className="glass-card p-6">
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-bold text-surface-800">ประกาศนียบัตรที่ออกแล้วทั้งหมด ({certificates.length})</h2>
+                <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                    <div className="flex items-center gap-4 flex-wrap">
+                        <h2 className="text-lg font-bold text-surface-800">ประกาศนียบัตรที่ออกแล้วทั้งหมด ({certificates.length})</h2>
+                        <div className="relative">
+                            <HiOutlineSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-surface-500 w-4 h-4" />
+                            <input 
+                                type="text" 
+                                placeholder="ค้นหาชื่อ..." 
+                                value={searchCert}
+                                onChange={(e) => setSearchCert(e.target.value)}
+                                className="input-field pl-9 py-1.5 text-sm"
+                            />
+                        </div>
+                    </div>
                     {certificates.length > 0 && (
                         <button
                             onClick={exportToExcel}
@@ -261,7 +287,7 @@ export default function CertificateManage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {certificates.map(cert => (
+                            {certificates.filter(c => (c.userName || '').toLowerCase().includes(searchCert.toLowerCase())).map(cert => (
                                 <tr key={cert.id} className="border-b border-surface-200 hover:bg-surface-50 transition-colors">
                                     <td className="py-3 px-4 text-primary-600 font-medium font-mono text-xs">{cert.certificateNumber}</td>
                                     <td className="py-3 px-4 text-surface-900 font-semibold">{cert.userName}</td>
