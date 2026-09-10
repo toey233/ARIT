@@ -244,10 +244,32 @@ export default function RegistrationManage() {
                                     <td className="py-3 px-4 text-center">
                                         {reg.status === 'pending' && (
                                             <div className="flex items-center justify-center gap-2">
-                                                <button onClick={() => updateStatus(reg.id, 'approved')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="อนุมัติ">
+                                                <button onClick={() => {
+                                                    setConfirmModal({
+                                                        type: 'single',
+                                                        status: 'approved',
+                                                        label: 'อนุมัติ',
+                                                        userName: reg.userName,
+                                                        onConfirm: async () => {
+                                                            setConfirmModal(null);
+                                                            updateStatus(reg.id, 'approved');
+                                                        }
+                                                    });
+                                                }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-500 hover:text-white transition-all shadow-sm" title="อนุมัติ">
                                                     <HiOutlineCheck className="w-4 h-4" /> อนุมัติ
                                                 </button>
-                                                <button onClick={() => updateStatus(reg.id, 'rejected')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="ปฏิเสธ">
+                                                <button onClick={() => {
+                                                    setConfirmModal({
+                                                        type: 'single',
+                                                        status: 'rejected',
+                                                        label: 'ปฏิเสธ',
+                                                        userName: reg.userName,
+                                                        onConfirm: async () => {
+                                                            setConfirmModal(null);
+                                                            updateStatus(reg.id, 'rejected');
+                                                        }
+                                                    });
+                                                }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="ปฏิเสธ">
                                                     <HiOutlineX className="w-4 h-4" /> ปฏิเสธ
                                                 </button>
                                             </div>
@@ -344,7 +366,7 @@ export default function RegistrationManage() {
                             }}>
                                 {confirmModal.type === 'bulk'
                                     ? (confirmModal.status === 'approved' ? 'ยืนยันอนุมัติทั้งหมด' : 'ยืนยันปฏิเสธทั้งหมด')
-                                    : 'ยืนยันยกเลิกสิทธิ์'}
+                                    : `ยืนยัน${confirmModal.label}`}
                             </h3>
                             <p style={{ fontSize: 15, color: '#94a3b8', marginBottom: 8, lineHeight: 1.6 }}>
                                 {confirmModal.type === 'bulk'
