@@ -417,7 +417,9 @@ export default function RegistrationManage() {
                                     onMouseEnter={e => { e.target.style.transform = 'translateY(-2px)'; }}
                                     onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; }}
                                 >
-                                    {confirmModal.status === 'approved' ? '✓ ยืนยันอนุมัติ' : '✕ ยืนยันปฏิเสธ'}
+                                    {confirmModal.type === 'bulk'
+                                        ? (confirmModal.status === 'approved' ? '✓ ยืนยันอนุมัติทั้งหมด' : '✕ ยืนยันปฏิเสธทั้งหมด')
+                                        : (confirmModal.status === 'approved' ? '✓ ยืนยันอนุมัติ' : `✕ ยืนยัน${confirmModal.label}`)}
                                 </button>
                             </div>
                         </div>
