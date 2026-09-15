@@ -301,7 +301,7 @@ export default function HomePage() {
                         {activeNavLinks.map((link, i) => (
                             <button key={link.label} onClick={() => handleNavClick(link)} style={{
                                 background: 'none', border: 'none', padding: '8px 16px', cursor: 'pointer',
-                                fontSize: 15, fontWeight: 500, color: '#555', borderRadius: 8,
+                                fontSize: 18, fontWeight: 500, color: '#555', borderRadius: 8,
                                 transition: 'all 0.2s',
                             }}
                                 onMouseEnter={e => { e.target.style.color = '#2563eb'; e.target.style.background = 'rgba(37,99,235,0.06)'; }}

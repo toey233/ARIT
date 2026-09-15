@@ -330,10 +330,9 @@ export default function CourseRegModal({ course, onClose, onSuccess }) {
                         <div><label style={S.label}>เบอร์โทรศัพท์ <span style={{ color: 'red' }}>*</span></label><input style={S.input} name="phone" value={form.phone} onChange={handleChange} placeholder="0xx-xxx-xxxx" required /></div>
                     </div>
 
-                    <h3 style={{ ...S.sectionTitle, marginTop: 20 }}>ข้อมูลหน่วยงาน</h3>
-                    <div style={S.field}><label style={S.label}>หน่วยงาน/สถาบัน</label><input style={S.input} name="organization" value={form.organization} onChange={handleChange} placeholder="ชื่อหน่วยงานหรือสถาบัน" /></div>
+                    <h3 style={{ ...S.sectionTitle, marginTop: 20 }}>ข้อมูลผู้ที่ลงทะเบียน</h3>
                     <div className="course-modal-row">
-                        <div><label style={S.label}>ภาควิชา/แผนก</label><input style={S.input} name="department" value={form.department} onChange={handleChange} placeholder="ภาควิชาหรือแผนก" /></div>
+                        <div><label style={S.label}>คณะ/หน่วยงาน</label><input style={S.input} name="department" value={form.department} onChange={handleChange} placeholder="คณะหรือหน่วยงาน" /></div>
                         <div><label style={S.label}>ตำแหน่ง</label><input style={S.input} name="position" value={form.position} onChange={handleChange} placeholder="ตำแหน่งงาน" /></div>
                     </div>
 
