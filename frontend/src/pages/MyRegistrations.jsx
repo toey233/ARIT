@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { 
     HiOutlineClipboardList, HiArrowLeft, HiOutlineLibrary, 
     HiOutlineBookOpen, HiOutlineAcademicCap, HiOutlineClock,
-    HiOutlineLocationMarker, HiCheckCircle
+    HiOutlineLocationMarker, HiCheckCircle, HiOutlineExclamationCircle
 } from 'react-icons/hi';
 import CourseDetailModal from '../components/CourseDetailModal';
 import RegistrantsModal from '../components/RegistrantsModal';
@@ -18,6 +18,7 @@ export default function MyRegistrations() {
     const [showCourseDetail, setShowCourseDetail] = useState(null);
     const [showRegistrants, setShowRegistrants] = useState(null);
     const [showEvaluation, setShowEvaluation] = useState(null);
+    const [confirmCancel, setConfirmCancel] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -160,16 +161,7 @@ export default function MyRegistrations() {
                                         </button>
                                         
                                         {reg.status !== 'approved' && reg.status !== 'rejected' && (
-                                            <button onClick={async () => {
-                                                if (!confirm('ยืนยันยกเลิกการลงทะเบียน?')) return;
-                                                try {
-                                                    await api.delete(`/registrations/${reg.id}`);
-                                                    toast.success('ยกเลิกสำเร็จ');
-                                                    loadData();
-                                                } catch (err) {
-                                                    toast.error('ยกเลิกไม่สำเร็จ');
-                                                }
-                                            }} style={{
+                                            <button onClick={() => setConfirmCancel(reg)} style={{
                                                 background: '#fff', border: '1px solid #ef4444', color: '#ef4444',
                                                 borderRadius: 8, padding: '8px 16px', fontSize: 13, cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s'
                                             }} onMouseEnter={e => e.target.style.background = '#fef2f2'} onMouseLeave={e => e.target.style.background = '#fff'}>
@@ -219,6 +211,63 @@ export default function MyRegistrations() {
             )}
             {showEvaluation && (
                 <EvaluationModal courseId={showEvaluation.courseId} courseName={showEvaluation.courseName} onClose={() => setShowEvaluation(null)} onSuccess={loadData} />
+            )}
+            
+            {confirmCancel && (
+                <div style={{
+                    position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(8px)', padding: 24,
+                    animation: 'fadeIn 0.2s ease-out'
+                }}>
+                    <div style={{
+                        background: '#fff', borderRadius: 24, padding: 32, width: '100%', maxWidth: 400,
+                        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+                        animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                            <div style={{
+                                width: 64, height: 64, borderRadius: '50%', background: '#fef2f2', color: '#ef4444',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20
+                            }}>
+                                <HiOutlineExclamationCircle size={40} />
+                            </div>
+                            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#1e293b', marginBottom: 8 }}>
+                                ยืนยันยกเลิกการลงทะเบียน?
+                            </h3>
+                            <p style={{ fontSize: 14, color: '#64748b', marginBottom: 28, lineHeight: 1.6 }}>
+                                คุณกำลังจะยกเลิกการลงทะเบียนหลักสูตร <strong style={{color: '#334155'}}>{confirmCancel.courseName}</strong><br/>การกระทำนี้จะไม่สามารถย้อนกลับได้
+                            </p>
+                            <div style={{ display: 'flex', gap: 12, width: '100%' }}>
+                                <button onClick={() => setConfirmCancel(null)} style={{
+                                    flex: 1, padding: '12px 0', background: '#f1f5f9', color: '#475569',
+                                    border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s'
+                                }} onMouseEnter={e => e.target.style.background = '#e2e8f0'} onMouseLeave={e => e.target.style.background = '#f1f5f9'}>
+                                    ยกเลิก
+                                </button>
+                                <button onClick={async () => {
+                                    try {
+                                        await api.delete(`/registrations/${confirmCancel.id}`);
+                                        toast.success('ยกเลิกสำเร็จ');
+                                        setConfirmCancel(null);
+                                        loadData();
+                                    } catch (err) {
+                                        toast.error('ยกเลิกไม่สำเร็จ');
+                                    }
+                                }} style={{
+                                    flex: 1, padding: '12px 0', background: '#ef4444', color: '#fff',
+                                    border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'background 0.2s',
+                                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)'
+                                }} onMouseEnter={e => e.target.style.background = '#dc2626'} onMouseLeave={e => e.target.style.background = '#ef4444'}>
+                                    ยืนยัน
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <style>{`
+                        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+                        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    `}</style>
+                </div>
             )}
         </div>
     );
