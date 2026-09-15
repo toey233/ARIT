@@ -1,6 +1,6 @@
 // นำเข้าไลบรารีที่จำเป็นสำหรับหน้าหลักของเว็บไซต์ (Landing Page)
 import { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import CourseRegModal from '../components/CourseRegModal';
@@ -49,6 +49,7 @@ function getCategoryColor(category) {
 export default function HomePage() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [courses, setCourses] = useState([]);
     const [news, setNews] = useState([]);
     const [search, setSearch] = useState('');
@@ -115,6 +116,19 @@ export default function HomePage() {
             setNews(newsRes.data.slice(0, 3));
         }).finally(() => setLoading(false));
     }, []);
+
+    // Scroll to hash when loaded
+    useEffect(() => {
+        if (!loading && location.hash) {
+            const id = location.hash.replace('#', '');
+            const el = document.getElementById(id);
+            if (el) {
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            }
+        }
+    }, [loading, location.hash]);
 
     // Auto-scroll news (infinite loop)
     useEffect(() => {
