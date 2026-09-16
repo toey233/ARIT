@@ -8,7 +8,7 @@ import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone, HiOu
 
 // คอมโพเนนต์หน้า "สมัครสมาชิก"
 export default function Register() {
-    const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '', phone: '', studentId: '', department: '' });
+    const [form, setForm] = useState({ email: '', password: '', confirmPassword: '', firstName: '', lastName: '', phone: '', studentId: '', department: '', userType: 'นักศึกษา' });
     const [loading, setLoading] = useState(false);
     const { register, googleLogin } = useAuth();
     const navigate = useNavigate();
@@ -165,19 +165,35 @@ export default function Register() {
                                 </div>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-surface-300 mb-1.5">รหัสนักศึกษา</label>
+                                <label className="block text-sm font-medium text-surface-300 mb-1.5">ประเภทผู้ใช้งาน</label>
+                                <div className="relative">
+                                    <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
+                                    <select name="userType" value={form.userType} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm appearance-none bg-transparent">
+                                        <option value="นักศึกษา" style={{ color: '#0f172a' }}>นักศึกษา</option>
+                                        <option value="ปริญญาโท" style={{ color: '#0f172a' }}>ปริญญาโท</option>
+                                        <option value="ปริญญาเอก" style={{ color: '#0f172a' }}>ปริญญาเอก</option>
+                                        <option value="บุคคลภายนอก" style={{ color: '#0f172a' }}>บุคคลภายนอก</option>
+                                        <option value="อาจารย์" style={{ color: '#0f172a' }}>อาจารย์</option>
+                                        <option value="บุคลากร" style={{ color: '#0f172a' }}>บุคลากร</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-surface-300 mb-1.5">รหัสนักศึกษา (ถ้ามี)</label>
                                 <div className="relative">
                                     <HiOutlineIdentification className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
                                     <input type="text" name="studentId" value={form.studentId} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="รหัสนักศึกษา" />
                                 </div>
                             </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-surface-300 mb-1.5">คณะ/หน่วยงาน</label>
-                            <div className="relative">
-                                <HiOutlineOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-                                <input type="text" name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="คณะ/หน่วยงาน" />
+                            <div>
+                                <label className="block text-sm font-medium text-surface-300 mb-1.5">คณะ/หน่วยงาน (ถ้ามี)</label>
+                                <div className="relative">
+                                    <HiOutlineOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
+                                    <input type="text" name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="คณะ/หน่วยงาน" />
+                                </div>
                             </div>
                         </div>
 

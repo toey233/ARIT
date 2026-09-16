@@ -3,7 +3,7 @@ import api from '../services/api';
 import toast from 'react-hot-toast';
 import { HiOutlineX, HiOutlineCheckCircle, HiOutlineExclamationCircle } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
-
+import { useNavigate } from 'react-router-dom';
 const S = {
     overlay: {
         position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -35,6 +35,7 @@ const S = {
 
 export default function CourseRegModal({ course, onClose, onSuccess }) {
     const { user } = useAuth();
+    const navigate = useNavigate();
     
     const [form, setForm] = useState({
         firstName: user?.firstName || '', 
@@ -133,7 +134,7 @@ export default function CourseRegModal({ course, onClose, onSuccess }) {
                         กรุณารอการอนุมัติจากเจ้าหน้าที่<br />
                         ระบบจะแจ้งเตือนเมื่อมีการอัปเดตสถานะ
                     </p>
-                    <button onClick={() => { setShowSuccess(false); onClose(); }} style={{
+                    <button onClick={() => { setShowSuccess(false); onClose(); navigate('/my-registrations'); }} style={{
                         padding: '14px 48px', borderRadius: 12, border: 'none', cursor: 'pointer',
                         fontSize: 16, fontWeight: 700, color: '#fff',
                         background: 'linear-gradient(135deg, #27ae60, #2ecc71)',

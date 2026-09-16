@@ -103,7 +103,7 @@ router.get('/', authenticateToken, async (req, res) => {
 // Update registration status (staff/admin)
 router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), async (req, res) => {
     try {
-        const { status } = req.body;
+        const { status, remark = '' } = req.body;
         if (!['approved', 'rejected', 'pending'].includes(status)) {
             return res.status(400).json({ message: 'สถานะไม่ถูกต้อง' });
         }
@@ -116,8 +116,8 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
         let result;
         if (status === 'approved') {
             result = await query(
-                'UPDATE registrations SET status = $1, "approvedBy" = $2, "approvedAt" = $3 WHERE id = $4 RETURNING *',
-                [status, req.user.id, new Date().toISOString(), req.params.id]
+                'UPDATE registrations SET status = $1, "approvedBy" = $2, "approvedAt" = $3, remark = $4 WHERE id = $5 RETURNING *',
+                [status, req.user.id, new Date().toISOString(), remark, req.params.id]
             );
 
             try {
@@ -153,8 +153,8 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
             }
         } else {
             result = await query(
-                'UPDATE registrations SET status = $1 WHERE id = $2 RETURNING *',
-                [status, req.params.id]
+                'UPDATE registrations SET status = $1, remark = $2 WHERE id = $3 RETURNING *',
+                [status, remark, req.params.id]
             );
             
             if (status === 'rejected') {
@@ -168,10 +168,11 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
                     if (regDetails.rows.length > 0) {
                         const { userId, title } = regDetails.rows[0];
                         const { createNotification } = require('./notifications');
+                        const rejectionReason = remark ? ` เนื่องจาก: ${remark}` : ' หากมีข้อสงสัยโปรดติดต่อเจ้าหน้าที่';
                         createNotification(
                             userId,
                             'ปฏิเสธการลงทะเบียน',
-                            `การลงทะเบียนในหลักสูตร "${title}" ของคุณถูกปฏิเสธ หากมีข้อสงสัยโปรดติดต่อเจ้าหน้าที่`,
+                            `การลงทะเบียนในหลักสูตร "${title}" ของคุณถูกปฏิเสธ${rejectionReason}`,
                             'rejection',
                             '/my-registrations'
                         );

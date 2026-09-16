@@ -76,7 +76,7 @@ export default function Certificates() {
                             <HiOutlineBadgeCheck size={36} />
                         </div>
                         <h2 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 800, color: '#1e293b', marginBottom: 12, letterSpacing: '-0.5px' }}>
-                            หอเกียรติยศประกาศนียบัตร
+                            ใบประกาศนียบัตรหลักสูตรอบรม
                         </h2>
                         <p style={{ fontSize: 16, color: '#64748b', maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
                             ความสำเร็จและรางวัลจากการเข้าอบรมในหลักสูตรต่างๆ เพื่อเป็นหลักฐานแห่งการเรียนรู้ของคุณ
