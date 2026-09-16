@@ -76,7 +76,7 @@ export default function CertificateModal({ cert, onClose }) {
                                 <div style={{ textAlign: 'center', width: '60%', flexShrink: 0 }}>
                                     <div style={{ height: 'clamp(30px, 6vw, 45px)', marginBottom: '4%', position: 'relative', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
                                         {cert.directorSignature && (
-                                            <img src={cert.directorSignature} alt="Director" style={{ maxHeight: '140%', maxWidth: '90%', objectFit: 'contain', position: 'absolute', bottom: 2, mixBlendMode: 'multiply', filter: 'grayscale(100%) contrast(300%)' }} onError={(e) => e.target.style.display = 'none'} />
+                                            <img src={cert.directorSignature} alt="Director" style={{ maxHeight: '140%', maxWidth: '90%', objectFit: 'contain', position: 'absolute', bottom: -12, mixBlendMode: 'multiply', filter: 'grayscale(100%) contrast(300%)' }} onError={(e) => e.target.style.display = 'none'} />
                                         )}
                                     </div>
                                     <p style={{ color: '#4b5563', fontSize: 'clamp(9px, 1.2vw, 14px)', fontWeight: 400 }}>({cert.director || 'ผู้อำนวยการ'})</p>
@@ -108,7 +108,7 @@ export default function CertificateModal({ cert, onClose }) {
                         <div class="recipient-name">${cert.userName}</div>
                         <p style="color:#4b5563;font-size:16px;margin-bottom:12px">ได้ผ่านการอบรมหลักสูตร</p>
                         <p style="font-size:28px;font-weight:700;color:#9a7b4f;margin:8px 0 24px;">${cert.courseName}</p>
-                        <div style="text-align:center;color:#4b5563;font-size:14px;margin-bottom:0px;line-height:1.6">
+                        <div style="text-align:center;color:#4b5563;font-size:14px;margin-bottom:20px;line-height:1.6">
                             <p>เมื่อวันที่ ${formatDate(cert.courseDate)} ณ มหาวิทยาลัยราชภัฏมหาสารคาม</p>
                             <p>ขอให้ประสบความสุข ความเจริญตลอดไป</p>
                             <p>ให้ไว้ ณ วันที่ ${formatDate(cert.courseDate)}</p>
@@ -116,7 +116,7 @@ export default function CertificateModal({ cert, onClose }) {
                         <div class="signatures" style="justify-content: center;">
                             <div class="sig-block" style="width: 60%;">
                                 <div class="sig-line">
-                                    ${cert.directorSignature ? `<img src="${cert.directorSignature}" onerror="this.style.display='none'" style="max-height:60px;max-width:180px;object-fit:contain;position:absolute;bottom:4px;mix-blend-mode:multiply;filter:grayscale(100%) contrast(300%);" />` : ''}
+                                    ${cert.directorSignature ? `<img src="${cert.directorSignature}" onerror="this.style.display='none'" style="max-height:60px;max-width:180px;object-fit:contain;position:absolute;bottom:-15px;mix-blend-mode:multiply;filter:grayscale(100%) contrast(300%);" />` : ''}
                                 </div>
                                 <p style="color:#4b5563;font-size:16px;font-weight:400">(${cert.director || 'ผู้อำนวยการ'})</p>
                                 <p style="color:#4b5563;font-size:12px">ผู้อำนวยการสำนักวิทยบริการและเทคโนโลยีสารสนเทศ</p>
