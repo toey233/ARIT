@@ -20,6 +20,8 @@ export default function MyRegistrations() {
     const [showEvaluation, setShowEvaluation] = useState(null);
     const [confirmCancel, setConfirmCancel] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 7;
 
     useEffect(() => {
         loadData();
@@ -111,7 +113,7 @@ export default function MyRegistrations() {
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gap: 20 }}>
-                            {registrations.map((reg, idx) => (
+                            {registrations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((reg, idx) => (
                                 <div key={reg.id} style={{
                                     background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: 24,
                                     boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid rgba(255,255,255,1)',
@@ -194,6 +196,28 @@ export default function MyRegistrations() {
                                         )}
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {registrations.length > itemsPerPage && (
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, gap: 8, flexWrap: 'wrap' }}>
+                            {Array.from({ length: Math.ceil(registrations.length / itemsPerPage) }, (_, i) => i + 1).map(page => (
+                                <button
+                                    key={page}
+                                    onClick={() => setCurrentPage(page)}
+                                    style={{
+                                        width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontSize: 15, fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', border: 'none',
+                                        background: currentPage === page ? '#2563eb' : '#fff',
+                                        color: currentPage === page ? '#fff' : '#64748b',
+                                        boxShadow: currentPage === page ? '0 4px 12px rgba(37,99,235,0.3)' : '0 2px 8px rgba(0,0,0,0.05)'
+                                    }}
+                                    onMouseEnter={e => { if (currentPage !== page) { e.target.style.background = '#f1f5f9'; e.target.style.color = '#334155'; } }}
+                                    onMouseLeave={e => { if (currentPage !== page) { e.target.style.background = '#fff'; e.target.style.color = '#64748b'; } }}
+                                >
+                                    {page}
+                                </button>
                             ))}
                         </div>
                     )}
