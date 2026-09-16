@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { HiOutlineX, HiOutlineMail, HiOutlinePhone, HiOutlineIdentification, HiOutlineOfficeBuilding, HiOutlineBadgeCheck, HiOutlinePencilAlt, HiOutlineCamera, HiOutlineDocumentDownload } from 'react-icons/hi';
+import { HiOutlineX, HiOutlineMail, HiOutlinePhone, HiOutlineIdentification, HiOutlineOfficeBuilding, HiOutlineBadgeCheck, HiOutlinePencilAlt, HiOutlineCamera, HiOutlineDocumentDownload, HiOutlineUser } from 'react-icons/hi';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
