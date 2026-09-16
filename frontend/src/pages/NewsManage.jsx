@@ -71,15 +71,15 @@ export default function NewsManage() {
             {showForm && (
                 <div className="glass-card p-6">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold text-white">{editId ? 'แก้ไขข่าว' : 'เพิ่มข่าวใหม่'}</h2>
-                        <button onClick={() => setShowForm(false)} className="text-surface-400 hover:text-white"><HiOutlineX className="w-5 h-5" /></button>
+                        <h2 className="text-lg font-semibold text-surface-800">{editId ? 'แก้ไขข่าว' : 'เพิ่มข่าวใหม่'}</h2>
+                        <button onClick={() => setShowForm(false)} className="text-surface-500 hover:text-surface-800"><HiOutlineX className="w-5 h-5" /></button>
                     </div>
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        <div><label className="block text-sm text-surface-300 mb-1">หัวข้อ *</label><input name="title" value={form.title} onChange={handleChange} className="input-field" required /></div>
-                        <div><label className="block text-sm text-surface-300 mb-1">เนื้อหา *</label><textarea name="content" value={form.content} onChange={handleChange} className="input-field h-32 resize-none" required /></div>
+                        <div><label className="block text-sm font-medium text-surface-700 mb-1">หัวข้อ *</label><input name="title" value={form.title} onChange={handleChange} className="input-field" required /></div>
+                        <div><label className="block text-sm font-medium text-surface-700 mb-1">เนื้อหา *</label><textarea name="content" value={form.content} onChange={handleChange} className="input-field h-32 resize-none" required /></div>
                         <div className="flex gap-4">
                             <div className="flex-1">
-                                <label className="block text-sm text-surface-300 mb-1">หมวดหมู่</label>
+                                <label className="block text-sm font-medium text-surface-700 mb-1">หมวดหมู่</label>
                                 <select name="category" value={form.category} onChange={handleChange} className="input-field">
                                     <option>ประชาสัมพันธ์</option><option>กำหนดการ</option><option>ประกาศ</option><option>ผลการอบรม</option><option>ทั่วไป</option>
                                 </select>
@@ -87,17 +87,17 @@ export default function NewsManage() {
                             <div className="flex items-end pb-1">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input type="checkbox" name="isPinned" checked={form.isPinned} onChange={handleChange} className="w-4 h-4 rounded border-surface-600 text-primary-600 focus:ring-primary-500" />
-                                    <span className="text-sm text-surface-300">ปักหมุด</span>
+                                    <span className="text-sm font-medium text-surface-700">ปักหมุด</span>
                                 </label>
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm text-surface-300 mb-1">รูปภาพประกอบข่าว</label>
+                            <label className="block text-sm font-medium text-surface-700 mb-1">รูปภาพประกอบข่าว</label>
                             <div className="flex items-start gap-4">
                                 <label className="flex-1 cursor-pointer">
                                     <div className="border-2 border-dashed border-surface-600 rounded-xl p-4 text-center hover:border-primary-400 transition-colors">
                                         <HiOutlinePhotograph className="w-8 h-8 text-surface-500 mx-auto mb-2" />
-                                        <p className="text-sm text-surface-400">คลิกเพื่อเลือกรูปภาพ</p>
+                                        <p className="text-sm text-surface-600">คลิกเพื่อเลือกรูปภาพ</p>
                                         <p className="text-xs text-surface-500 mt-1">JPG, PNG (ไม่เกิน 2MB)</p>
                                     </div>
                                     <input type="file" accept="image/*" onChange={(e) => {

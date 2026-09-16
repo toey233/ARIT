@@ -102,7 +102,7 @@ export default function CourseDetail() {
                                 )}
                                 {course.duration && (
                                     <div style={{ flex: 1, minWidth: 180, padding: '12px 16px', background: 'rgba(5,150,105,0.06)', borderRadius: 12, border: '1px solid rgba(5,150,105,0.1)' }}>
-                                        <span style={{ fontSize: 12, fontWeight: 600, color: '#065f46' }}>⏱ ระยะเวลาอบรม:</span>
+                                        <span style={{ fontSize: 12, fontWeight: 600, color: '#065f46' }}>⏱ เวลาอบรม:</span>
                                         <p style={{ fontSize: 14, color: '#1e293b', fontWeight: 500, marginTop: 4 }}>{course.duration}</p>
                                     </div>
                                 )}

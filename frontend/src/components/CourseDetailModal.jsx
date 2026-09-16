@@ -146,7 +146,7 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
                                 )}
                                 {course.duration && (
                                     <div style={{ flex: 1, minWidth: 160, padding: '10px 14px', background: 'rgba(5,150,105,0.06)', borderRadius: 10, border: '1px solid rgba(5,150,105,0.1)' }}>
-                                        <span style={{ fontSize: 11, fontWeight: 600, color: '#065f46' }}>⏱ ระยะเวลาอบรม</span>
+                                        <span style={{ fontSize: 11, fontWeight: 600, color: '#065f46' }}>⏱ เวลาอบรม</span>
                                         <p style={{ fontSize: 13, color: '#1e293b', fontWeight: 500, marginTop: 3 }}>{course.duration}</p>
                                     </div>
                                 )}

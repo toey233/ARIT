@@ -246,7 +246,7 @@ export default function CourseManage() {
                                     <input type="date" name="trainingDateEnd" value={form.trainingDateEnd} min={form.trainingDateStart || (editId ? undefined : todayDateStr)} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
                                 </div>
                             </div>
-                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ระยะเวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
+                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">เวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
 
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" /></div>
