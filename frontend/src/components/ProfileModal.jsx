@@ -56,11 +56,11 @@ export default function ProfileModal({ user, onClose }) {
     const { updateUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        phone: user.phone || '',
-        studentId: user.studentId || '',
-        department: user.department || '',
-        userType: user.userType || '',
-        profilePicture: user.profilePicture || ''
+        phone: user?.phone || '',
+        studentId: user?.studentId || '',
+        department: user?.department || '',
+        userType: user?.userType || '',
+        profilePicture: user?.profilePicture || ''
     });
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
@@ -242,11 +242,11 @@ export default function ProfileModal({ user, onClose }) {
                                 onClick={() => {
                                     setIsEditing(false);
                                     setFormData({
-                                        phone: user.phone || '',
-                                        studentId: user.studentId || '',
-                                        department: user.department || '',
-                                        userType: user.userType || '',
-                                        profilePicture: user.profilePicture || ''
+                                        phone: user?.phone || '',
+                                        studentId: user?.studentId || '',
+                                        department: user?.department || '',
+                                        userType: user?.userType || '',
+                                        profilePicture: user?.profilePicture || ''
                                     });
                                 }}
                                 style={{ ...S.saveBtn, background: '#f1f5f9', color: '#475569', boxShadow: 'none' }}
