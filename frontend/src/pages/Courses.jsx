@@ -181,6 +181,11 @@ export default function Courses() {
                         const remaining = max - registered;
                         const progress = Math.min((registered / max) * 100, 100);
 
+                        let targetAudiences = [];
+                        try {
+                            targetAudiences = typeof course.targetAudience === 'string' ? JSON.parse(course.targetAudience) : (course.targetAudience || []);
+                        } catch(e) {}
+
                         return (
                             <div key={course.id} style={{
                                 background: '#fff', borderRadius: 20, overflow: 'hidden',
@@ -314,6 +319,25 @@ export default function Courses() {
                                                 {course.location || 'ไม่ระบุ'}
                                             </span>
                                         </div>
+                                        
+                                        {targetAudiences.length > 0 && (
+                                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 12 }}>
+                                                {targetAudiences.slice(0, 3).map(tag => (
+                                                    <span key={tag} style={{
+                                                        padding: '2px 8px', borderRadius: 4,
+                                                        fontSize: 10, fontWeight: 600, color: '#64748b',
+                                                        background: '#f1f5f9', border: '1px solid #e2e8f0',
+                                                    }}>{tag}</span>
+                                                ))}
+                                                {targetAudiences.length > 3 && (
+                                                    <span style={{
+                                                        padding: '2px 6px', borderRadius: 4,
+                                                        fontSize: 10, fontWeight: 600, color: '#94a3b8',
+                                                        background: '#f8fafc',
+                                                    }}>+{targetAudiences.length - 3}</span>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Registration progress */}

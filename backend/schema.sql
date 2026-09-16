@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS courses (
     "trainingDate" VARCHAR(255) DEFAULT '',
     duration VARCHAR(255) DEFAULT '',
     "certificateBackground" TEXT DEFAULT '',
+    "customNamePosY" VARCHAR(50) DEFAULT '55%',
+    "hideAutoText" BOOLEAN DEFAULT FALSE,
+    "targetAudience" TEXT DEFAULT '[]',
     "createdBy" TEXT REFERENCES users(id) ON DELETE SET NULL,
     "createdAt" TIMESTAMPTZ DEFAULT NOW()
 );

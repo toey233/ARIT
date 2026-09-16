@@ -642,12 +642,17 @@ export default function HomePage() {
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 28 }}>
                                 {currentCourses.map((course, idx) => {
                                     const registered = course.registeredCount || 0;
-                                const max = course.maxParticipants || 30;
-                                const remaining = max - registered;
-                                const progress = Math.min((registered / max) * 100, 100);
-                                const catColor = getCategoryColor(course.category);
-                                return (
-                                    <div key={course.id} className="course-card-animate" style={{
+                                    const max = course.maxParticipants || 30;
+                                    const remaining = max - registered;
+                                    const progress = Math.min((registered / max) * 100, 100);
+                                    const catColor = getCategoryColor(course.category);
+                                    
+                                    let targetAudiences = [];
+                                    try {
+                                        targetAudiences = typeof course.targetAudience === 'string' ? JSON.parse(course.targetAudience) : (course.targetAudience || []);
+                                    } catch(e) {}
+                                    return (
+                                        <div key={course.id} className="course-card-animate" style={{
                                         background: '#fff', borderRadius: 20, overflow: 'hidden',
                                         boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
                                         transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -760,6 +765,25 @@ export default function HomePage() {
                                                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                                                     }}>{course.location || 'ไม่ระบุ'}</span>
                                                 </div>
+                                                
+                                                {targetAudiences.length > 0 && (
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 12 }}>
+                                                        {targetAudiences.slice(0, 3).map(tag => (
+                                                            <span key={tag} style={{
+                                                                padding: '2px 8px', borderRadius: 4,
+                                                                fontSize: 10, fontWeight: 600, color: '#64748b',
+                                                                background: '#f1f5f9', border: '1px solid #e2e8f0',
+                                                            }}>{tag}</span>
+                                                        ))}
+                                                        {targetAudiences.length > 3 && (
+                                                            <span style={{
+                                                                padding: '2px 6px', borderRadius: 4,
+                                                                fontSize: 10, fontWeight: 600, color: '#94a3b8',
+                                                                background: '#f8fafc',
+                                                            }}>+{targetAudiences.length - 3}</span>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
 
                                             {/* Registration progress */}

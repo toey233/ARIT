@@ -15,7 +15,9 @@ const CATEGORY_COLORS = {
 };
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
-const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false };
+const TARGET_AUDIENCES = ['นักศึกษา', 'ปริญญาโท', 'ปริญญาเอก', 'บุคคลภายนอก', 'อาจารย์', 'บุคลากร'];
+
+const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false, targetAudience: [] };
 
 // คอมโพเนนต์หลักสำหรับหน้า "จัดการหลักสูตร" (สำหรับผู้ดูแลระบบ เพื่อเพิ่ม/แก้ไข/ลบหลักสูตร)
 export default function CourseManage() {
@@ -176,10 +178,16 @@ export default function CourseManage() {
     };
 
     const handleEdit = (course) => {
+        let parsedTarget = [];
+        try {
+            parsedTarget = typeof course.targetAudience === 'string' ? JSON.parse(course.targetAudience) : (course.targetAudience || []);
+        } catch(e) { }
+
         setForm({
             title: course.title, description: course.description, instructor: course.instructor, instructorSignature: course.instructorSignature || '', director: course.director || '', directorSignature: course.directorSignature || '',
             startDate: course.startDate?.slice(0, 16), endDate: course.endDate?.slice(0, 16),
-            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || '', customNamePosY: course.customNamePosY || '55%', hideAutoText: course.hideAutoText || false
+            location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || '', customNamePosY: course.customNamePosY || '55%', hideAutoText: course.hideAutoText || false,
+            targetAudience: parsedTarget
         });
         setEditId(course.id); setShowForm(true);
     };
@@ -249,6 +257,37 @@ export default function CourseManage() {
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">เวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
 
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
+                            
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-semibold text-surface-700 mb-2">กลุ่มเป้าหมาย (เลือกได้มากกว่า 1)</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {TARGET_AUDIENCES.map(aud => {
+                                        const isSelected = form.targetAudience.includes(aud);
+                                        return (
+                                            <button
+                                                type="button"
+                                                key={aud}
+                                                onClick={() => {
+                                                    setForm(prev => ({
+                                                        ...prev,
+                                                        targetAudience: isSelected 
+                                                            ? prev.targetAudience.filter(a => a !== aud)
+                                                            : [...prev.targetAudience, aud]
+                                                    }));
+                                                }}
+                                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border ${
+                                                    isSelected 
+                                                        ? 'bg-primary-50 text-primary-600 border-primary-200 shadow-sm' 
+                                                        : 'bg-white text-surface-600 border-surface-200 hover:border-primary-200 hover:bg-surface-50'
+                                                }`}
+                                            >
+                                                {aud}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>

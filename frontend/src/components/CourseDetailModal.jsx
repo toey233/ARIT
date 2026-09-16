@@ -119,6 +119,14 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
     };
 
     const renderTabContent = () => {
+        let targetAudiences = [];
+        try {
+            targetAudiences = typeof course.targetAudience === 'string' ? JSON.parse(course.targetAudience) : (course.targetAudience || []);
+        } catch(e) {}
+        if (!targetAudiences || targetAudiences.length === 0) {
+            targetAudiences = ['บุคคลทั่วไป'];
+        }
+
         switch (activeTab) {
             case 'detail':
                 return (
@@ -152,6 +160,21 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
                                 )}
                             </div>
                         )}
+                        
+                        <div style={{ marginTop: 16, padding: '12px 14px', background: 'rgba(139,92,246,0.04)', borderRadius: 10, border: '1px solid rgba(139,92,246,0.1)' }}>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: '#6d28d9', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <HiOutlineUserGroup size={16} /> กลุ่มเป้าหมาย:
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                                {targetAudiences.map(tag => (
+                                    <span key={tag} style={{
+                                        padding: '4px 12px', borderRadius: 50,
+                                        fontSize: 11, fontWeight: 600, color: '#6d28d9',
+                                        background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
+                                    }}>{tag}</span>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 );
             case 'topics':
@@ -224,7 +247,7 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
                                 {course.category ? `สายวิชาการ : เพื่อ${course.category} และตำแหน่งทางวิชาการ` : 'บุคลากรทุกสายงานที่สนใจ'}
                             </p>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                                {['อาจารย์', 'บุคลากร', 'นักศึกษา', 'บุคคลทั่วไป'].map(tag => (
+                                {targetAudiences.map(tag => (
                                     <span key={tag} style={{
                                         padding: '5px 14px', borderRadius: 50,
                                         fontSize: 11, fontWeight: 600, color: '#8b5cf6',
