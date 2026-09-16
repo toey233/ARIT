@@ -79,7 +79,7 @@ export default function Transcript() {
                 {/* Header */}
                 <div className="text-center mb-10 border-b-2 border-surface-800 pb-6">
                     <h1 className="text-3xl font-bold text-surface-900 mb-2">สรุปประวัติการอบรม (Training Transcript)</h1>
-                    <p className="text-surface-600 text-lg">ศูนย์วิทยบริการและเทคโนโลยีสารสนเทศ (ARIT)</p>
+                    <p className="text-surface-600 text-lg">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ (ARIT)</p>
                 </div>
 
                 {/* User Info */}
@@ -156,7 +156,7 @@ export default function Transcript() {
                 <div className="mt-20 flex justify-end">
                     <div className="text-center w-64">
                         <div className="border-b border-surface-400 mb-2 h-10"></div>
-                        <p className="text-sm text-surface-700">ผู้อำนวยการศูนย์วิทยบริการฯ</p>
+                        <p className="text-sm text-surface-700">ผู้อำนวยการสำนักวิทยบริการฯ</p>
                         <p className="text-xs text-surface-500 mt-1">ผู้รับรองเอกสาร</p>
                     </div>
                 </div>
