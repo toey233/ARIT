@@ -89,6 +89,8 @@ export default function RegistrantsModal({ courseId, courseName, onClose }) {
                                         <th style={{ padding: '12px 16px', color: '#64748b', fontWeight: 600, fontSize: 14, width: '60px' }}>ลำดับ</th>
                                         <th style={{ padding: '12px 16px', color: '#64748b', fontWeight: 600, fontSize: 14 }}>รหัสนักศึกษา</th>
                                         <th style={{ padding: '12px 16px', color: '#64748b', fontWeight: 600, fontSize: 14 }}>ชื่อ - นามสกุล</th>
+                                        <th style={{ padding: '12px 16px', color: '#64748b', fontWeight: 600, fontSize: 14 }}>ประเภทผู้ใช้งาน</th>
+                                        <th style={{ padding: '12px 16px', color: '#64748b', fontWeight: 600, fontSize: 14 }}>คณะ/หน่วยงาน</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -100,6 +102,8 @@ export default function RegistrantsModal({ courseId, courseName, onClose }) {
                                             <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{index + 1}</td>
                                             <td style={{ padding: '12px 16px', color: '#475569', fontSize: 14 }}>{user.studentId || '-'}</td>
                                             <td style={{ padding: '12px 16px', color: '#1e293b', fontSize: 15 }}>{user.firstName} {user.lastName}</td>
+                                            <td style={{ padding: '12px 16px', color: '#475569', fontSize: 14 }}>{user.userType || '-'}</td>
+                                            <td style={{ padding: '12px 16px', color: '#475569', fontSize: 14 }}>{user.department || '-'}</td>
                                         </tr>
                                     ))}
                                     {registrants.filter(u => 
@@ -107,7 +111,7 @@ export default function RegistrantsModal({ courseId, courseName, onClose }) {
                                         (u.studentId && u.studentId.toLowerCase().includes(searchQuery.toLowerCase()))
                                     ).length === 0 && (
                                         <tr>
-                                            <td colSpan="3" style={{ padding: '24px', textAlign: 'center', color: '#94a3b8' }}>ไม่พบรายชื่อที่ค้นหา</td>
+                                            <td colSpan="5" style={{ padding: '24px', textAlign: 'center', color: '#94a3b8' }}>ไม่พบรายชื่อที่ค้นหา</td>
                                         </tr>
                                     )}
                                 </tbody>

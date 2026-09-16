@@ -103,6 +103,8 @@ export default function RegistrationManage() {
                 { header: 'ลำดับ', key: 'index', width: 8 },
                 { header: 'ชื่อ-สกุล', key: 'name', width: 25 },
                 { header: 'รหัสนักศึกษา/พนักงาน', key: 'studentId', width: 22 },
+                { header: 'ประเภทผู้ใช้งาน', key: 'userType', width: 18 },
+                { header: 'คณะ/หน่วยงาน', key: 'department', width: 25 },
                 { header: 'หลักสูตร', key: 'course', width: 40 },
                 { header: 'สถานะ', key: 'status', width: 15 },
                 { header: 'ลงชื่อ (เช้า)', key: 'signMorning', width: 20 },
@@ -118,6 +120,8 @@ export default function RegistrationManage() {
                     index: index + 1,
                     name: reg.userName,
                     studentId: reg.userStudentId || '-',
+                    userType: reg.userType || '-',
+                    department: reg.userDepartment || '-',
                     course: reg.courseName,
                     status: statusText,
                     signMorning: '',
@@ -224,6 +228,7 @@ export default function RegistrationManage() {
                         <tr className="border-b border-surface-300">
                             <th className="text-left py-3 px-4 text-surface-700 font-bold">ผู้สมัคร</th>
                             <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">รหัส นศ.</th>
+                            <th className="text-left py-3 px-4 text-surface-700 font-bold hidden lg:table-cell">ประเภท/คณะ</th>
                             <th className="text-left py-3 px-4 text-surface-700 font-bold">หลักสูตร</th>
                             <th className="text-left py-3 px-4 text-surface-700 font-bold hidden md:table-cell">วันที่สมัคร</th>
                             <th className="text-center py-3 px-4 text-surface-700 font-bold">สถานะ</th>
@@ -237,6 +242,12 @@ export default function RegistrationManage() {
                                 <tr key={reg.id} className="border-b border-surface-200 hover:bg-surface-50">
                                     <td className="py-3 px-4 text-surface-900 font-semibold">{reg.userName}</td>
                                     <td className="py-3 px-4 text-surface-700 font-medium hidden md:table-cell">{reg.userStudentId || '-'}</td>
+                                    <td className="py-3 px-4 text-surface-700 font-medium hidden lg:table-cell">
+                                        <div className="flex flex-col">
+                                            <span className="text-surface-900 font-medium">{reg.userType || '-'}</span>
+                                            <span className="text-surface-500 text-xs">{reg.userDepartment || '-'}</span>
+                                        </div>
+                                    </td>
                                     <td className="py-3 px-4">
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                                             <div style={{ width: 4, height: 24, borderRadius: 4, background: catColor, flexShrink: 0 }} />

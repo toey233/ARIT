@@ -50,7 +50,7 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/registrants', authenticateToken, async (req, res) => {
     try {
         const result = await query(`
-            SELECT u.id, u."firstName", u."lastName", u."studentId"
+            SELECT u.id, u."firstName", u."lastName", u."studentId", u."userType", u.department
             FROM registrations r
             JOIN users u ON r."userId" = u.id
             WHERE r."courseId" = $1 AND r.status = 'approved'

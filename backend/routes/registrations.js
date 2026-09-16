@@ -80,6 +80,7 @@ router.get('/', authenticateToken, async (req, res) => {
             SELECT r.*,
                 c.title AS "courseName", c."startDate" AS "courseStartDate", c."endDate" AS "courseEndDate", c.category AS "courseCategory", c.duration AS "courseDuration",
                 u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail", u."studentId" AS "userStudentId",
+                u."userType" AS "userType", u.department AS "userDepartment",
                 EXISTS (SELECT 1 FROM evaluations e WHERE e."userId" = r."userId" AND e."courseId" = r."courseId") AS "hasEvaluated"
             FROM registrations r
             LEFT JOIN courses c ON r."courseId" = c.id
