@@ -8,7 +8,7 @@ const router = express.Router();
 // Get all users (admin only)
 router.get('/', authenticateToken, authorizeRoles('admin'), async (req, res) => {
     try {
-        const result = await query('SELECT id, email, "firstName", "lastName", role, phone, "studentId", department, "createdAt" FROM users ORDER BY "createdAt" DESC');
+        const result = await query('SELECT id, email, "firstName", "lastName", role, phone, "studentId", department, "userType", "createdAt" FROM users ORDER BY "createdAt" DESC');
         res.json(result.rows);
     } catch (error) {
         console.error('Get users error:', error);
@@ -24,13 +24,14 @@ router.put('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) 
             return res.status(404).json({ message: 'ไม่พบผู้ใช้' });
         }
 
-        const { firstName, lastName, phone, studentId, department, role } = req.body;
+        const { firstName, lastName, phone, studentId, department, role, userType } = req.body;
         const updates = {};
         if (firstName) updates.firstName = firstName;
         if (lastName) updates.lastName = lastName;
         if (phone !== undefined) updates.phone = phone;
         if (studentId !== undefined) updates.studentId = studentId;
         if (department !== undefined) updates.department = department;
+        if (userType !== undefined) updates.userType = userType;
         if (role) updates.role = role;
 
         if (Object.keys(updates).length === 0) {
@@ -41,7 +42,7 @@ router.put('/:id', authenticateToken, authorizeRoles('admin'), async (req, res) 
         const values = Object.values(updates);
         const setClause = keys.map((k, i) => `"${k}" = $${i + 1}`).join(', ');
         const result = await query(
-            `UPDATE users SET ${setClause} WHERE id = $${keys.length + 1} RETURNING id, email, "firstName", "lastName", role, phone, "studentId", department, "createdAt"`,
+            `UPDATE users SET ${setClause} WHERE id = $${keys.length + 1} RETURNING id, email, "firstName", "lastName", role, phone, "studentId", department, "userType", "createdAt"`,
             [...values, req.params.id]
         );
         res.json(result.rows[0]);

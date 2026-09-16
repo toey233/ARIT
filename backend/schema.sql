@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(50) DEFAULT '',
     "studentId" VARCHAR(100) DEFAULT '',
     department VARCHAR(255) DEFAULT '',
+    "userType" VARCHAR(100) DEFAULT '',
     "createdAt" TIMESTAMPTZ DEFAULT NOW()
 );
 

@@ -117,7 +117,7 @@ export default function UserManage() {
                         <tr className="border-b border-surface-300">
                             <th className="text-left py-4 px-6 text-surface-700 font-bold">ชื่อ-สกุล</th>
                             <th className="text-left py-4 px-6 text-surface-700 font-bold hidden md:table-cell">อีเมล</th>
-                            <th className="text-left py-4 px-6 text-surface-700 font-bold hidden lg:table-cell">หน่วยงาน</th>
+                            <th className="text-left py-4 px-6 text-surface-700 font-bold hidden lg:table-cell">หน่วยงาน/สถานะ</th>
                             <th className="text-center py-4 px-6 text-surface-700 font-bold">สิทธิ์</th>
                             <th className="text-center py-4 px-6 text-surface-700 font-bold hidden md:table-cell">สมัครเมื่อ</th>
                             <th className="text-center py-4 px-6 text-surface-700 font-bold">จัดการ</th>
@@ -147,7 +147,10 @@ export default function UserManage() {
                                         </div>
                                     </td>
                                     <td className="py-3 px-6 text-surface-700 font-medium hidden md:table-cell">{user.email}</td>
-                                    <td className="py-3 px-6 text-surface-700 font-medium hidden lg:table-cell">{user.department || '-'}</td>
+                                    <td className="py-3 px-6 text-surface-700 font-medium hidden lg:table-cell">
+                                        {user.department || '-'} 
+                                        {user.userType && <span className="block text-xs text-surface-500 mt-0.5">{user.userType}</span>}
+                                    </td>
                                     <td className="py-3 px-6 text-center">
                                         <select value={user.role} onChange={e => changeRole(user.id, e.target.value)}
                                             className="bg-surface-50 border border-surface-200 rounded-lg px-2 py-1 text-xs font-semibold text-surface-800 focus:outline-none focus:border-primary-500">

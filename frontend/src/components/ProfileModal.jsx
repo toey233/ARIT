@@ -56,10 +56,11 @@ export default function ProfileModal({ user, onClose }) {
     const { updateUser } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        phone: user?.phone || '',
-        studentId: user?.studentId || '',
-        department: user?.department || '',
-        profilePicture: user?.profilePicture || ''
+        phone: user.phone || '',
+        studentId: user.studentId || '',
+        department: user.department || '',
+        userType: user.userType || '',
+        profilePicture: user.profilePicture || ''
     });
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef(null);
@@ -213,6 +214,27 @@ export default function ProfileModal({ user, onClose }) {
                             <div style={S.value}>{formData.department || '-'}</div>
                         )}
                     </div>
+                    
+                    <div style={S.detailRow}>
+                        <label style={S.label}><HiOutlineUser size={16} /> สถานะ/ประเภทผู้ใช้งาน</label>
+                        {isEditing ? (
+                            <select 
+                                style={S.input} 
+                                value={formData.userType} 
+                                onChange={e => setFormData({...formData, userType: e.target.value})} 
+                            >
+                                <option value="">เลือกประเภทผู้ใช้งาน</option>
+                                <option value="นักศึกษา">1. นักศึกษา</option>
+                                <option value="ปริญญาโท">2. ปริญญาโท</option>
+                                <option value="ปริญญาเอก">3. ปริญญาเอก</option>
+                                <option value="บุคคลภายนอก">4. บุคคลภายนอก</option>
+                                <option value="อาจารย์">5. อาจารย์</option>
+                                <option value="บุคลากร">6. บุคลากร</option>
+                            </select>
+                        ) : (
+                            <div style={S.value}>{formData.userType || '-'}</div>
+                        )}
+                    </div>
 
                     {isEditing && (
                         <div style={{ display: 'flex', gap: 12 }}>
@@ -223,6 +245,7 @@ export default function ProfileModal({ user, onClose }) {
                                         phone: user.phone || '',
                                         studentId: user.studentId || '',
                                         department: user.department || '',
+                                        userType: user.userType || '',
                                         profilePicture: user.profilePicture || ''
                                     });
                                 }}
