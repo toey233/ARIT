@@ -131,6 +131,11 @@ export default function MyRegistrations() {
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><HiOutlineClock size={16} /> อบรม: {formatDate(reg.courseStartDate)}</div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><HiOutlineClipboardList size={16} /> ลงทะเบียน: {formatDate(reg.registeredAt)}</div>
                                         </div>
+                                        {reg.status === 'rejected' && reg.rejectReason && (
+                                            <div style={{ marginTop: 12, fontSize: 13, color: '#ef4444', background: '#fef2f2', padding: '8px 12px', borderRadius: 8, border: '1px solid #fee2e2', display: 'inline-block' }}>
+                                                <strong>หมายเหตุ:</strong> {reg.rejectReason}
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', paddingLeft: 8 }}>

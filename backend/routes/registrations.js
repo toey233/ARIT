@@ -153,8 +153,8 @@ router.put('/:id/status', authenticateToken, authorizeRoles('staff', 'admin'), a
             }
         } else {
             result = await query(
-                'UPDATE registrations SET status = $1 WHERE id = $2 RETURNING *',
-                [status, req.params.id]
+                'UPDATE registrations SET status = $1, "rejectReason" = $2 WHERE id = $3 RETURNING *',
+                [status, status === 'rejected' ? (reason || null) : null, req.params.id]
             );
             
             if (status === 'rejected') {

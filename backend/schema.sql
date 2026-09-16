@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS registrations (
     "registeredAt" TIMESTAMPTZ DEFAULT NOW(),
     "approvedBy" TEXT REFERENCES users(id) ON DELETE SET NULL,
     "approvedAt" TIMESTAMPTZ,
+    "rejectReason" TEXT,
     UNIQUE("userId", "courseId")
 );
 
