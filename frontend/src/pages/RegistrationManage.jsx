@@ -22,8 +22,8 @@ export default function RegistrationManage() {
     const [search, setSearch] = useState('');
     const [courseFilter, setCourseFilter] = useState('');
     const [confirmModal, setConfirmModal] = useState(null);
-    const [remarkText, setRemarkText] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [rejectReason, setRejectReason] = useState('');
     const itemsPerPage = 15;
 
     useEffect(() => { loadRegs(); }, []);
@@ -38,9 +38,9 @@ export default function RegistrationManage() {
     };
 
     // ฟังก์ชันสำหรับอนุมัติหรือปฏิเสธผู้ลงทะเบียน (รายบุคคล)
-    const updateStatus = async (id, status, remark = '') => {
+    const updateStatus = async (id, status, reason = '') => {
         try {
-            await api.put(`/registrations/${id}/status`, { status, remark });
+            await api.put(`/registrations/${id}/status`, { status, reason });
             toast.success(status === 'approved' ? 'อนุมัติสำเร็จ' : 'ปฏิเสธสำเร็จ');
             loadRegs();
         } catch (err) {
@@ -76,13 +76,12 @@ export default function RegistrationManage() {
             status,
             label,
             count: pendingInFiltered.length,
-            onConfirm: async (remark = '') => {
+            onConfirm: async (reason) => {
                 setConfirmModal(null);
-                setRemarkText('');
                 try {
                     let successCount = 0;
                     for (const reg of pendingInFiltered) {
-                        await api.put(`/registrations/${reg.id}/status`, { status, remark });
+                        await api.put(`/registrations/${reg.id}/status`, { status, reason });
                         successCount++;
                     }
                     toast.success(`${label}สำเร็จ ${successCount} รายการ`);
@@ -206,7 +205,10 @@ export default function RegistrationManage() {
                             <HiOutlineCheckCircle className="w-4 h-4" />
                             อนุมัติทั้งหมด ({pendingInFiltered.length})
                         </button>
-                        <button onClick={() => bulkUpdateStatus('rejected')}
+                        <button onClick={() => {
+                            setRejectReason('');
+                            bulkUpdateStatus('rejected');
+                        }}
                             className="flex-1 justify-center flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-500/15 text-red-400 border border-red-500/25 hover:bg-red-500/25 transition-all"
                         >
                             <HiOutlineXCircle className="w-4 h-4" />
@@ -261,15 +263,15 @@ export default function RegistrationManage() {
                                                     <HiOutlineCheck className="w-4 h-4" /> อนุมัติ
                                                 </button>
                                                 <button onClick={() => {
+                                                    setRejectReason('');
                                                     setConfirmModal({
                                                         type: 'single',
                                                         status: 'rejected',
                                                         label: 'ปฏิเสธ',
                                                         userName: reg.userName,
-                                                        onConfirm: async (remark = '') => {
+                                                        onConfirm: async (reason) => {
                                                             setConfirmModal(null);
-                                                            setRemarkText('');
-                                                            updateStatus(reg.id, 'rejected', remark);
+                                                            updateStatus(reg.id, 'rejected', reason);
                                                         }
                                                     });
                                                 }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="ปฏิเสธ">
@@ -280,15 +282,15 @@ export default function RegistrationManage() {
                                         {reg.status === 'approved' && (
                                             <div className="flex items-center justify-center gap-2">
                                                 <button onClick={() => {
+                                                    setRejectReason('');
                                                     setConfirmModal({
                                                         type: 'single',
                                                         status: 'rejected',
                                                         label: 'ยกเลิกสิทธิ์',
                                                         userName: reg.userName,
-                                                        onConfirm: async (remark = '') => {
+                                                        onConfirm: async (reason) => {
                                                             setConfirmModal(null);
-                                                            setRemarkText('');
-                                                            updateStatus(reg.id, 'rejected', remark);
+                                                            updateStatus(reg.id, 'rejected', reason);
                                                         }
                                                     });
                                                 }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-surface-50 text-red-500 border border-red-200 hover:bg-red-500 hover:text-white transition-all shadow-sm" title="ยกเลิกสิทธิ์">
@@ -392,29 +394,20 @@ export default function RegistrationManage() {
                                     {confirmModal.count} รายการ
                                 </div>
                             )}
-
+                            
                             {confirmModal.status === 'rejected' && (
-                                <div style={{ marginTop: 16, marginBottom: 16, textAlign: 'left' }}>
-                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: 14, marginBottom: 8, fontWeight: 500 }}>
-                                        หมายเหตุ / เหตุผล (ถ้ามี):
-                                    </label>
-                                    <textarea
-                                        value={remarkText}
-                                        onChange={(e) => setRemarkText(e.target.value)}
-                                        placeholder="ระบุเหตุผลที่ปฏิเสธ..."
-                                        style={{
-                                            width: '100%', height: 80, padding: 12, borderRadius: 12,
-                                            background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)',
-                                            color: '#fff', fontSize: 14, outline: 'none', resize: 'none',
-                                            transition: 'border-color 0.2s'
-                                        }}
-                                        onFocus={e => e.target.style.borderColor = '#f87171'}
-                                        onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.1)'}
+                                <div style={{ marginTop: 16, textAlign: 'left', width: '100%' }}>
+                                    <label style={{ display: 'block', fontSize: 14, color: '#94a3b8', marginBottom: 8 }}>หมายเหตุ (ระบุเหตุผลที่ปฏิเสธ / ยกเลิกสิทธิ์)</label>
+                                    <textarea 
+                                        value={rejectReason}
+                                        onChange={(e) => setRejectReason(e.target.value)}
+                                        placeholder="พิมพ์หมายเหตุที่นี่..."
+                                        style={{ width: '100%', height: 80, padding: 12, borderRadius: 12, border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.05)', color: '#fff', fontSize: 14, resize: 'none', outline: 'none' }}
                                     />
                                 </div>
                             )}
 
-                            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: confirmModal.type === 'bulk' ? 0 : 24 }}>
+                            <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: confirmModal.type === 'bulk' ? (confirmModal.status === 'rejected' ? 24 : 0) : 24 }}>
                                 <button
                                     onClick={() => setConfirmModal(null)}
                                     style={{
@@ -428,7 +421,7 @@ export default function RegistrationManage() {
                                     ยกเลิก
                                 </button>
                                 <button
-                                    onClick={() => confirmModal.onConfirm(remarkText)}
+                                    onClick={() => confirmModal.onConfirm(rejectReason)}
                                     style={{
                                         padding: '12px 28px', borderRadius: 14, border: 'none',
                                         background: confirmModal.status === 'approved'

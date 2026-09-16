@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS users (
     role VARCHAR(20) NOT NULL DEFAULT 'user' CHECK (role IN ('user', 'staff', 'admin')),
     phone VARCHAR(50) DEFAULT '',
     "studentId" VARCHAR(100) DEFAULT '',
-    "userType" VARCHAR(100) DEFAULT '',
     department VARCHAR(255) DEFAULT '',
     "createdAt" TIMESTAMPTZ DEFAULT NOW()
 );
@@ -48,7 +47,6 @@ CREATE TABLE IF NOT EXISTS registrations (
     "courseId" TEXT NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
     status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
     "registeredAt" TIMESTAMPTZ DEFAULT NOW(),
-    remark TEXT DEFAULT '',
     "approvedBy" TEXT REFERENCES users(id) ON DELETE SET NULL,
     "approvedAt" TIMESTAMPTZ,
     UNIQUE("userId", "courseId")

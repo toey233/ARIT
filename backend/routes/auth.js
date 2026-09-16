@@ -83,7 +83,7 @@ router.post('/google', async (req, res) => {
 // Register
 router.post('/register', async (req, res) => {
     try {
-        const { email, password, firstName, lastName, phone, studentId, department, userType } = req.body;
+        const { email, password, firstName, lastName, phone, studentId, department } = req.body;
 
         if (!email || !password || !firstName || !lastName) {
             return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
@@ -99,9 +99,9 @@ router.post('/register', async (req, res) => {
         const now = new Date().toISOString();
 
         const result = await query(
-            `INSERT INTO users (id, email, password, "firstName", "lastName", role, phone, "studentId", department, "userType", "createdAt")
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING *`,
-            [id, email, hashedPassword, firstName, lastName, 'user', phone || '', studentId || '', department || '', userType || '', now]
+            `INSERT INTO users (id, email, password, "firstName", "lastName", role, phone, "studentId", department, "createdAt")
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+            [id, email, hashedPassword, firstName, lastName, 'user', phone || '', studentId || '', department || '', now]
         );
 
         const newUser = result.rows[0];
