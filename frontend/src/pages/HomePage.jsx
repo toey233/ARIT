@@ -1169,7 +1169,7 @@ export default function HomePage() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: 24 }}>
                         {[
-                            { icon: '📖', title: 'ห้องสมุดดิจิทัล', desc: 'เข้าถึงทรัพยากรการเรียนรู้ออนไลน์ ฐานข้อมูลวิชาการ และ e-Books ได้ตลอด 24 ชั่วโมง', color: '#8b5cf6' },
+                            { icon: '📖', title: 'ห้องสมุดดิจิทัล', desc: 'เข้าถึงทรัพยากรการเรียนรู้ออนไลน์ ฐานข้อมูลวิชาการ และ e-Books ได้ตลอด 24 ชั่วโมง', color: '#8b5cf6', link: 'https://arit.rmu.ac.th/?page_id=5218' },
                             { icon: '🎓', title: 'หลักสูตรฝึกอบรม', desc: 'อบรมทักษะคอมพิวเตอร์ เว็บไซต์ AI และเทคโนโลยีล้ำสมัย พร้อมวิทยากรผู้เชี่ยวชาญ', color: '#2563eb' },
                             { icon: '📜', title: 'ประกาศนียบัตร e-Certificate', desc: 'รับประกาศนียบัตรอิเล็กทรอนิกส์ทันทีหลังจบหลักสูตร พร้อมยืนยันตัวตน', color: '#059669' },
                             { icon: '💡', title: 'พัฒนาทักษะดิจิทัล', desc: 'เสริมสร้างความรู้ด้าน Digital Literacy สำหรับนักศึกษาและบุคลากรทุกระดับ', color: '#ea580c' },
@@ -1178,7 +1178,9 @@ export default function HomePage() {
                                 background: '#fff', borderRadius: 20, padding: '36px 28px', textAlign: 'center',
                                 boxShadow: '0 4px 20px rgba(0,0,0,0.05)', border: '1px solid rgba(226, 232, 240, 0.8)',
                                 transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', position: 'relative', overflow: 'hidden',
+                                cursor: feature.link ? 'pointer' : 'default',
                             }}
+                                onClick={() => feature.link && window.open(feature.link, '_blank')}
                                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = `0 20px 40px ${feature.color}18`; }}
                                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.05)'; }}
                             >
