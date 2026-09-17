@@ -212,6 +212,36 @@ export default function Register() {
                                                 </select>
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
                                             </>
+                                        ) : form.userType === 'บุคคลภายใน' ? (
+                                            <>
+                                                <select name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.department ? '#fff' : '#9ca3af' }}>
+                                                    <option value="" disabled className="bg-surface-800 text-surface-400">เลือกหน่วยงาน</option>
+                                                    <optgroup label="สำนักงาน กอง และศูนย์" className="bg-surface-800 text-primary-300 font-bold">
+                                                        <option value="สำนักงานอธิการบดี" className="bg-surface-800 text-white font-normal">สำนักงานอธิการบดี</option>
+                                                        <option value="กองกลาง" className="bg-surface-800 text-white font-normal">กองกลาง</option>
+                                                        <option value="กองคลัง" className="bg-surface-800 text-white font-normal">กองคลัง</option>
+                                                        <option value="กองนโยบายและแผน" className="bg-surface-800 text-white font-normal">กองนโยบายและแผน</option>
+                                                        <option value="กองบริหารงานบุคคล" className="bg-surface-800 text-white font-normal">กองบริหารงานบุคคล</option>
+                                                        <option value="กองพัฒนานักศึกษา" className="bg-surface-800 text-white font-normal">กองพัฒนานักศึกษา</option>
+                                                        <option value="ศูนย์สหกิจศึกษาและพัฒนาอาชีพ" className="bg-surface-800 text-white font-normal">ศูนย์สหกิจศึกษาและพัฒนาอาชีพ</option>
+                                                        <option value="ศูนย์เทคโนโลยีดิจิทัลและนวัตกรรม" className="bg-surface-800 text-white font-normal">ศูนย์เทคโนโลยีดิจิทัลและนวัตกรรม</option>
+                                                    </optgroup>
+                                                    <optgroup label="สถาบันและสำนัก" className="bg-surface-800 text-primary-300 font-bold">
+                                                        <option value="สถาบันวิจัยและพัฒนา" className="bg-surface-800 text-white font-normal">สถาบันวิจัยและพัฒนา</option>
+                                                        <option value="สำนักวิทยบริการและเทคโนโลยีสารสนเทศ" className="bg-surface-800 text-white font-normal">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</option>
+                                                        <option value="สำนักศิลปะและวัฒนธรรม" className="bg-surface-800 text-white font-normal">สำนักศิลปะและวัฒนธรรม</option>
+                                                        <option value="สำนักส่งเสริมวิชาการและงานทะเบียน" className="bg-surface-800 text-white font-normal">สำนักส่งเสริมวิชาการและงานทะเบียน</option>
+                                                    </optgroup>
+                                                    <optgroup label="หน่วยงานอื่นๆ" className="bg-surface-800 text-primary-300 font-bold">
+                                                        <option value="งานประชาสัมพันธ์มหาวิทยาลัยราชภัฏมหาสารคาม" className="bg-surface-800 text-white font-normal">งานประชาสัมพันธ์มหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                                        <option value="สภาวิชาการ" className="bg-surface-800 text-white font-normal">สภาวิชาการ</option>
+                                                        <option value="สภามหาวิทยาลัยราชภัฏมหาสารคาม" className="bg-surface-800 text-white font-normal">สภามหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                                        <option value="หน่วยตรวจสอบภายใน" className="bg-surface-800 text-white font-normal">หน่วยตรวจสอบภายใน</option>
+                                                        <option value="โรงเรียนสาธิตมหาวิทยาลัยราชภัฏมหาสารคาม" className="bg-surface-800 text-white font-normal">โรงเรียนสาธิตมหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                                    </optgroup>
+                                                </select>
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
+                                            </>
                                         ) : (
                                             <input type="text" name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="ระบุหน่วยงาน/สังกัด" required />
                                         )}

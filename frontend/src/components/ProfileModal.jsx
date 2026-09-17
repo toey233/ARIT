@@ -244,6 +244,37 @@ export default function ProfileModal({ user, onClose }) {
                                         <option value="คณะพยาบาลศาสตร์">9. คณะพยาบาลศาสตร์</option>
                                         <option value="บัณฑิตวิทยาลัย">10. บัณฑิตวิทยาลัย</option>
                                     </select>
+                                ) : formData.userType === 'บุคคลภายใน' ? (
+                                    <select 
+                                        style={S.input} 
+                                        value={formData.department} 
+                                        onChange={e => setFormData({...formData, department: e.target.value})} 
+                                    >
+                                        <option value="">เลือกหน่วยงาน</option>
+                                        <optgroup label="สำนักงาน กอง และศูนย์">
+                                            <option value="สำนักงานอธิการบดี">สำนักงานอธิการบดี</option>
+                                            <option value="กองกลาง">กองกลาง</option>
+                                            <option value="กองคลัง">กองคลัง</option>
+                                            <option value="กองนโยบายและแผน">กองนโยบายและแผน</option>
+                                            <option value="กองบริหารงานบุคคล">กองบริหารงานบุคคล</option>
+                                            <option value="กองพัฒนานักศึกษา">กองพัฒนานักศึกษา</option>
+                                            <option value="ศูนย์สหกิจศึกษาและพัฒนาอาชีพ">ศูนย์สหกิจศึกษาและพัฒนาอาชีพ</option>
+                                            <option value="ศูนย์เทคโนโลยีดิจิทัลและนวัตกรรม">ศูนย์เทคโนโลยีดิจิทัลและนวัตกรรม</option>
+                                        </optgroup>
+                                        <optgroup label="สถาบันและสำนัก">
+                                            <option value="สถาบันวิจัยและพัฒนา">สถาบันวิจัยและพัฒนา</option>
+                                            <option value="สำนักวิทยบริการและเทคโนโลยีสารสนเทศ">สำนักวิทยบริการและเทคโนโลยีสารสนเทศ</option>
+                                            <option value="สำนักศิลปะและวัฒนธรรม">สำนักศิลปะและวัฒนธรรม</option>
+                                            <option value="สำนักส่งเสริมวิชาการและงานทะเบียน">สำนักส่งเสริมวิชาการและงานทะเบียน</option>
+                                        </optgroup>
+                                        <optgroup label="หน่วยงานอื่นๆ">
+                                            <option value="งานประชาสัมพันธ์มหาวิทยาลัยราชภัฏมหาสารคาม">งานประชาสัมพันธ์มหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                            <option value="สภาวิชาการ">สภาวิชาการ</option>
+                                            <option value="สภามหาวิทยาลัยราชภัฏมหาสารคาม">สภามหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                            <option value="หน่วยตรวจสอบภายใน">หน่วยตรวจสอบภายใน</option>
+                                            <option value="โรงเรียนสาธิตมหาวิทยาลัยราชภัฏมหาสารคาม">โรงเรียนสาธิตมหาวิทยาลัยราชภัฏมหาสารคาม</option>
+                                        </optgroup>
+                                    </select>
                                 ) : (
                                     <input 
                                         style={S.input} 
