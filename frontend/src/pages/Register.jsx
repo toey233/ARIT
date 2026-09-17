@@ -190,13 +190,34 @@ export default function Register() {
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
                                 </div>
                             </div>
-                            <div>
-                                <label className="block text-sm font-medium text-surface-300 mb-1.5">คณะ/หน่วยงาน</label>
-                                <div className="relative">
-                                    <HiOutlineOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-                                    <input type="text" name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="คณะ/หน่วยงาน" />
+                            {form.userType && (
+                                <div>
+                                    <label className="block text-sm font-medium text-surface-300 mb-1.5">คณะ/หน่วยงาน</label>
+                                    <div className="relative">
+                                        <HiOutlineOfficeBuilding className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
+                                        {['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์'].includes(form.userType) ? (
+                                            <>
+                                                <select name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.department ? '#fff' : '#9ca3af' }}>
+                                                    <option value="" disabled className="bg-surface-800 text-surface-400">เลือกคณะ/หน่วยงาน</option>
+                                                    <option value="คณะวิทยาศาสตร์และเทคโนโลยี" className="bg-surface-800 text-white">1. คณะวิทยาศาสตร์และเทคโนโลยี</option>
+                                                    <option value="คณะครุศาสตร์" className="bg-surface-800 text-white">2. คณะครุศาสตร์</option>
+                                                    <option value="คณะวิทยาการจัดการ" className="bg-surface-800 text-white">3. คณะวิทยาการจัดการ</option>
+                                                    <option value="คณะมนุษยศาสตร์และสังคมศาสตร์" className="bg-surface-800 text-white">4. คณะมนุษยศาสตร์และสังคมศาสตร์</option>
+                                                    <option value="คณะเทคโนโลยีการเกษตร" className="bg-surface-800 text-white">5. คณะเทคโนโลยีการเกษตร</option>
+                                                    <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์" className="bg-surface-800 text-white">6. คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
+                                                    <option value="คณะนิติศาสตร์" className="bg-surface-800 text-white">7. คณะนิติศาสตร์</option>
+                                                    <option value="คณะวิศวกรรมศาสตร์" className="bg-surface-800 text-white">8. คณะวิศวกรรมศาสตร์</option>
+                                                    <option value="คณะพยาบาลศาสตร์" className="bg-surface-800 text-white">9. คณะพยาบาลศาสตร์</option>
+                                                    <option value="บัณฑิตวิทยาลัย" className="bg-surface-800 text-white">10. บัณฑิตวิทยาลัย</option>
+                                                </select>
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
+                                            </>
+                                        ) : (
+                                            <input type="text" name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="ระบุหน่วยงาน/สังกัด" required />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                         </div>
 
                         <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 py-3 mt-2 disabled:opacity-50">

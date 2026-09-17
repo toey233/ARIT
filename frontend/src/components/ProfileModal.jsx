@@ -202,20 +202,6 @@ export default function ProfileModal({ user, onClose }) {
                     </div>
                     
                     <div style={S.detailRow}>
-                        <label style={S.label}><HiOutlineOfficeBuilding size={16} /> คณะ/หน่วยงาน</label>
-                        {isEditing ? (
-                            <input 
-                                style={S.input} 
-                                value={formData.department} 
-                                onChange={e => setFormData({...formData, department: e.target.value})} 
-                                placeholder="ระบุคณะหรือหน่วยงาน"
-                            />
-                        ) : (
-                            <div style={S.value}>{formData.department || '-'}</div>
-                        )}
-                    </div>
-                    
-                    <div style={S.detailRow}>
                         <label style={S.label}><HiOutlineUser size={16} /> สถานะ/ประเภทผู้ใช้งาน</label>
                         {isEditing ? (
                             <select 
@@ -235,6 +221,42 @@ export default function ProfileModal({ user, onClose }) {
                             <div style={S.value}>{formData.userType || '-'}</div>
                         )}
                     </div>
+
+                    {(!isEditing || formData.userType) && (
+                        <div style={S.detailRow}>
+                            <label style={S.label}><HiOutlineOfficeBuilding size={16} /> คณะ/หน่วยงาน</label>
+                            {isEditing ? (
+                                ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์'].includes(formData.userType) ? (
+                                    <select 
+                                        style={S.input} 
+                                        value={formData.department} 
+                                        onChange={e => setFormData({...formData, department: e.target.value})} 
+                                    >
+                                        <option value="">เลือกคณะ/หน่วยงาน</option>
+                                        <option value="คณะวิทยาศาสตร์และเทคโนโลยี">1. คณะวิทยาศาสตร์และเทคโนโลยี</option>
+                                        <option value="คณะครุศาสตร์">2. คณะครุศาสตร์</option>
+                                        <option value="คณะวิทยาการจัดการ">3. คณะวิทยาการจัดการ</option>
+                                        <option value="คณะมนุษยศาสตร์และสังคมศาสตร์">4. คณะมนุษยศาสตร์และสังคมศาสตร์</option>
+                                        <option value="คณะเทคโนโลยีการเกษตร">5. คณะเทคโนโลยีการเกษตร</option>
+                                        <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์">6. คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
+                                        <option value="คณะนิติศาสตร์">7. คณะนิติศาสตร์</option>
+                                        <option value="คณะวิศวกรรมศาสตร์">8. คณะวิศวกรรมศาสตร์</option>
+                                        <option value="คณะพยาบาลศาสตร์">9. คณะพยาบาลศาสตร์</option>
+                                        <option value="บัณฑิตวิทยาลัย">10. บัณฑิตวิทยาลัย</option>
+                                    </select>
+                                ) : (
+                                    <input 
+                                        style={S.input} 
+                                        value={formData.department} 
+                                        onChange={e => setFormData({...formData, department: e.target.value})} 
+                                        placeholder="ระบุคณะหรือหน่วยงาน"
+                                    />
+                                )
+                            ) : (
+                                <div style={S.value}>{formData.department || '-'}</div>
+                            )}
+                        </div>
+                    )}
 
                     {isEditing && (
                         <div style={{ display: 'flex', gap: 12 }}>
