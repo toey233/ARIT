@@ -251,7 +251,7 @@ export default function ProfileModal({ user, onClose }) {
                                         onChange={e => setFormData({...formData, department: e.target.value})} 
                                     >
                                         <option value="">เลือกหน่วยงาน</option>
-                                        <optgroup label="สำนักงาน กอง และศูนย์">
+                                        <optgroup label="สำนักงานอธิการบดี">
                                             <option value="สำนักงานอธิการบดี">สำนักงานอธิการบดี</option>
                                             <option value="กองกลาง">กองกลาง</option>
                                             <option value="กองคลัง">กองคลัง</option>

@@ -216,7 +216,7 @@ export default function Register() {
                                             <>
                                                 <select name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.department ? '#fff' : '#9ca3af' }}>
                                                     <option value="" disabled className="bg-surface-800 text-surface-400">เลือกหน่วยงาน</option>
-                                                    <optgroup label="สำนักงาน กอง และศูนย์" className="bg-surface-800 text-primary-300 font-bold">
+                                                    <optgroup label="สำนักงานอธิการบดี" className="bg-surface-800 text-primary-300 font-bold">
                                                         <option value="สำนักงานอธิการบดี" className="bg-surface-800 text-white font-normal">สำนักงานอธิการบดี</option>
                                                         <option value="กองกลาง" className="bg-surface-800 text-white font-normal">กองกลาง</option>
                                                         <option value="กองคลัง" className="bg-surface-800 text-white font-normal">กองคลัง</option>
