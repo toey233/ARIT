@@ -9,7 +9,7 @@ const S = {
         background: 'rgba(10,20,40,0.6)', backdropFilter: 'blur(8px)',
     },
     modal: {
-        background: '#fff', borderRadius: 24, width: '92%', maxWidth: 500, maxHeight: '92vh', overflow: 'auto',
+        background: '#fff', borderRadius: 24, width: '92%', maxWidth: 750, maxHeight: '92vh', overflow: 'auto',
         position: 'relative', boxShadow: '0 25px 80px rgba(0,0,0,0.25), 0 0 0 1px rgba(0,0,0,0.05)',
     },
     header: {
@@ -168,65 +168,66 @@ export default function ProfileModal({ user, onClose }) {
                 </div>
 
                 <div style={S.body}>
-                    <div style={S.detailRow}>
-                        <label style={S.label}><HiOutlineMail size={16} /> อีเมล</label>
-                        <div style={S.value}>{user.email || '-'}</div>
-                    </div>
-                    
-                    <div style={S.detailRow}>
-                        <label style={S.label}><HiOutlinePhone size={16} /> เบอร์โทรศัพท์</label>
-                        {isEditing ? (
-                            <input 
-                                style={S.input} 
-                                value={formData.phone} 
-                                onChange={e => setFormData({...formData, phone: e.target.value})} 
-                                placeholder="08X-XXX-XXXX"
-                            />
-                        ) : (
-                            <div style={S.value}>{formData.phone || '-'}</div>
-                        )}
-                    </div>
-                    
-                    <div style={S.detailRow}>
-                        <label style={S.label}><HiOutlineIdentification size={16} /> รหัสนักศึกษา/รหัสประจำตัว</label>
-                        {isEditing ? (
-                            <input 
-                                style={S.input} 
-                                value={formData.studentId} 
-                                onChange={e => setFormData({...formData, studentId: e.target.value})} 
-                                placeholder="เช่น 6631700XXXX"
-                            />
-                        ) : (
-                            <div style={S.value}>{formData.studentId || '-'}</div>
-                        )}
-                    </div>
-                    
-                    <div style={S.detailRow}>
-                        <label style={S.label}><HiOutlineUser size={16} /> สถานะ/ประเภทผู้ใช้งาน</label>
-                        {isEditing ? (
-                            <select 
-                                style={S.input} 
-                                value={formData.userType} 
-                                onChange={e => setFormData({...formData, userType: e.target.value})} 
-                            >
-                                <option value="">เลือกประเภทผู้ใช้งาน</option>
-                                <option value="นักศึกษาปริญญาตรี">1. นักศึกษาปริญญาตรี</option>
-                                <option value="นักศึกษาปริญญาโท">2. นักศึกษาปริญญาโท</option>
-                                <option value="นักศึกษาปริญญาเอก">3. นักศึกษาปริญญาเอก</option>
-                                <option value="อาจารย์">4. อาจารย์</option>
-                                <option value="บุคคลภายใน">5. บุคคลภายใน</option>
-                                <option value="บุคคลภายนอก">6. บุคคลภายนอก</option>
-                            </select>
-                        ) : (
-                            <div style={S.value}>{formData.userType || '-'}</div>
-                        )}
-                    </div>
-
-                    {(!isEditing || formData.userType) && (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px 24px', marginBottom: 24 }}>
                         <div style={S.detailRow}>
-                            <label style={S.label}><HiOutlineOfficeBuilding size={16} /> คณะ/หน่วยงาน</label>
+                            <label style={S.label}><HiOutlineMail size={16} /> อีเมล</label>
+                            <div style={S.value}>{user.email || '-'}</div>
+                        </div>
+                        
+                        <div style={S.detailRow}>
+                            <label style={S.label}><HiOutlinePhone size={16} /> เบอร์โทรศัพท์</label>
                             {isEditing ? (
-                                ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์'].includes(formData.userType) ? (
+                                <input 
+                                    style={S.input} 
+                                    value={formData.phone} 
+                                    onChange={e => setFormData({...formData, phone: e.target.value})} 
+                                    placeholder="08X-XXX-XXXX"
+                                />
+                            ) : (
+                                <div style={S.value}>{formData.phone || '-'}</div>
+                            )}
+                        </div>
+                        
+                        <div style={S.detailRow}>
+                            <label style={S.label}><HiOutlineIdentification size={16} /> รหัสนักศึกษา/รหัสประจำตัว</label>
+                            {isEditing ? (
+                                <input 
+                                    style={S.input} 
+                                    value={formData.studentId} 
+                                    onChange={e => setFormData({...formData, studentId: e.target.value})} 
+                                    placeholder="เช่น 6631700XXXX"
+                                />
+                            ) : (
+                                <div style={S.value}>{formData.studentId || '-'}</div>
+                            )}
+                        </div>
+                        
+                        <div style={S.detailRow}>
+                            <label style={S.label}><HiOutlineUser size={16} /> สถานะ/ประเภทผู้ใช้งาน</label>
+                            {isEditing ? (
+                                <select 
+                                    style={S.input} 
+                                    value={formData.userType} 
+                                    onChange={e => setFormData({...formData, userType: e.target.value})} 
+                                >
+                                    <option value="">เลือกประเภทผู้ใช้งาน</option>
+                                    <option value="นักศึกษาปริญญาตรี">1. นักศึกษาปริญญาตรี</option>
+                                    <option value="นักศึกษาปริญญาโท">2. นักศึกษาปริญญาโท</option>
+                                    <option value="นักศึกษาปริญญาเอก">3. นักศึกษาปริญญาเอก</option>
+                                    <option value="อาจารย์">4. อาจารย์</option>
+                                    <option value="บุคคลภายใน">5. บุคคลภายใน</option>
+                                    <option value="บุคคลภายนอก">6. บุคคลภายนอก</option>
+                                </select>
+                            ) : (
+                                <div style={S.value}>{formData.userType || '-'}</div>
+                            )}
+                        </div>
+                        {(!isEditing || formData.userType) && (
+                            <div style={{ ...S.detailRow, gridColumn: '1 / -1' }}>
+                                <label style={S.label}><HiOutlineOfficeBuilding size={16} /> คณะ/หน่วยงาน</label>
+                                {isEditing ? (
+                                    ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์'].includes(formData.userType) ? (
+
                                     <select 
                                         style={S.input} 
                                         value={formData.department} 
@@ -288,6 +289,7 @@ export default function ProfileModal({ user, onClose }) {
                             )}
                         </div>
                     )}
+                    </div>
 
                     {isEditing && (
                         <div style={{ display: 'flex', gap: 12 }}>
