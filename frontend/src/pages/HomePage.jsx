@@ -271,7 +271,7 @@ export default function HomePage() {
                 boxShadow: scrolled ? '0 2px 20px rgba(0,0,0,0.1)' : '0 1px 8px rgba(0,0,0,0.05)',
                 transition: 'all 0.3s ease',
             }}>
-                <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70 }}>
+                <div style={{ maxWidth: 1440, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 70 }}>
                     {/* Logo */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <div style={{ display: 'flex', alignItems: 'center', height: 44 }}>
@@ -292,8 +292,8 @@ export default function HomePage() {
                             }}>A</div>
                         </div>
                         <div>
-                            <div style={{ fontWeight: 700, fontSize: 16, color: '#2563eb', lineHeight: 1.2 }}>ระบบบริหารการจัดการอบรม</div>
-                            <div style={{ fontSize: 11, color: '#999', letterSpacing: 0.5 }}>ARIT Management Training System</div>
+                            <div style={{ fontWeight: 700, fontSize: 16, color: '#2563eb', lineHeight: 1.2, whiteSpace: 'nowrap' }}>ระบบบริหารการจัดการอบรม</div>
+                            <div style={{ fontSize: 11, color: '#999', letterSpacing: 0.5, whiteSpace: 'nowrap' }}>ARIT Management Training System</div>
                         </div>
                     </div>
 
@@ -303,7 +303,7 @@ export default function HomePage() {
                             <button key={link.label} onClick={() => handleNavClick(link)} style={{
                                 background: 'none', border: 'none', padding: '8px 16px', cursor: 'pointer',
                                 fontSize: 16, fontWeight: 500, color: '#555', borderRadius: 8,
-                                transition: 'all 0.2s',
+                                transition: 'all 0.2s', whiteSpace: 'nowrap',
                             }}
                                 onMouseEnter={e => { e.target.style.color = '#2563eb'; e.target.style.background = 'rgba(37,99,235,0.06)'; }}
                                 onMouseLeave={e => { e.target.style.color = '#555'; e.target.style.background = 'none'; }}
@@ -331,13 +331,13 @@ export default function HomePage() {
                                             <HiOutlineUserCircle size={24} color="#2563eb" />
                                         </div>
                                     </div>
-                                    <span style={{ fontSize: 14, color: '#555', fontWeight: 500 }}>{user.firstName}</span>
+                                    <span style={{ fontSize: 14, color: '#555', fontWeight: 500, whiteSpace: 'nowrap' }}>{user.firstName}</span>
                                 </button>
                                 <button onClick={handleLogout} style={{
                                     display: 'inline-flex', alignItems: 'center', gap: 6,
                                     padding: '8px 16px', borderRadius: 8, fontSize: 14, fontWeight: 500,
                                     border: '1.5px solid #c0392b', color: '#c0392b', background: 'transparent',
-                                    cursor: 'pointer', transition: 'all 0.2s',
+                                    cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
                                 }}>
                                     <HiOutlineLogout size={16} /> ออกจากระบบ
                                 </button>
@@ -348,7 +348,7 @@ export default function HomePage() {
                                     display: 'inline-flex', alignItems: 'center', gap: 6,
                                     padding: '8px 18px', borderRadius: 8, fontSize: 14, fontWeight: 500,
                                     border: '1.5px solid #2563eb', color: '#2563eb', background: 'transparent',
-                                    cursor: 'pointer', transition: 'all 0.2s',
+                                    cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
                                 }}>
                                     <HiOutlineUserAdd size={16} /> สมัครสมาชิก
                                 </button>
@@ -357,7 +357,7 @@ export default function HomePage() {
                                     padding: '8px 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                                     background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff',
                                     cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(37,99,235,0.3)',
-                                    border: 'none',
+                                    border: 'none', whiteSpace: 'nowrap',
                                 }}>
                                     <HiOutlineLogin size={16} /> เข้าสู่ระบบ
                                 </button>
