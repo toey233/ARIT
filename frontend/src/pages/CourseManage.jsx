@@ -366,7 +366,7 @@ export default function CourseManage() {
                             <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">
                                 <h3 className="text-md font-semibold text-surface-700 mb-3">ชื่อ วิทยากร</h3>
                                 <div className="grid grid-cols-1 gap-4">
-                                    <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้สอน</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
+                                    <div><label className="block text-sm font-semibold text-surface-700 mb-1">วิทยากร</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
                                 </div>
                             </div>
                             
