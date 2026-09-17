@@ -269,7 +269,7 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
             background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
         }} onClick={onClose}>
             <div style={{
-                background: '#fff', borderRadius: 20, width: '92%', maxWidth: 680, maxHeight: '90vh',
+                background: '#fff', borderRadius: 20, width: '96%', maxWidth: 1200, height: '96vh', maxHeight: '96vh',
                 overflow: 'hidden', position: 'relative',
                 boxShadow: '0 25px 80px rgba(0,0,0,0.3)',
                 animation: 'modalPopIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
