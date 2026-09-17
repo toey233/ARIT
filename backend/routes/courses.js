@@ -82,7 +82,7 @@ router.post('/', authenticateToken, authorizeRoles('staff', 'admin'), async (req
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Create course error:', error);
-        res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+        res.status(500).json({ message: 'เกิดข้อผิดพลาด: ' + error.message, stack: error.stack });
     }
 });
 

@@ -80,6 +80,7 @@ app.listen(PORT, () => {
         .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "hideAutoText" BOOLEAN DEFAULT false;'))
         .then(() => pool.query('ALTER TABLE registrations ADD COLUMN IF NOT EXISTS "rejectReason" TEXT;'))
         .then(() => pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS "userType" VARCHAR(100) DEFAULT \'\';'))
+        .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "targetAudience" TEXT DEFAULT \'[]\';'))
         .then(() => console.log('✅ Database schema checked/updated.'))
         .catch(err => console.error('❌ Database schema update failed:', err.message));
 });
