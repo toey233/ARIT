@@ -302,7 +302,7 @@ export default function Courses() {
                                                 <HiOutlineClock size={14} color={course.startDate && new Date(course.startDate) < new Date() ? '#dc2626' : '#f59e0b'} />
                                             </div>
                                             {course.startDate && new Date(course.startDate) < new Date() ? (
-                                                <span style={{ color: '#dc2626', fontWeight: 600 }}>หมดเขตลงทะเบียน</span>
+                                                <span style={{ color: '#dc2626', fontWeight: 600 }}>สิ้นสุดการลงทะเบียน</span>
                                             ) : (
                                                 <span>ลงทะเบียนถึง: {formatDate(course.startDate)}</span>
                                             )}

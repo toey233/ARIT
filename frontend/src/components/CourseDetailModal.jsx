@@ -340,7 +340,7 @@ export default function CourseDetailModal({ course, user, onClose, onRegister })
                 }}>
                     {[
                         { icon: HiOutlineCalendar, value: course.trainingDate ? `อบรม: ${course.trainingDate}` : formatDate(course.startDate), color: '#2563eb' },
-                        { icon: HiOutlineClock, value: course.startDate && new Date(course.startDate) < new Date() ? 'หมดเขตลงทะเบียน' : (course.duration || `ลงทะเบียนถึง: ${formatDate(course.startDate)}`), color: course.startDate && new Date(course.startDate) < new Date() ? '#dc2626' : '#f59e0b' },
+                        { icon: HiOutlineClock, value: course.startDate && new Date(course.startDate) < new Date() ? 'สิ้นสุดการลงทะเบียน' : (course.duration || `ลงทะเบียนถึง: ${formatDate(course.startDate)}`), color: course.startDate && new Date(course.startDate) < new Date() ? '#dc2626' : '#f59e0b' },
                         { icon: HiOutlineLocationMarker, value: course.location || 'ไม่ระบุ', color: '#059669' },
                     ].map((info, i) => (
                         <div key={i} style={{
