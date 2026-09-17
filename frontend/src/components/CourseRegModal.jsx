@@ -333,8 +333,16 @@ export default function CourseRegModal({ course, onClose, onSuccess }) {
 
                     <h3 style={{ ...S.sectionTitle, marginTop: 20 }}>ข้อมูลผู้ที่ลงทะเบียน</h3>
                     <div className="course-modal-row">
-                        <div><label style={S.label}>คณะ/หน่วยงาน</label><input style={S.input} name="department" value={form.department} onChange={handleChange} placeholder="คณะหรือหน่วยงาน" /></div>
-                        <div><label style={S.label}>ตำแหน่ง</label><input style={S.input} name="position" value={form.position} onChange={handleChange} placeholder="ตำแหน่งงาน" /></div>
+                        <div style={{ gridColumn: ['อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก'].includes(user?.userType) ? 'auto' : '1 / -1' }}>
+                            <label style={S.label}>คณะ/หน่วยงาน</label>
+                            <input style={S.input} name="department" value={form.department} onChange={handleChange} placeholder="คณะหรือหน่วยงาน" />
+                        </div>
+                        {['อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก'].includes(user?.userType) && (
+                            <div>
+                                <label style={S.label}>ตำแหน่ง</label>
+                                <input style={S.input} name="position" value={form.position} onChange={handleChange} placeholder="ตำแหน่งงาน" />
+                            </div>
+                        )}
                     </div>
 
                     <h3 style={{ ...S.sectionTitle, marginTop: 20 }}>ข้อมูลเพิ่มเติม</h3>
