@@ -265,7 +265,11 @@ export default function EvaluationResults() {
             try {
                 const res = await api.get(`/evaluations/course/${course.id}`);
                 if (res.data.evaluations.length > 0) {
-                    allEvals.push(...res.data.evaluations.map(ev => ({ ...ev, courseName: course.title, courseId: course.id })));
+                    allEvals.push(...res.data.evaluations.map(ev => {
+                        let parsedDetails = {};
+                        try { parsedDetails = typeof ev.details === 'string' ? JSON.parse(ev.details) : (ev.details || {}); } catch(e) {}
+                        return { ...ev, courseName: course.title, courseId: course.id, details: parsedDetails };
+                    }));
                 }
             } catch { }
         }
@@ -399,9 +403,19 @@ export default function EvaluationResults() {
                 { header: 'หลักสูตร', key: 'courseName', width: 35 },
                 { header: 'ผู้ประเมิน', key: 'userName', width: 22 },
                 { header: 'คะแนนรวม', key: 'rating', width: 12 },
-                { header: 'เนื้อหา', key: 'contentRating', width: 10 },
-                { header: 'วิทยากร', key: 'instructorRating', width: 10 },
-                { header: 'สถานที่', key: 'facilityRating', width: 10 },
+                { header: 'เนื้อหา(รวม)', key: 'contentRating', width: 10 },
+                { header: 'วิทยากร(รวม)', key: 'instructorRating', width: 10 },
+                { header: 'สถานที่(รวม)', key: 'facilityRating', width: 10 },
+                { header: '1.1 เนื้อหาตรงตามวัตถุประสงค์', key: 'c1', width: 15 },
+                { header: '1.2 การจัดลำดับเนื้อหาเข้าใจง่าย', key: 'c2', width: 15 },
+                { header: '1.3 ระยะเวลาอบรมเหมาะสม', key: 'c3', width: 15 },
+                { header: '2.1 วิทยากรมีความรู้ความเชี่ยวชาญ', key: 'i1', width: 15 },
+                { header: '2.2 ถ่ายทอดชัดเจนและน่าสนใจ', key: 'i2', width: 15 },
+                { header: '2.3 เปิดโอกาสให้ซักถาม', key: 'i3', width: 15 },
+                { header: '3.1 เอกสารสื่อประกอบพร้อม', key: 'f1', width: 15 },
+                { header: '3.2 สถานที่ระบบเทคโนโลยีเหมาะสม', key: 'f2', width: 15 },
+                { header: '4.1 ได้รับความรู้ทักษะใหม่', key: 'a1', width: 15 },
+                { header: '4.2 นำไปประยุกต์ใช้ได้จริง', key: 'a2', width: 15 },
                 { header: 'ข้อเสนอแนะ', key: 'comment', width: 40 },
             ];
 
@@ -431,6 +445,16 @@ export default function EvaluationResults() {
                     contentRating: ev.contentRating,
                     instructorRating: ev.instructorRating,
                     facilityRating: ev.facilityRating,
+                    c1: ev.details?.c1 || '-',
+                    c2: ev.details?.c2 || '-',
+                    c3: ev.details?.c3 || '-',
+                    i1: ev.details?.i1 || '-',
+                    i2: ev.details?.i2 || '-',
+                    i3: ev.details?.i3 || '-',
+                    f1: ev.details?.f1 || '-',
+                    f2: ev.details?.f2 || '-',
+                    a1: ev.details?.a1 || '-',
+                    a2: ev.details?.a2 || '-',
                     comment: ev.comment || '-',
                 });
                 row.alignment = { vertical: 'middle', wrapText: true };
@@ -511,9 +535,19 @@ export default function EvaluationResults() {
                 { header: 'ลำดับ', key: 'no', width: 8 },
                 { header: 'ผู้ประเมิน', key: 'userName', width: 22 },
                 { header: 'คะแนนรวม', key: 'rating', width: 12 },
-                { header: 'เนื้อหา', key: 'contentRating', width: 10 },
-                { header: 'วิทยากร', key: 'instructorRating', width: 10 },
-                { header: 'สถานที่', key: 'facilityRating', width: 10 },
+                { header: 'เนื้อหา(รวม)', key: 'contentRating', width: 10 },
+                { header: 'วิทยากร(รวม)', key: 'instructorRating', width: 10 },
+                { header: 'สถานที่(รวม)', key: 'facilityRating', width: 10 },
+                { header: '1.1 เนื้อหาตรงตามวัตถุประสงค์', key: 'c1', width: 15 },
+                { header: '1.2 การจัดลำดับเนื้อหาเข้าใจง่าย', key: 'c2', width: 15 },
+                { header: '1.3 ระยะเวลาอบรมเหมาะสม', key: 'c3', width: 15 },
+                { header: '2.1 วิทยากรมีความรู้ความเชี่ยวชาญ', key: 'i1', width: 15 },
+                { header: '2.2 ถ่ายทอดชัดเจนและน่าสนใจ', key: 'i2', width: 15 },
+                { header: '2.3 เปิดโอกาสให้ซักถาม', key: 'i3', width: 15 },
+                { header: '3.1 เอกสารสื่อประกอบพร้อม', key: 'f1', width: 15 },
+                { header: '3.2 สถานที่ระบบเทคโนโลยีเหมาะสม', key: 'f2', width: 15 },
+                { header: '4.1 ได้รับความรู้ทักษะใหม่', key: 'a1', width: 15 },
+                { header: '4.2 นำไปประยุกต์ใช้ได้จริง', key: 'a2', width: 15 },
                 { header: 'ข้อเสนอแนะ', key: 'comment', width: 40 },
             ];
 
@@ -538,6 +572,16 @@ export default function EvaluationResults() {
                     contentRating: ev.contentRating,
                     instructorRating: ev.instructorRating,
                     facilityRating: ev.facilityRating,
+                    c1: ev.details?.c1 || '-',
+                    c2: ev.details?.c2 || '-',
+                    c3: ev.details?.c3 || '-',
+                    i1: ev.details?.i1 || '-',
+                    i2: ev.details?.i2 || '-',
+                    i3: ev.details?.i3 || '-',
+                    f1: ev.details?.f1 || '-',
+                    f2: ev.details?.f2 || '-',
+                    a1: ev.details?.a1 || '-',
+                    a2: ev.details?.a2 || '-',
                     comment: ev.comment || '-',
                 });
                 row.alignment = { vertical: 'middle', wrapText: true };

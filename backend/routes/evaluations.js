@@ -8,7 +8,7 @@ const router = express.Router();
 // Submit evaluation
 router.post('/', authenticateToken, async (req, res) => {
     try {
-        const { courseId, rating, contentRating, instructorRating, facilityRating, comment } = req.body;
+        const { courseId, rating, contentRating, instructorRating, facilityRating, comment, details } = req.body;
 
         if (!courseId || !rating) {
             return res.status(400).json({ message: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
@@ -35,9 +35,9 @@ router.post('/', authenticateToken, async (req, res) => {
         const id = uuidv4();
         const now = new Date().toISOString();
         const result = await query(
-            `INSERT INTO evaluations (id, "userId", "courseId", rating, "contentRating", "instructorRating", "facilityRating", comment, "createdAt")
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
-            [id, req.user.id, courseId, Number(rating), Number(contentRating) || Number(rating), Number(instructorRating) || Number(rating), Number(facilityRating) || Number(rating), comment || '', now]
+            `INSERT INTO evaluations (id, "userId", "courseId", rating, "contentRating", "instructorRating", "facilityRating", comment, details, "createdAt")
+             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+            [id, req.user.id, courseId, Number(rating), Number(contentRating) || Number(rating), Number(instructorRating) || Number(rating), Number(facilityRating) || Number(rating), comment || '', JSON.stringify(details || {}), now]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {
