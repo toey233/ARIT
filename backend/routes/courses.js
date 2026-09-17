@@ -133,7 +133,7 @@ router.put('/:id', authenticateToken, authorizeRoles('staff', 'admin'), async (r
         res.json(result.rows[0]);
     } catch (error) {
         console.error('Update course error:', error);
-        res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+        res.status(500).json({ message: 'เกิดข้อผิดพลาด: ' + error.message, stack: error.stack });
     }
 });
 
