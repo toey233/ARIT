@@ -15,7 +15,8 @@ import {
     HiOutlineLocationMarker, HiOutlineUsers, HiOutlineCalendar,
     HiOutlineBell, HiOutlineDocumentText, HiOutlineMenu, HiOutlineX,
     HiOutlineLogin, HiOutlineUserAdd, HiOutlineChevronRight, HiOutlineLogout,
-    HiOutlineClipboardList, HiOutlineUserCircle, HiOutlineExclamation
+    HiOutlineClipboardList, HiOutlineUserCircle, HiOutlineExclamation,
+    HiOutlineUserGroup
 } from 'react-icons/hi';
 
 const NAV_LINKS = [
@@ -767,21 +768,26 @@ export default function HomePage() {
                                                 </div>
                                                 
                                                 {targetAudiences.length > 0 && (
-                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 12 }}>
-                                                        {targetAudiences.slice(0, 3).map(tag => (
-                                                            <span key={tag} style={{
-                                                                padding: '2px 8px', borderRadius: 4,
-                                                                fontSize: 10, fontWeight: 600, color: '#64748b',
-                                                                background: '#f1f5f9', border: '1px solid #e2e8f0',
-                                                            }}>{tag}</span>
-                                                        ))}
-                                                        {targetAudiences.length > 3 && (
-                                                            <span style={{
-                                                                padding: '2px 6px', borderRadius: 4,
-                                                                fontSize: 10, fontWeight: 600, color: '#94a3b8',
-                                                                background: '#f8fafc',
-                                                            }}>+{targetAudiences.length - 3}</span>
-                                                        )}
+                                                    <div style={{ marginTop: 12, padding: '8px 10px', background: 'rgba(139,92,246,0.04)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.1)' }}>
+                                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#6d28d9', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                            <HiOutlineUserGroup size={14} /> กลุ่มเป้าหมาย:
+                                                        </div>
+                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                                            {targetAudiences.slice(0, 3).map(tag => (
+                                                                <span key={tag} style={{
+                                                                    padding: '2px 8px', borderRadius: 50,
+                                                                    fontSize: 10, fontWeight: 600, color: '#6d28d9',
+                                                                    background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
+                                                                }}>{tag}</span>
+                                                            ))}
+                                                            {targetAudiences.length > 3 && (
+                                                                <span style={{
+                                                                    padding: '2px 6px', borderRadius: 50,
+                                                                    fontSize: 10, fontWeight: 600, color: '#6d28d9',
+                                                                    background: 'rgba(139,92,246,0.08)',
+                                                                }}>+{targetAudiences.length - 3}</span>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 )}
                                             </div>
