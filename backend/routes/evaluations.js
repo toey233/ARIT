@@ -42,7 +42,7 @@ router.post('/', authenticateToken, async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (error) {
         console.error('Submit evaluation error:', error);
-        res.status(500).json({ message: 'เกิดข้อผิดพลาด' });
+        res.status(500).json({ message: 'เกิดข้อผิดพลาด: ' + error.message });
     }
 });
 
