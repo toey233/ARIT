@@ -510,32 +510,50 @@ export default function CourseDetail() {
 
                                 {/* Register Button */}
                                 {course.status === 'open' && (!user || user.role === 'user') && (
-                                    <button onClick={handleRegister} disabled={registering} style={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        gap: 8, width: '100%', padding: '14px 0', borderRadius: 12,
-                                        fontSize: 15, fontWeight: 700, color: '#fff',
-                                        background: 'linear-gradient(135deg, #16a34a, #22c55e)',
-                                        border: 'none', cursor: registering ? 'not-allowed' : 'pointer',
-                                        boxShadow: '0 4px 15px rgba(22,163,74,0.3)',
-                                        transition: 'all 0.3s',
-                                        opacity: registering ? 0.7 : 1,
-                                    }}
-                                        onMouseEnter={e => { if (!registering) { e.target.style.boxShadow = '0 8px 30px rgba(22,163,74,0.4)'; e.target.style.transform = 'translateY(-2px)'; } }}
-                                        onMouseLeave={e => { e.target.style.boxShadow = '0 4px 15px rgba(22,163,74,0.3)'; e.target.style.transform = 'translateY(0)'; }}
-                                    >
-                                        {registering ? (
-                                            <div style={{
-                                                width: 20, height: 20, border: '3px solid rgba(255,255,255,0.3)',
-                                                borderTopColor: '#fff', borderRadius: '50%',
-                                                animation: 'spin 0.8s linear infinite',
-                                            }} />
-                                        ) : (
-                                            <>
-                                                {user ? 'ลงทะเบียนอบรม' : 'เข้าสู่ระบบเพื่อลงทะเบียน'}
-                                                <HiOutlineChevronRight size={16} />
-                                            </>
-                                        )}
-                                    </button>
+                                    (() => {
+                                        let targetAudience = [];
+                                        try {
+                                            if (course.targetAudience) {
+                                                targetAudience = typeof course.targetAudience === 'string' ? JSON.parse(course.targetAudience) : course.targetAudience;
+                                            }
+                                        } catch (e) {}
+                                        
+                                        const isRestricted = user && targetAudience && targetAudience.length > 0 && !targetAudience.includes(user.userType);
+
+                                        return (
+                                            <button onClick={isRestricted ? undefined : handleRegister} disabled={registering || isRestricted} style={{
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                gap: 8, width: '100%', padding: '14px 0', borderRadius: 12,
+                                                fontSize: 15, fontWeight: 700, color: '#fff',
+                                                background: isRestricted ? '#94a3b8' : 'linear-gradient(135deg, #16a34a, #22c55e)',
+                                                border: 'none', cursor: (registering || isRestricted) ? 'not-allowed' : 'pointer',
+                                                boxShadow: isRestricted ? 'none' : '0 4px 15px rgba(22,163,74,0.3)',
+                                                transition: 'all 0.3s',
+                                                opacity: registering ? 0.7 : 1,
+                                            }}
+                                                onMouseEnter={e => { if (!registering && !isRestricted) { e.target.style.boxShadow = '0 8px 30px rgba(22,163,74,0.4)'; e.target.style.transform = 'translateY(-2px)'; } }}
+                                                onMouseLeave={e => { if (!isRestricted) { e.target.style.boxShadow = '0 4px 15px rgba(22,163,74,0.3)'; e.target.style.transform = 'translateY(0)'; } }}
+                                                title={isRestricted ? 'สงวนสิทธิ์เฉพาะกลุ่มเป้าหมายที่กำหนดเท่านั้น' : ''}
+                                            >
+                                                {registering ? (
+                                                    <div style={{
+                                                        width: 20, height: 20, border: '3px solid rgba(255,255,255,0.3)',
+                                                        borderTopColor: '#fff', borderRadius: '50%',
+                                                        animation: 'spin 0.8s linear infinite',
+                                                    }} />
+                                                ) : isRestricted ? (
+                                                    <>
+                                                        สงวนสิทธิ์เฉพาะกลุ่มเป้าหมาย
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        {user ? 'ลงทะเบียนอบรม' : 'เข้าสู่ระบบเพื่อลงทะเบียน'}
+                                                        <HiOutlineChevronRight size={16} />
+                                                    </>
+                                                )}
+                                            </button>
+                                        );
+                                    })()
                                 )}
 
                                 {course.status !== 'open' && (

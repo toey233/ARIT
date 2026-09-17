@@ -21,6 +21,23 @@ router.post('/', authenticateToken, async (req, res) => {
             return res.status(400).json({ message: 'หลักสูตรนี้ปิดรับสมัครแล้ว' });
         }
 
+        const userCheckForRole = await query('SELECT "userType" FROM users WHERE id = $1', [req.user.id]);
+        if (userCheckForRole.rows.length > 0) {
+            const userType = userCheckForRole.rows[0].userType;
+            let targetAudience = [];
+            try {
+                if (courseCheck.rows[0].targetAudience) {
+                    targetAudience = JSON.parse(courseCheck.rows[0].targetAudience);
+                }
+            } catch (e) {}
+
+            if (targetAudience && targetAudience.length > 0) {
+                if (!targetAudience.includes(userType)) {
+                    return res.status(403).json({ message: 'หลักสูตรนี้สงวนสิทธิ์เฉพาะกลุ่มเป้าหมายที่กำหนดเท่านั้น' });
+                }
+            }
+        }
+
         const existingReg = await query(
             'SELECT id FROM registrations WHERE "userId" = $1 AND "courseId" = $2',
             [req.user.id, courseId]
