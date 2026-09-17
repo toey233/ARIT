@@ -180,12 +180,12 @@ export default function Register() {
                                     <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
                                     <select name="userType" value={form.userType} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.userType ? '#fff' : '#9ca3af' }}>
                                         <option value="" disabled className="bg-surface-800 text-surface-400">เลือกประเภทผู้ใช้งาน</option>
-                                        <option value="นักศึกษา" className="bg-surface-800 text-white">1. นักศึกษา</option>
-                                        <option value="ปริญญาโท" className="bg-surface-800 text-white">2. ปริญญาโท</option>
-                                        <option value="ปริญญาเอก" className="bg-surface-800 text-white">3. ปริญญาเอก</option>
-                                        <option value="บุคคลภายนอก" className="bg-surface-800 text-white">4. บุคคลภายนอก</option>
-                                        <option value="อาจารย์" className="bg-surface-800 text-white">5. อาจารย์</option>
-                                        <option value="บุคลากร" className="bg-surface-800 text-white">6. บุคลากร</option>
+                                        <option value="นักศึกษาปริญญาตรี" className="bg-surface-800 text-white">1. นักศึกษาปริญญาตรี</option>
+                                        <option value="นักศึกษาปริญญาโท" className="bg-surface-800 text-white">2. นักศึกษาปริญญาโท</option>
+                                        <option value="นักศึกษาปริญญาเอก" className="bg-surface-800 text-white">3. นักศึกษาปริญญาเอก</option>
+                                        <option value="อาจารย์" className="bg-surface-800 text-white">4. อาจารย์</option>
+                                        <option value="บุคคลภายใน" className="bg-surface-800 text-white">5. บุคคลภายใน</option>
+                                        <option value="บุคคลภายนอก" className="bg-surface-800 text-white">6. บุคคลภายนอก</option>
                                     </select>
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
                                 </div>

@@ -224,12 +224,12 @@ export default function ProfileModal({ user, onClose }) {
                                 onChange={e => setFormData({...formData, userType: e.target.value})} 
                             >
                                 <option value="">เลือกประเภทผู้ใช้งาน</option>
-                                <option value="นักศึกษา">1. นักศึกษา</option>
-                                <option value="ปริญญาโท">2. ปริญญาโท</option>
-                                <option value="ปริญญาเอก">3. ปริญญาเอก</option>
-                                <option value="บุคคลภายนอก">4. บุคคลภายนอก</option>
-                                <option value="อาจารย์">5. อาจารย์</option>
-                                <option value="บุคลากร">6. บุคลากร</option>
+                                <option value="นักศึกษาปริญญาตรี">1. นักศึกษาปริญญาตรี</option>
+                                <option value="นักศึกษาปริญญาโท">2. นักศึกษาปริญญาโท</option>
+                                <option value="นักศึกษาปริญญาเอก">3. นักศึกษาปริญญาเอก</option>
+                                <option value="อาจารย์">4. อาจารย์</option>
+                                <option value="บุคคลภายใน">5. บุคคลภายใน</option>
+                                <option value="บุคคลภายนอก">6. บุคคลภายนอก</option>
                             </select>
                         ) : (
                             <div style={S.value}>{formData.userType || '-'}</div>
