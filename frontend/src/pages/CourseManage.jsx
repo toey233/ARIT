@@ -15,7 +15,7 @@ const CATEGORY_COLORS = {
 };
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
-const TARGET_AUDIENCES = ['นักศึกษา', 'ปริญญาโท', 'ปริญญาเอก', 'บุคคลภายนอก', 'อาจารย์', 'บุคลากร'];
+const TARGET_AUDIENCES = ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก'];
 
 const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false, targetAudience: [] };
 

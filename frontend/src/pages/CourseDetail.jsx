@@ -180,7 +180,7 @@ export default function CourseDetail() {
                                 {course.category ? `สายวิชาการ : เพื่อ${course.category} และตำแหน่งทางวิชาการ` : 'บุคลากรทุกสายงานที่สนใจ'}
                             </p>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 12 }}>
-                                {['อาจารย์', 'บุคลากร', 'นักศึกษา', 'บุคคลทั่วไป'].map(tag => (
+                                {(course.targetAudience?.length > 0 ? course.targetAudience : ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก']).map(tag => (
                                     <span key={tag} style={{
                                         padding: '6px 16px', borderRadius: 50,
                                         fontSize: 12, fontWeight: 600, color: '#8b5cf6',
