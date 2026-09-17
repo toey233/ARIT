@@ -297,12 +297,14 @@ export default function Courses() {
                                             <div style={{
                                                 width: 28, height: 28, borderRadius: 8,
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                background: course.startDate && new Date(course.startDate) < new Date() ? 'rgba(220,38,38,0.08)' : 'rgba(245,158,11,0.08)', flexShrink: 0,
+                                                background: (course.startDate && new Date(course.startDate) < new Date()) || remaining <= 0 ? 'rgba(220,38,38,0.08)' : 'rgba(245,158,11,0.08)', flexShrink: 0,
                                             }}>
-                                                <HiOutlineClock size={14} color={course.startDate && new Date(course.startDate) < new Date() ? '#dc2626' : '#f59e0b'} />
+                                                <HiOutlineClock size={14} color={(course.startDate && new Date(course.startDate) < new Date()) || remaining <= 0 ? '#dc2626' : '#f59e0b'} />
                                             </div>
                                             {course.startDate && new Date(course.startDate) < new Date() ? (
                                                 <span style={{ color: '#dc2626', fontWeight: 600 }}>สิ้นสุดการลงทะเบียน</span>
+                                            ) : remaining <= 0 ? (
+                                                <span style={{ color: '#dc2626', fontWeight: 600 }}>เต็มแล้ว</span>
                                             ) : (
                                                 <span>ลงทะเบียนถึง: {formatDate(course.startDate)}</span>
                                             )}
