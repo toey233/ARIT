@@ -93,7 +93,7 @@ export default function MyRegistrations() {
                             <HiOutlineBookOpen size={32} />
                         </div>
                         <h2 style={{ fontSize: 'clamp(28px, 4vw, 36px)', fontWeight: 800, color: '#1e293b', marginBottom: 12, letterSpacing: '-0.5px' }}>
-                            คลังการลงทะเบียนของฉัน
+                            การลงทะเบียนของฉัน
                         </h2>
                         <p style={{ fontSize: 16, color: '#64748b', maxWidth: 900, margin: '0 auto', lineHeight: 1.6 }}>
                             รวบรวมประวัติการลงทะเบียนและหลักสูตรที่คุณได้เข้าร่วม เพื่อพัฒนาศักยภาพของคุณอย่างต่อเนื่อง
