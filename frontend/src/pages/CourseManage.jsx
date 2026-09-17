@@ -364,29 +364,9 @@ export default function CourseManage() {
                             </div>
                             
                             <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">
-                                <h3 className="text-md font-semibold text-surface-700 mb-3">ชื่อ วิทยากร / แนบรูป ลายเซ็น</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <h3 className="text-md font-semibold text-surface-700 mb-3">ชื่อ วิทยากร</h3>
+                                <div className="grid grid-cols-1 gap-4">
                                     <div><label className="block text-sm font-semibold text-surface-700 mb-1">ผู้สอน</label><input name="instructor" value={form.instructor} onChange={handleChange} className="input-field" /></div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-surface-700 mb-1">อัปโหลดรูปลายเซ็นผู้สอน (ตัดพื้นหลังและประทับตราอัตโนมัติ)</label>
-                                        <div className="flex items-start gap-4">
-                                            <label className="flex-1 cursor-pointer">
-                                                <div className="border-2 border-dashed border-surface-600 rounded-xl p-3 text-center hover:border-primary-500 transition-colors bg-surface-50">
-                                                    <HiOutlinePhotograph className="w-6 h-6 text-surface-600 mx-auto mb-1" />
-                                                    <p className="text-xs font-medium text-surface-700">คลิกเพื่ออัปโหลดลายเซ็น</p>
-                                                </div>
-                                                <input type="file" accept="image/*" onChange={(e) => processSignature(e.target.files[0], 'instructorSignature')} className="hidden" />
-                                            </label>
-                                            {form.instructorSignature && (
-                                                <div className="relative w-32 h-16 rounded-lg overflow-hidden border border-surface-600 flex-shrink-0 bg-white" style={{ backgroundImage: 'linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)', backgroundSize: '10px 10px', backgroundPosition: '0 0, 0 5px, 5px -5px, -5px 0px' }}>
-                                                    <img src={form.instructorSignature} alt="instructor-sig" className="w-full h-full object-contain relative z-10" />
-                                                    <button type="button" onClick={() => setForm(prev => ({ ...prev, instructorSignature: '' }))} className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center text-xs z-20 shadow-md">
-                                                        <HiOutlineX className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             
