@@ -96,7 +96,7 @@ export default function MyRegistrations() {
                             คลังการลงทะเบียนของฉัน
                         </h2>
                         <p style={{ fontSize: 16, color: '#64748b', maxWidth: 600, margin: '0 auto', lineHeight: 1.6 }}>
-                            รวบรวมประวัติการลงทะเบียนและหลักสูตรที่คุณได้เข้าร่วม เพื่อพัฒนาศักยภาพของคุณ<span style={{ whiteSpace: 'nowrap' }}>อย่างต่อเนื่อง</span>
+                            รวบรวมประวัติการลงทะเบียนและหลักสูตรที่คุณได้เข้าร่วม เพื่อพัฒนาศักยภาพ<span style={{ whiteSpace: 'nowrap' }}>ของคุณอย่างต่อเนื่อง</span>
                         </p>
                     </div>
 
