@@ -17,6 +17,15 @@ const CATEGORY_COLORS = {
 };
 const getCatColor = (cat) => CATEGORY_COLORS[cat] || '#2563eb';
 
+const COURSE_CATEGORIES = [
+    'การอบรมเชิงปฏิบัติการ',
+    'การใช้งานห้องสมุดเเละทรัพยากรเเละสารสนเทศ',
+    'การสืบค้นสารสนเทศ',
+    'ทักษะดิจิทัลเเละเทคโนโลยี',
+    'การเรียนรู้ตามอัธยาศัย',
+    'การพัฒนาสมรรถนะของบุคลากร'
+];
+
 const TARGET_AUDIENCES = ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก'];
 
 const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false, targetAudience: [] };
@@ -30,6 +39,7 @@ export default function CourseManage() {
     const [showForm, setShowForm] = useState(false); // ควบคุมการเปิด/ปิดฟอร์มเพิ่ม-แก้ไข
     const [editId, setEditId] = useState(null);
     const [form, setForm] = useState(emptyForm);
+    const [isOtherCat, setIsOtherCat] = useState(false);
     const [loading, setLoading] = useState(true);
     const [showCourseDetail, setShowCourseDetail] = useState(null);
     const [search, setSearch] = useState('');
@@ -191,6 +201,7 @@ export default function CourseManage() {
             location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || '', customNamePosY: course.customNamePosY || '55%', hideAutoText: course.hideAutoText || false,
             targetAudience: parsedTarget
         });
+        setIsOtherCat(course.category && !COURSE_CATEGORIES.includes(course.category));
         setEditId(course.id); setShowForm(true);
     };
 
@@ -224,7 +235,7 @@ export default function CourseManage() {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="section-title">จัดการหลักสูตร</h1>
-                <button onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); }} className="btn-primary flex items-center gap-2">
+                <button onClick={() => { setShowForm(true); setEditId(null); setForm(emptyForm); setIsOtherCat(false); }} className="btn-primary flex items-center gap-2">
                     <HiOutlinePlus className="w-5 h-5" /> เพิ่มหลักสูตร
                 </button>
             </div>
@@ -290,7 +301,36 @@ export default function CourseManage() {
                             </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">เวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
 
-                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label><input name="category" value={form.category} onChange={handleChange} className="input-field" /></div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">หมวดหมู่</label>
+                                <select 
+                                    className="input-field"
+                                    style={{ marginBottom: isOtherCat ? 8 : 0 }}
+                                    value={isOtherCat ? 'other' : form.category}
+                                    onChange={(e) => {
+                                        if (e.target.value === 'other') {
+                                            setIsOtherCat(true);
+                                            handleChange({ target: { name: 'category', value: '' } });
+                                        } else {
+                                            setIsOtherCat(false);
+                                            handleChange({ target: { name: 'category', value: e.target.value } });
+                                        }
+                                    }}
+                                >
+                                    <option value="">-- เลือกหมวดหมู่ --</option>
+                                    {COURSE_CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                    <option value="other">อื่นๆ</option>
+                                </select>
+                                {isOtherCat && (
+                                    <input 
+                                        name="category" 
+                                        value={form.category} 
+                                        onChange={handleChange} 
+                                        className="input-field" 
+                                        placeholder="โปรดระบุหมวดหมู่..." 
+                                    />
+                                )}
+                            </div>
                             
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-2">กลุ่มเป้าหมาย (เลือกได้มากกว่า 1)</label>
