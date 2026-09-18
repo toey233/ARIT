@@ -770,25 +770,18 @@ export default function HomePage() {
                                                 </div>
                                                 
                                                 {targetAudiences.length > 0 && (
-                                                    <div style={{ marginTop: 12, padding: '8px 10px', background: 'rgba(139,92,246,0.04)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.1)' }}>
-                                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#6d28d9', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                    <div style={{ marginTop: 12, padding: '8px 10px', background: 'rgba(37,99,235,0.04)', borderRadius: 8, border: '1px solid rgba(37,99,235,0.1)' }}>
+                                                        <div style={{ fontSize: 11, fontWeight: 600, color: '#1d4ed8', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
                                                             <HiOutlineUserGroup size={14} /> กลุ่มเป้าหมาย:
                                                         </div>
                                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                                                            {targetAudiences.slice(0, 3).map(tag => (
+                                                            {targetAudiences.map(tag => (
                                                                 <span key={tag} style={{
                                                                     padding: '2px 8px', borderRadius: 50,
-                                                                    fontSize: 10, fontWeight: 600, color: '#6d28d9',
-                                                                    background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
+                                                                    fontSize: 10, fontWeight: 600, color: '#1d4ed8',
+                                                                    background: '#eff6ff', border: '1px solid #bfdbfe',
                                                                 }}>{tag}</span>
                                                             ))}
-                                                            {targetAudiences.length > 3 && (
-                                                                <span style={{
-                                                                    padding: '2px 6px', borderRadius: 50,
-                                                                    fontSize: 10, fontWeight: 600, color: '#6d28d9',
-                                                                    background: 'rgba(139,92,246,0.08)',
-                                                                }}>+{targetAudiences.length - 3}</span>
-                                                            )}
                                                         </div>
                                                     </div>
                                                 )}
