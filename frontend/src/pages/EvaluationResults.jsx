@@ -634,13 +634,6 @@ export default function EvaluationResults() {
                             <HiOutlineDownload className="w-4 h-4" />
                             ดาวน์โหลด Excel
                         </button>
-                        <button
-                            onClick={() => exportToPDF('pdf-content-evaluation', 'evaluation_summary.pdf')}
-                            className="bg-red-500 hover:bg-red-600 text-white text-xs py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm font-semibold transition-all"
-                        >
-                            <HiOutlineDownload className="w-4 h-4" />
-                            ดาวน์โหลด PDF
-                        </button>
                     </div>
                 )}
             </div>

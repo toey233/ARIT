@@ -114,10 +114,6 @@ export default function Reports() {
                         <HiOutlineDownload className="w-5 h-5 text-emerald-400" />
                         (Excel)
                     </button>
-                    <button onClick={() => exportToPDF('pdf-content-reports', 'reports.pdf')} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-500/15 text-red-500 border border-red-500/25 hover:bg-red-500/25 transition-all outline-none">
-                        <HiOutlineDownload className="w-5 h-5" />
-                        (PDF)
-                    </button>
                 </div>
             </div>
 
