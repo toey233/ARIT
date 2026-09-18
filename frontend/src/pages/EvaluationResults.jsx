@@ -342,7 +342,7 @@ export default function EvaluationResults() {
                 trendData
             };
         }
-        return { summary, evaluations: evalsArray, trendData };
+        return { summary, evaluations: evalsArray };
     };
 
     // Recompute filtered data whenever dateFilter, custom dates, or rawEvaluations change
