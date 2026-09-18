@@ -131,18 +131,21 @@ export default function HomePage() {
         }
     }, [loading, location.hash]);
 
-    // Auto-scroll news
+    // Auto-scroll news (loop back to start)
     useEffect(() => {
         const container = newsScrollRef.current;
         if (!container || newsHovered || news.length === 0) return;
         const timer = setInterval(() => {
-            // If scrolled to the end, reset to start
-            if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+            const maxScroll = container.scrollWidth - container.clientWidth;
+            if (maxScroll <= 0) return; // ไม่ต้องเลื่อนถ้าเนื้อหาน้อยกว่าพื้นที่
+            
+            // ถ้าเลื่อนไปจนสุดแล้ว ให้กลับมาที่เริ่มต้น
+            if (container.scrollLeft >= maxScroll - 1) {
                 container.scrollLeft = 0;
             } else {
-                container.scrollLeft += 2; // Increased speed from 1 to 2
+                container.scrollLeft += 1;
             }
-        }, 15); // Slightly decreased interval from 20 to 15 for smoother animation
+        }, 20);
         return () => clearInterval(timer);
     }, [newsHovered, news]);
 
