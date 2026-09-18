@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
+import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineStar, HiStar, HiOutlineChartBar, HiOutlineUserGroup, HiOutlineTrendingUp, HiOutlineDownload } from 'react-icons/hi';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell, Legend } from 'recharts';
 import DatePicker from 'react-datepicker';
@@ -622,17 +623,26 @@ export default function EvaluationResults() {
     if (loading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div></div>;
 
     return (
-        <div className="space-y-6">
+        <div id="pdf-content-evaluation" className="space-y-6">
             <div className="flex items-center justify-between">
                 <h1 className="section-title">ผลการประเมินการอบรม</h1>
                 {allResults && allResults.evaluations.length > 0 && (
-                    <button
-                        onClick={exportToExcel}
-                        className="btn-primary text-xs py-2 px-4 flex items-center gap-2"
-                    >
-                        <HiOutlineDownload className="w-4 h-4" />
-                        ดาวน์โหลด Excel
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={exportToExcel}
+                            className="btn-primary text-xs py-2 px-4 flex items-center gap-2"
+                        >
+                            <HiOutlineDownload className="w-4 h-4" />
+                            ดาวน์โหลด Excel
+                        </button>
+                        <button
+                            onClick={() => exportToPDF('pdf-content-evaluation', 'evaluation_summary.pdf')}
+                            className="bg-red-500 hover:bg-red-600 text-white text-xs py-2 px-4 rounded-xl flex items-center gap-2 shadow-sm font-semibold transition-all"
+                        >
+                            <HiOutlineDownload className="w-4 h-4" />
+                            ดาวน์โหลด PDF
+                        </button>
+                    </div>
                 )}
             </div>
 

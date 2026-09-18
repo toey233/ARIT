@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import ExcelJS from 'exceljs';
+import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineChartBar, HiOutlineUsers, HiOutlineAcademicCap, HiOutlineClipboardList, HiOutlineStar, HiOutlineDocumentText, HiOutlineDownload } from 'react-icons/hi';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -106,13 +107,19 @@ export default function Reports() {
     };
 
     return (
-        <div className="space-y-8">
+        <div id="pdf-content-reports" className="space-y-8">
             <div className="flex items-center justify-between flex-wrap gap-4">
                 <h1 className="section-title mb-0">รายงานและสถิติ</h1>
-                <button onClick={handleExportExcel} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/25 transition-all outline-none">
-                    <HiOutlineDownload className="w-5 h-5 text-emerald-400" />
-                    ดาวน์โหลด Excel
-                </button>
+                <div className="flex items-center gap-2">
+                    <button onClick={handleExportExcel} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/25 transition-all outline-none">
+                        <HiOutlineDownload className="w-5 h-5 text-emerald-400" />
+                        (Excel)
+                    </button>
+                    <button onClick={() => exportToPDF('pdf-content-reports', 'reports.pdf')} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-500/15 text-red-500 border border-red-500/25 hover:bg-red-500/25 transition-all outline-none">
+                        <HiOutlineDownload className="w-5 h-5" />
+                        (PDF)
+                    </button>
+                </div>
             </div>
 
             {overview && (

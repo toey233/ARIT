@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineCheck, HiOutlineX, HiOutlineSearch, HiOutlineFilter, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineDownload } from 'react-icons/hi';
 import ExcelJS from 'exceljs';
 
@@ -156,7 +157,11 @@ export default function RegistrationManage() {
                 <div className="flex items-center gap-3">
                     <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white border border-surface-200 text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-all shadow-sm">
                         <HiOutlineDownload className="w-5 h-5" />
-                        ดาวน์โหลดรายชื่อ (Excel)
+                        (Excel)
+                    </button>
+                    <button onClick={() => exportToPDF('pdf-content-registration', 'registration_report.pdf')} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-all shadow-sm">
+                        <HiOutlineDownload className="w-5 h-5" />
+                        (PDF)
                     </button>
                     <span className="text-sm text-surface-600 font-semibold bg-surface-100 px-3 py-1.5 rounded-lg">ทั้งหมด {filtered.length} รายการ</span>
                 </div>
@@ -222,8 +227,9 @@ export default function RegistrationManage() {
                 )}
             </div>
 
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+            <div id="pdf-content-registration" className="glass-card p-0 overflow-hidden" style={{ minHeight: '600px' }}>
+                <div style={{ overflowX: 'auto' }}>
+                    <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="border-b border-surface-300">
                             <th className="text-left py-3 px-4 text-surface-700 font-bold">ผู้สมัคร</th>
