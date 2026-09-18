@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import { HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlinePhotograph, HiOutlineEye, HiOutlineSearch, HiOutlineFilter, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineExclamation } from 'react-icons/hi';
 import CourseDetailModal from '../components/CourseDetailModal';
 import { useAuth } from '../context/AuthContext';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const CATEGORY_COLORS = {
     'คอมพิวเตอร์': '#c0392b',
@@ -249,9 +251,41 @@ export default function CourseManage() {
                             </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">วันที่ทำการอบรม</label>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                    <input type="date" name="trainingDateStart" value={form.trainingDateStart} min={editId ? undefined : todayDateStr} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
+                                    <DatePicker
+                                        selected={form.trainingDateStart ? new Date(form.trainingDateStart) : null}
+                                        onChange={(date) => {
+                                            if (date) {
+                                                const d = new Date(date);
+                                                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                handleChange({ target: { name: 'trainingDateStart', value: d.toISOString().split('T')[0] } });
+                                            } else {
+                                                handleChange({ target: { name: 'trainingDateStart', value: '' } });
+                                            }
+                                        }}
+                                        minDate={editId ? undefined : new Date()}
+                                        dateFormat="dd/MM/yyyy"
+                                        className="input-field"
+                                        placeholderText="dd/mm/yyyy"
+                                        wrapperClassName="flex-1 w-full"
+                                    />
                                     <span className="text-surface-700 font-medium text-sm">ถึง</span>
-                                    <input type="date" name="trainingDateEnd" value={form.trainingDateEnd} min={form.trainingDateStart || (editId ? undefined : todayDateStr)} onChange={handleChange} className="input-field" style={{ flex: 1 }} />
+                                    <DatePicker
+                                        selected={form.trainingDateEnd ? new Date(form.trainingDateEnd) : null}
+                                        onChange={(date) => {
+                                            if (date) {
+                                                const d = new Date(date);
+                                                d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                                handleChange({ target: { name: 'trainingDateEnd', value: d.toISOString().split('T')[0] } });
+                                            } else {
+                                                handleChange({ target: { name: 'trainingDateEnd', value: '' } });
+                                            }
+                                        }}
+                                        minDate={form.trainingDateStart ? new Date(form.trainingDateStart) : (editId ? undefined : new Date())}
+                                        dateFormat="dd/MM/yyyy"
+                                        className="input-field"
+                                        placeholderText="dd/mm/yyyy"
+                                        wrapperClassName="flex-1 w-full"
+                                    />
                                 </div>
                             </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">เวลาอบรม</label><input name="duration" value={form.duration} onChange={handleChange} className="input-field" placeholder="เช่น 2 วัน (12 ชั่วโมง)" /></div>
@@ -288,7 +322,28 @@ export default function CourseManage() {
                                 </div>
                             </div>
                             
-                            <div><label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label><input type="datetime-local" name="startDate" value={form.startDate} onChange={handleChange} className="input-field" /></div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ลงทะเบียนถึงวันที่ *</label>
+                                <DatePicker
+                                    selected={form.startDate ? new Date(form.startDate) : null}
+                                    onChange={(date) => {
+                                        if (date) {
+                                            const d = new Date(date);
+                                            d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                            handleChange({ target: { name: 'startDate', value: d.toISOString().slice(0, 16) } });
+                                        } else {
+                                            handleChange({ target: { name: 'startDate', value: '' } });
+                                        }
+                                    }}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={15}
+                                    dateFormat="dd/MM/yyyy HH:mm"
+                                    className="input-field w-full"
+                                    placeholderText="dd/mm/yyyy --:--"
+                                    wrapperClassName="w-full"
+                                />
+                            </div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">สถานที่</label><input name="location" value={form.location} onChange={handleChange} className="input-field" /></div>
                             <div><label className="block text-sm font-semibold text-surface-700 mb-1">จำนวนรับ (คน)</label><input type="number" name="maxParticipants" value={form.maxParticipants} onChange={handleChange} className="input-field" /></div>
                             <div className="md:col-span-2"><label className="block text-sm font-semibold text-surface-700 mb-1">เอกสาร/อุปกรณ์</label><input name="materials" value={form.materials} onChange={handleChange} className="input-field" /></div>

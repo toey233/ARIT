@@ -5,6 +5,8 @@ import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
 import { HiOutlineStar, HiStar, HiOutlineChartBar, HiOutlineUserGroup, HiOutlineTrendingUp, HiOutlineDownload } from 'react-icons/hi';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell, Legend } from 'recharts';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 // คอมโพเนนต์กราฟแท่งแนวนอน (BarChart) ทำขึ้นมาใช้งานเองแบบง่ายๆ
 const BarChart = ({ data, maxValue = 5, label }) => (
@@ -649,18 +651,37 @@ export default function EvaluationResults() {
 
                 {dateFilter === 'custom' && (
                     <div className="flex items-center gap-2">
-                        <input 
-                            type="date" 
-                            className="input-field py-1.5 px-3 text-sm"
-                            value={customStartDate}
-                            onChange={(e) => setCustomStartDate(e.target.value)}
+                        <DatePicker 
+                            selected={customStartDate ? new Date(customStartDate) : null}
+                            onChange={(date) => {
+                                if (date) {
+                                    const d = new Date(date);
+                                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                    setCustomStartDate(d.toISOString().split('T')[0]);
+                                } else {
+                                    setCustomStartDate('');
+                                }
+                            }}
+                            dateFormat="dd/MM/yyyy"
+                            className="input-field py-1.5 px-3 text-sm w-32"
+                            placeholderText="dd/mm/yyyy"
                         />
                         <span className="text-surface-500">-</span>
-                        <input 
-                            type="date" 
-                            className="input-field py-1.5 px-3 text-sm"
-                            value={customEndDate}
-                            onChange={(e) => setCustomEndDate(e.target.value)}
+                        <DatePicker 
+                            selected={customEndDate ? new Date(customEndDate) : null}
+                            onChange={(date) => {
+                                if (date) {
+                                    const d = new Date(date);
+                                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                                    setCustomEndDate(d.toISOString().split('T')[0]);
+                                } else {
+                                    setCustomEndDate('');
+                                }
+                            }}
+                            minDate={customStartDate ? new Date(customStartDate) : undefined}
+                            dateFormat="dd/MM/yyyy"
+                            className="input-field py-1.5 px-3 text-sm w-32"
+                            placeholderText="dd/mm/yyyy"
                         />
                     </div>
                 )}
