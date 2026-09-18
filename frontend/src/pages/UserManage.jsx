@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash, HiOutlineExclamation, HiOutlineSearch } from 'react-icons/hi';
+import { HiOutlineUsers, HiOutlinePencil, HiOutlineTrash, HiOutlineExclamation, HiOutlineSearch, HiOutlinePlus, HiOutlineX } from 'react-icons/hi';
 
 // คอมโพเนนต์หลักสำหรับจัดการข้อมูลผู้ใช้งาน (ค้นหา, เปลี่ยนสิทธิ์, ลบผู้ใช้)
 export default function UserManage() {
@@ -13,6 +13,13 @@ export default function UserManage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const itemsPerPage = 15;
+
+    const emptyAddForm = {
+        firstName: '', lastName: '', email: '', password: '', confirmPassword: '',
+        role: 'user', userType: '', phone: '', studentId: '', department: ''
+    };
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [addForm, setAddForm] = useState(emptyAddForm);
 
     // โหลดข้อมูลผู้ใช้งานทั้งหมดเมื่อเปิดหน้านี้ขึ้นมาครั้งแรก
     useEffect(() => { loadUsers(); }, []);
@@ -25,6 +32,27 @@ export default function UserManage() {
             toast.success('เปลี่ยนสิทธิ์สำเร็จ');
             loadUsers();
         } catch (err) { toast.error(err.response?.data?.message || 'เกิดข้อผิดพลาด'); }
+    };
+
+    const handleAddChange = (e) => {
+        setAddForm({ ...addForm, [e.target.name]: e.target.value });
+    };
+
+    const handleAddSubmit = async (e) => {
+        e.preventDefault();
+        if (addForm.password !== addForm.confirmPassword) {
+            toast.error('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+            return;
+        }
+        try {
+            await api.post('/users', addForm);
+            toast.success('สร้างผู้ใช้สำเร็จ');
+            setShowAddForm(false);
+            setAddForm(emptyAddForm);
+            loadUsers();
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'เกิดข้อผิดพลาดในการสร้างผู้ใช้');
+        }
     };
 
     const [deleteModal, setDeleteModal] = useState(null);
@@ -62,9 +90,88 @@ export default function UserManage() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h1 className="section-title">จัดการผู้ใช้</h1>
-                <span className="text-sm text-surface-600 font-semibold">ทั้งหมด {users.length} คน</span>
+                <div className="flex items-center gap-4">
+                    <h1 className="section-title mb-0">จัดการผู้ใช้</h1>
+                    <span className="text-sm text-surface-600 font-semibold">ทั้งหมด {users.length} คน</span>
+                </div>
+                <button onClick={() => { setShowAddForm(true); setAddForm(emptyAddForm); }} className="btn-primary flex items-center gap-2">
+                    <HiOutlinePlus className="w-5 h-5" /> เพิ่มผู้ใช้
+                </button>
             </div>
+
+            {showAddForm && (
+                <div className="glass-card p-6">
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-lg font-bold text-surface-800">สร้างผู้ใช้ใหม่</h2>
+                        <button onClick={() => setShowAddForm(false)} className="text-surface-500 hover:text-surface-800"><HiOutlineX className="w-5 h-5" /></button>
+                    </div>
+                    <form onSubmit={handleAddSubmit} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ชื่อ *</label>
+                                <input name="firstName" value={addForm.firstName} onChange={handleAddChange} className="input-field" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">นามสกุล *</label>
+                                <input name="lastName" value={addForm.lastName} onChange={handleAddChange} className="input-field" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">อีเมล *</label>
+                                <input type="email" name="email" value={addForm.email} onChange={handleAddChange} className="input-field" required />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">เบอร์โทรศัพท์</label>
+                                <input name="phone" value={addForm.phone} onChange={handleAddChange} className="input-field" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">รหัสผ่าน *</label>
+                                <input type="password" name="password" value={addForm.password} onChange={handleAddChange} className="input-field" required minLength="6" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ยืนยันรหัสผ่าน *</label>
+                                <input type="password" name="confirmPassword" value={addForm.confirmPassword} onChange={handleAddChange} className="input-field" required minLength="6" />
+                            </div>
+                            
+                            <div className="md:col-span-2 border-t border-surface-200 pt-4 mt-2">
+                                <h3 className="text-md font-semibold text-surface-700 mb-3">ข้อมูลเพิ่มเติมและสิทธิ์</h3>
+                            </div>
+                            
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">ประเภทผู้ใช้</label>
+                                <select name="userType" value={addForm.userType} onChange={handleAddChange} className="input-field">
+                                    <option value="">-- เลือกประเภท --</option>
+                                    <option value="นักศึกษาปริญญาตรี">นักศึกษาปริญญาตรี</option>
+                                    <option value="นักศึกษาปริญญาโท">นักศึกษาปริญญาโท</option>
+                                    <option value="นักศึกษาปริญญาเอก">นักศึกษาปริญญาเอก</option>
+                                    <option value="อาจารย์">อาจารย์</option>
+                                    <option value="บุคคลภายใน">บุคคลภายใน</option>
+                                    <option value="บุคคลภายนอก">บุคคลภายนอก</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">สิทธิ์การใช้งาน (Role) *</label>
+                                <select name="role" value={addForm.role} onChange={handleAddChange} className="input-field" required>
+                                    <option value="user">User (ผู้ใช้ทั่วไป)</option>
+                                    <option value="staff">Staff (เจ้าหน้าที่)</option>
+                                    <option value="admin">Admin (ผู้ดูแลระบบ)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">รหัสนักศึกษา/บุคลากร</label>
+                                <input name="studentId" value={addForm.studentId} onChange={handleAddChange} className="input-field" />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">คณะ/สังกัด</label>
+                                <input name="department" value={addForm.department} onChange={handleAddChange} className="input-field" />
+                            </div>
+                        </div>
+                        <div className="flex gap-3 pt-2">
+                            <button type="submit" className="btn-primary">สร้างผู้ใช้</button>
+                            <button type="button" onClick={() => setShowAddForm(false)} className="btn-secondary">ยกเลิก</button>
+                        </div>
+                    </form>
+                </div>
+            )}
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div 
