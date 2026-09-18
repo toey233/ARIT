@@ -132,7 +132,7 @@ export default function NewsManage() {
                                 {item.isPinned && <span className="badge-warning text-xs">ปักหมุด</span>}
                                 <span className="badge-info text-xs">{item.category}</span>
                             </div>
-                            <h3 className="font-medium text-white truncate">{item.title}</h3>
+                            <h3 className="font-medium text-surface-900 truncate">{item.title}</h3>
                             <p className="text-xs text-surface-500 mt-1">{formatDate(item.createdAt)} · {item.authorName}</p>
                         </div>
                         <div className="flex gap-2 shrink-0">
