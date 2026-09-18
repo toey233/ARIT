@@ -66,7 +66,9 @@ CREATE TABLE IF NOT EXISTS evaluations (
     "contentRating" INTEGER CHECK ("contentRating" >= 1 AND "contentRating" <= 5),
     "instructorRating" INTEGER CHECK ("instructorRating" >= 1 AND "instructorRating" <= 5),
     "facilityRating" INTEGER CHECK ("facilityRating" >= 1 AND "facilityRating" <= 5),
+    "applicationRating" INTEGER CHECK ("applicationRating" >= 1 AND "applicationRating" <= 5),
     comment TEXT DEFAULT '',
+    details TEXT DEFAULT '{}',
     "createdAt" TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE("userId", "courseId")
 );

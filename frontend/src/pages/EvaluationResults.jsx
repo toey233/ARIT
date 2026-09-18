@@ -287,6 +287,7 @@ export default function EvaluationResults() {
         const sumContent = evalsArray.reduce((acc, ev) => acc + (ev.contentRating || ev.rating), 0);
         const sumInstructor = evalsArray.reduce((acc, ev) => acc + (ev.instructorRating || ev.rating), 0);
         const sumFacility = evalsArray.reduce((acc, ev) => acc + (ev.facilityRating || ev.rating), 0);
+        const sumApplication = evalsArray.reduce((acc, ev) => acc + (ev.applicationRating || ev.rating), 0);
 
         const summary = {
             evaluations: evalsArray,
@@ -295,6 +296,7 @@ export default function EvaluationResults() {
             avgContentRating: Number((sumContent / totalResponses).toFixed(2)),
             avgInstructorRating: Number((sumInstructor / totalResponses).toFixed(2)),
             avgFacilityRating: Number((sumFacility / totalResponses).toFixed(2)),
+            avgApplicationRating: Number((sumApplication / totalResponses).toFixed(2)),
         };
 
         if (isAllCourses) {
@@ -338,6 +340,7 @@ export default function EvaluationResults() {
                 avgContent: summary.avgContentRating,
                 avgInstructor: summary.avgInstructorRating,
                 avgFacility: summary.avgFacilityRating,
+                avgApplication: summary.avgApplicationRating,
                 perCourse,
                 trendData
             };
@@ -729,6 +732,7 @@ export default function EvaluationResults() {
                                 { label: 'เนื้อหา', value: allResults.avgContent },
                                 { label: 'วิทยากร', value: allResults.avgInstructor },
                                 { label: 'สถานที่', value: allResults.avgFacility },
+                                { label: 'ประโยชน์', value: allResults.avgApplication },
                             ]} />
                         </div>
 
@@ -794,6 +798,7 @@ export default function EvaluationResults() {
                             <StarDisplay rating={results.summary.avgContentRating} label="เนื้อหาการอบรม" />
                             <StarDisplay rating={results.summary.avgInstructorRating} label="วิทยากร/ผู้สอน" />
                             <StarDisplay rating={results.summary.avgFacilityRating} label="สถานที่/สิ่งอำนวยความสะดวก" />
+                            <StarDisplay rating={results.summary.avgApplicationRating} label="การนำไปใช้ประโยชน์" />
                         </div>
 
                         {/* Mini bar chart for this course */}
@@ -803,6 +808,7 @@ export default function EvaluationResults() {
                                 { label: 'เนื้อหา', value: results.summary.avgContentRating },
                                 { label: 'วิทยากร', value: results.summary.avgInstructorRating },
                                 { label: 'สถานที่', value: results.summary.avgFacilityRating },
+                                { label: 'ประโยชน์', value: results.summary.avgApplicationRating },
                             ]} />
                             <RatingDistribution evaluations={results.evaluations} />
                         </div>
@@ -833,6 +839,7 @@ export default function EvaluationResults() {
                                             <span>เนื้อหา: {ev.contentRating}/5</span>
                                             <span>วิทยากร: {ev.instructorRating}/5</span>
                                             <span>สถานที่: {ev.facilityRating}/5</span>
+                                            <span>ประโยชน์: {ev.applicationRating || ev.rating}/5</span>
                                         </div>
                                     </div>
                                 ))}
