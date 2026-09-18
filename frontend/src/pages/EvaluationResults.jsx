@@ -773,7 +773,7 @@ export default function EvaluationResults() {
                     {/* Summary with gauge */}
                     <div className="glass-card p-6">
                         <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-lg font-semibold text-white">สรุปผลการประเมิน</h2>
+                            <h2 className="text-lg font-bold text-surface-800">สรุปผลการประเมิน</h2>
                             {results.evaluations.length > 0 && (
                                 <button
                                     onClick={exportCourseToExcel}
@@ -810,26 +810,26 @@ export default function EvaluationResults() {
 
                     {/* Comments */}
                     <div className="glass-card p-6">
-                        <h2 className="text-lg font-semibold text-white mb-4">ข้อเสนอแนะ</h2>
+                        <h2 className="text-lg font-bold text-surface-800 mb-4">ข้อเสนอแนะ</h2>
                         {results.evaluations.length === 0 ? (
                             <p className="text-surface-500 text-center py-8">ยังไม่มีผลประเมิน</p>
                         ) : (
-                            <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                            <div className="space-y-3 max-h-[600px] overflow-y-auto pr-2">
                                 {results.evaluations.map(ev => (
-                                    <div key={ev.id} className="p-4 rounded-xl bg-surface-800/50">
+                                    <div key={ev.id} className="p-4 rounded-xl bg-surface-50 border border-surface-200 shadow-sm transition-all hover:border-primary-200 hover:shadow-md">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-xs text-surface-400 font-medium">{ev.userName}</span>
+                                            <span className="text-sm text-primary-700 font-bold">{ev.userName}</span>
                                             <div className="flex gap-0.5">
                                                 {[1, 2, 3, 4, 5].map(n => (
                                                     n <= ev.rating
                                                         ? <HiStar key={n} className="w-3.5 h-3.5 text-yellow-500" />
-                                                        : <HiOutlineStar key={n} className="w-3.5 h-3.5 text-surface-600" />
+                                                        : <HiOutlineStar key={n} className="w-3.5 h-3.5 text-surface-300" />
                                                 ))}
                                             </div>
                                         </div>
-                                        {ev.comment && <p className="text-sm text-surface-300 leading-relaxed">{ev.comment}</p>}
-                                        {!ev.comment && <p className="text-xs text-surface-500 italic">ไม่มีข้อเสนอแนะ</p>}
-                                        <div className="flex gap-4 mt-2 text-xs text-surface-500">
+                                        {ev.comment && <p className="text-sm text-surface-700 leading-relaxed">{ev.comment}</p>}
+                                        {!ev.comment && <p className="text-xs text-surface-400 italic">ไม่มีข้อเสนอแนะ</p>}
+                                        <div className="flex gap-4 mt-3 pt-3 border-t border-surface-200 text-xs text-surface-600 font-medium">
                                             <span>เนื้อหา: {ev.contentRating}/5</span>
                                             <span>วิทยากร: {ev.instructorRating}/5</span>
                                             <span>สถานที่: {ev.facilityRating}/5</span>
