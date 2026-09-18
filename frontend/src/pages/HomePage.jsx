@@ -131,20 +131,18 @@ export default function HomePage() {
         }
     }, [loading, location.hash]);
 
-    // Auto-scroll news (infinite loop)
+    // Auto-scroll news
     useEffect(() => {
         const container = newsScrollRef.current;
         if (!container || newsHovered || news.length === 0) return;
         const timer = setInterval(() => {
-            // Since items are duplicated [...news, ...news], halfway = one full set
-            const halfScroll = container.scrollWidth / 2;
-            if (container.scrollLeft >= halfScroll) {
-                // Instantly jump back to start (seamless because content is duplicated)
+            // If scrolled to the end, reset to start
+            if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
                 container.scrollLeft = 0;
             } else {
-                container.scrollLeft += 1;
+                container.scrollLeft += 2; // Increased speed from 1 to 2
             }
-        }, 20);
+        }, 15); // Slightly decreased interval from 20 to 15 for smoother animation
         return () => clearInterval(timer);
     }, [newsHovered, news]);
 
@@ -1014,8 +1012,8 @@ export default function HomePage() {
                         scrollBehavior: 'smooth', cursor: 'grab',
                     }}
                 >
-                    {/* Duplicate news for infinite-feel scroll */}
-                    {[...news, ...news].map((item, idx) => {
+                    {/* Display news items */}
+                    {news.map((item, idx) => {
                         const catColors = {
                             'ประชาสัมพันธ์': '#2563eb',
                             'กำหนดการ': '#059669',
