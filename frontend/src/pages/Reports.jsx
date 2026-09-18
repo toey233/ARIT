@@ -1,8 +1,7 @@
 // นำเข้าไลบรารีที่จำเป็นสำหรับหน้ารายงานและสถิติ (สำหรับแอดมิน)
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import ExcelJS from 'exceljs';
-import { exportToPDF } from '../utils/pdfExport';
+import * as XLSX from 'xlsx';
 import { HiOutlineChartBar, HiOutlineUsers, HiOutlineAcademicCap, HiOutlineClipboardList, HiOutlineStar, HiOutlineDocumentText, HiOutlineDownload } from 'react-icons/hi';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -114,10 +113,6 @@ export default function Reports() {
                     <button onClick={handleExportExcel} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/25 transition-all outline-none">
                         <HiOutlineDownload className="w-5 h-5 text-emerald-400" />
                         (Excel)
-                    </button>
-                    <button onClick={() => exportToPDF('pdf-content-reports', 'reports.pdf')} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-red-500/15 text-red-500 border border-red-500/25 hover:bg-red-500/25 transition-all outline-none">
-                        <HiOutlineDownload className="w-5 h-5" />
-                        (PDF)
                     </button>
                 </div>
             </div>
