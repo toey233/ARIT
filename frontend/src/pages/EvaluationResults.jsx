@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import ExcelJS from 'exceljs';
 import toast from 'react-hot-toast';
-import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineStar, HiStar, HiOutlineChartBar, HiOutlineUserGroup, HiOutlineTrendingUp, HiOutlineDownload } from 'react-icons/hi';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip as RechartsTooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell, Legend } from 'recharts';
 import DatePicker from 'react-datepicker';

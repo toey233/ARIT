@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
-import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineCheck, HiOutlineX, HiOutlineSearch, HiOutlineFilter, HiOutlineCheckCircle, HiOutlineXCircle, HiOutlineDownload } from 'react-icons/hi';
 import ExcelJS from 'exceljs';
 
@@ -158,10 +157,6 @@ export default function RegistrationManage() {
                     <button onClick={exportToExcel} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white border border-surface-200 text-surface-700 hover:bg-surface-50 hover:text-primary-600 transition-all shadow-sm">
                         <HiOutlineDownload className="w-5 h-5" />
                         (Excel)
-                    </button>
-                    <button onClick={() => exportToPDF('pdf-content-registration', 'registration_report.pdf')} className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-red-50 border border-red-200 text-red-700 hover:bg-red-100 transition-all shadow-sm">
-                        <HiOutlineDownload className="w-5 h-5" />
-                        (PDF)
                     </button>
                     <span className="text-sm text-surface-600 font-semibold bg-surface-100 px-3 py-1.5 rounded-lg">ทั้งหมด {filtered.length} รายการ</span>
                 </div>
@@ -322,8 +317,9 @@ export default function RegistrationManage() {
                     </tbody>
                 </table>
             </div>
+        </div>
 
-            {Math.ceil(filtered.length / itemsPerPage) > 1 && (
+        {Math.ceil(filtered.length / itemsPerPage) > 1 && (
                 <div className="flex justify-center mt-6 gap-2 flex-wrap">
                     {Array.from({ length: Math.ceil(filtered.length / itemsPerPage) }, (_, i) => i + 1).map(page => (
                         <button

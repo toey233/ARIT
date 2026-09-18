@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import ExcelJS from 'exceljs';
-import { exportToPDF } from '../utils/pdfExport';
 import { HiOutlineChartBar, HiOutlineUsers, HiOutlineAcademicCap, HiOutlineClipboardList, HiOutlineStar, HiOutlineDocumentText, HiOutlineDownload } from 'react-icons/hi';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
