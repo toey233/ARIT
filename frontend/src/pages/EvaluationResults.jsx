@@ -763,6 +763,11 @@ export default function EvaluationResults() {
             </div>
 
             {/* ========== SELECTED COURSE RESULTS ========== */}
+            {selectedCourse && !results && (
+                <div className="glass-card p-8 text-center">
+                    <p className="text-surface-500 font-medium">ยังไม่มีข้อมูลผลการประเมินสำหรับหลักสูตรนี้ในช่วงเวลาที่เลือก</p>
+                </div>
+            )}
             {results && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Summary with gauge */}
