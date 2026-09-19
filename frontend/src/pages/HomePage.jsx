@@ -114,7 +114,7 @@ export default function HomePage() {
             api.get('/news').catch(() => ({ data: [] })),
         ]).then(([coursesRes, newsRes]) => {
             setCourses(coursesRes.data);
-            setNews(newsRes.data.slice(0, 10));
+            setNews(newsRes.data.slice(0, 30));
         }).finally(() => setLoading(false));
     }, []);
 
@@ -136,12 +136,14 @@ export default function HomePage() {
         const container = newsScrollRef.current;
         if (!container || newsHovered || news.length === 0) return;
         const timer = setInterval(() => {
-            const maxScroll = container.scrollWidth - container.clientWidth;
-            if (maxScroll <= 0) return; // ไม่ต้องเลื่อนถ้าเนื้อหาน้อยกว่าพื้นที่
+            if (container.scrollWidth <= container.clientWidth) return;
             
-            // ถ้าเลื่อนไปจนสุดแล้ว ให้กลับมาที่เริ่มต้น
-            if (container.scrollLeft >= maxScroll - 1) {
-                container.scrollLeft = 0;
+            // Width of exactly one set of news (half of the total scroll width because we cloned it)
+            const halfScroll = container.scrollWidth / 2;
+            
+            if (container.scrollLeft >= halfScroll) {
+                // Seamlessly jump back to the exact same visual position in the first set
+                container.scrollLeft = container.scrollLeft - halfScroll;
             } else {
                 container.scrollLeft += 1;
             }
@@ -1015,8 +1017,8 @@ export default function HomePage() {
                         scrollBehavior: 'smooth', cursor: 'grab',
                     }}
                 >
-                    {/* Display news items */}
-                    {news.map((item, idx) => {
+                    {/* Display news items (Cloned for seamless infinite scroll) */}
+                    {[...news, ...news].map((item, idx) => {
                         const catColors = {
                             'ประชาสัมพันธ์': '#2563eb',
                             'กำหนดการ': '#059669',
