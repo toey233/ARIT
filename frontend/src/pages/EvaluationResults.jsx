@@ -408,27 +408,27 @@ export default function EvaluationResults() {
                 { header: 'หลักสูตร', key: 'courseName', width: 35 },
                 { header: 'ผู้ประเมิน', key: 'userName', width: 22 },
                 { header: 'คะแนนรวม', key: 'rating', width: 12 },
-                { header: 'เนื้อหา(รวม)', key: 'contentRating', width: 10 },
-                { header: 'วิทยากร(รวม)', key: 'instructorRating', width: 10 },
-                { header: 'สถานที่(รวม)', key: 'facilityRating', width: 10 },
-                { header: '1.1 เนื้อหาตรงตามวัตถุประสงค์', key: 'c1', width: 15 },
-                { header: '1.2 การจัดลำดับเนื้อหาเข้าใจง่าย', key: 'c2', width: 15 },
-                { header: '1.3 ระยะเวลาอบรมเหมาะสม', key: 'c3', width: 15 },
-                { header: '2.1 วิทยากรมีความรู้ความเชี่ยวชาญ', key: 'i1', width: 15 },
-                { header: '2.2 ถ่ายทอดชัดเจนและน่าสนใจ', key: 'i2', width: 15 },
-                { header: '2.3 เปิดโอกาสให้ซักถาม', key: 'i3', width: 15 },
-                { header: '3.1 เอกสารสื่อประกอบพร้อม', key: 'f1', width: 15 },
-                { header: '3.2 สถานที่ระบบเทคโนโลยีเหมาะสม', key: 'f2', width: 15 },
-                { header: '4.1 ได้รับความรู้ทักษะใหม่', key: 'a1', width: 15 },
-                { header: '4.2 นำไปประยุกต์ใช้ได้จริง', key: 'a2', width: 15 },
+                { header: 'เนื้อหา(รวม)', key: 'contentRating', width: 14 },
+                { header: 'วิทยากร(รวม)', key: 'instructorRating', width: 14 },
+                { header: 'สถานที่(รวม)', key: 'facilityRating', width: 14 },
+                { header: '1.1 เนื้อหาตรงตามวัตถุประสงค์', key: 'c1', width: 25 },
+                { header: '1.2 การจัดลำดับเนื้อหาเข้าใจง่าย', key: 'c2', width: 25 },
+                { header: '1.3 ระยะเวลาอบรมเหมาะสม', key: 'c3', width: 25 },
+                { header: '2.1 วิทยากรมีความรู้ความเชี่ยวชาญ', key: 'i1', width: 30 },
+                { header: '2.2 ถ่ายทอดชัดเจนและน่าสนใจ', key: 'i2', width: 25 },
+                { header: '2.3 เปิดโอกาสให้ซักถาม', key: 'i3', width: 25 },
+                { header: '3.1 เอกสารสื่อประกอบพร้อม', key: 'f1', width: 25 },
+                { header: '3.2 สถานที่ระบบเทคโนโลยีเหมาะสม', key: 'f2', width: 30 },
+                { header: '4.1 ได้รับความรู้ทักษะใหม่', key: 'a1', width: 25 },
+                { header: '4.2 นำไปประยุกต์ใช้ได้จริง', key: 'a2', width: 25 },
                 { header: 'ข้อเสนอแนะ', key: 'comment', width: 40 },
             ];
 
             const headerRow1 = ws1.getRow(1);
             headerRow1.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
             headerRow1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF4F46E5' } };
-            headerRow1.alignment = { vertical: 'middle', horizontal: 'center' };
-            headerRow1.height = 30;
+            headerRow1.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+            headerRow1.height = 45;
 
             // Sort evaluations by courseName then userName
             const sortedEvaluations = [...allResults.evaluations].sort((a, b) => {
@@ -463,6 +463,11 @@ export default function EvaluationResults() {
                     comment: ev.comment || '-',
                 });
                 row.alignment = { vertical: 'middle', wrapText: true };
+                // Center align the score columns (Columns 4 to 17) and the first column (ลำดับ)
+                row.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+                for (let col = 4; col <= 17; col++) {
+                    row.getCell(col).alignment = { vertical: 'middle', horizontal: 'center' };
+                }
             });
 
             // Sheet 2: สรุปรายหลักสูตร
