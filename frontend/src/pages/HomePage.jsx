@@ -114,7 +114,7 @@ export default function HomePage() {
             api.get('/news').catch(() => ({ data: [] })),
         ]).then(([coursesRes, newsRes]) => {
             setCourses(coursesRes.data);
-            setNews(newsRes.data.slice(0, 3));
+            setNews(newsRes.data.slice(0, 10));
         }).finally(() => setLoading(false));
     }, []);
 
