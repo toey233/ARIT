@@ -138,12 +138,12 @@ export default function HomePage() {
         const timer = setInterval(() => {
             if (container.scrollWidth <= container.clientWidth) return;
             
-            // Width of exactly one set of news (half of the total scroll width because we cloned it)
-            const halfScroll = container.scrollWidth / 2;
+            // Exact width of one set of news (item width 340 + gap 24 = 364)
+            const exactHalfScroll = news.length * 364;
             
-            if (container.scrollLeft >= halfScroll) {
+            if (container.scrollLeft >= exactHalfScroll) {
                 // Seamlessly jump back to the exact same visual position in the first set
-                container.scrollLeft = container.scrollLeft - halfScroll;
+                container.scrollLeft = container.scrollLeft - exactHalfScroll;
             } else {
                 container.scrollLeft += 1;
             }
