@@ -2,11 +2,12 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { query } = require('../db-helper');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const { cacheMiddleware } = require('../middleware/cache');
 
 const router = express.Router();
 
 // Get all news (public)
-router.get('/', async (req, res) => {
+router.get('/', cacheMiddleware(60), async (req, res) => {
     try {
         const result = await query(
             `SELECT n.*, u."firstName" || ' ' || u."lastName" AS "authorName"

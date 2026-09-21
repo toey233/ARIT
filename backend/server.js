@@ -5,11 +5,14 @@ const cors = require('cors');
 const path = require('path');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const compression = require('compression');
 const { initCronJobs } = require('./jobs/courseReminderJob');
 
 const app = express();
 // เปิดใช้งาน helmet เพื่อเพิ่มความปลอดภัยให้กับ HTTP headers
 app.use(helmet());
+// บีบอัด Response Body ด้วย Gzip ทำให้ส่งข้อมูลไวขึ้น
+app.use(compression());
 const PORT = process.env.PORT || 5000;
 
 // Setup Rate Limiting (จำกัดจำนวนครั้งการเรียก API เพื่อป้องกันสแปม/DDoS)
@@ -73,7 +76,7 @@ app.listen(PORT, () => {
     // Initialize background jobs (เริ่มรันระบบอัตโนมัติต่างๆ)
     initCronJobs();
 
-    // Auto-migrate database (เพิ่มคอลัมน์ที่ขาดหายไป)
+    // Auto-migrate database (เพิ่มคอลัมน์และสร้าง Index ที่ขาดหายไป)
     const pool = require('./db');
     pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS "profilePicture" TEXT DEFAULT \'\';')
         .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "customNamePosY" VARCHAR(255) DEFAULT \'55%\';'))
@@ -83,6 +86,11 @@ app.listen(PORT, () => {
         .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "targetAudience" TEXT DEFAULT \'[]\';'))
         .then(() => pool.query('ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS details TEXT DEFAULT \'{}\';'))
         .then(() => pool.query('ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS "applicationRating" INTEGER CHECK ("applicationRating" >= 1 AND "applicationRating" <= 5);'))
-        .then(() => console.log('✅ Database schema checked/updated.'))
+        // Create indexes for performance optimization
+        .then(() => pool.query('CREATE INDEX IF NOT EXISTS idx_courses_status ON courses(status);'))
+        .then(() => pool.query('CREATE INDEX IF NOT EXISTS idx_courses_category ON courses(category);'))
+        .then(() => pool.query('CREATE INDEX IF NOT EXISTS idx_news_created_at ON news("createdAt" DESC);'))
+        .then(() => pool.query('CREATE INDEX IF NOT EXISTS idx_registrations_user_course ON registrations("userId", "courseId");'))
+        .then(() => console.log('✅ Database schema and indexes checked/updated.'))
         .catch(err => console.error('❌ Database schema update failed:', err.message));
 });

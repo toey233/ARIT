@@ -2,11 +2,12 @@ const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { query } = require('../db-helper');
 const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const { cacheMiddleware } = require('../middleware/cache');
 
 const router = express.Router();
 
 // Get all courses (public)
-router.get('/', async (req, res) => {
+router.get('/', cacheMiddleware(60), async (req, res) => {
     console.log(`[${new Date().toISOString()}] GET /api/courses`);
     try {
         const result = await query(`

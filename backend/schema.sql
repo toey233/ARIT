@@ -98,9 +98,13 @@ CREATE TABLE IF NOT EXISTS news (
 -- ========== INDEXES ==========
 CREATE INDEX IF NOT EXISTS idx_registrations_user ON registrations("userId");
 CREATE INDEX IF NOT EXISTS idx_registrations_course ON registrations("courseId");
+CREATE INDEX IF NOT EXISTS idx_registrations_user_course ON registrations("userId", "courseId");
 CREATE INDEX IF NOT EXISTS idx_evaluations_course ON evaluations("courseId");
 CREATE INDEX IF NOT EXISTS idx_certificates_user ON certificates("userId");
 CREATE INDEX IF NOT EXISTS idx_news_pinned ON news("isPinned");
+CREATE INDEX IF NOT EXISTS idx_news_created_at ON news("createdAt" DESC);
+CREATE INDEX IF NOT EXISTS idx_courses_status ON courses(status);
+CREATE INDEX IF NOT EXISTS idx_courses_category ON courses(category);
 
 -- ========== NOTIFICATIONS ==========
 CREATE TABLE IF NOT EXISTS notifications (
