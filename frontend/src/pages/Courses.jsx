@@ -372,7 +372,11 @@ export default function Courses() {
                                             }} />
                                         </div>
                                         <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 6, textAlign: 'right' }}>
-                                            ว่างอีก <strong style={{ color: remaining > 5 ? '#10b981' : '#ef4444' }}>{remaining}</strong> ที่
+                                            {remaining <= 0 ? (
+                                                <strong style={{ color: '#ef4444' }}>เต็มแล้ว</strong>
+                                            ) : (
+                                                <>ว่างอีก <strong style={{ color: remaining > 5 ? '#10b981' : '#ef4444' }}>{remaining}</strong> ที่</>
+                                            )}
                                         </div>
                                     </div>
 
