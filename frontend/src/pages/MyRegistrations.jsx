@@ -69,14 +69,21 @@ export default function MyRegistrations() {
         }
         
         const BOM = '\uFEFF'; // Add BOM for Excel UTF-8 compatibility
-        const headers = ['ชื่อหลักสูตร,วันที่อบรม,วันที่ลงทะเบียน,สถานะ'];
-        const csvData = registrations.map(reg => {
+        const headers = ['ลำดับ,ชื่อหลักสูตร,วันที่อบรม,วันที่ลงทะเบียน,สถานะการอนุมัติ,สถานะการประเมิน,หมายเหตุ'];
+        const csvData = registrations.map((reg, index) => {
             const courseDate = formatDate(reg.courseStartDate);
             const regDate = formatDate(reg.registeredAt);
             let statusText = 'รออนุมัติ';
             if (reg.status === 'approved') statusText = 'ผ่านการอนุมัติ';
             else if (reg.status === 'rejected') statusText = 'ไม่อนุมัติ';
-            return `"${reg.courseName}","${courseDate}","${regDate}","${statusText}"`;
+
+            let evalText = '-';
+            if (reg.status === 'approved') {
+                evalText = evalStatus[reg.courseId] ? 'ประเมินแล้ว' : 'รอประเมิน';
+            }
+
+            const remark = reg.rejectReason ? reg.rejectReason.replace(/"/g, '""') : '';
+            return `${index + 1},"${reg.courseName}","${courseDate}","${regDate}","${statusText}","${evalText}","${remark}"`;
         });
         
         const csvContent = BOM + headers.concat(csvData).join('\n');
@@ -171,8 +178,24 @@ export default function MyRegistrations() {
                     {/* Filter and Export Section */}
                     {registrations.length > 0 && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
-                            <button onClick={exportToCSV} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(16,185,129,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                                <HiDownload size={18} /> ดาวน์โหลดเอกสาร (CSV)
+                            <button 
+                                onClick={exportToCSV} 
+                                style={{ 
+                                    display: 'flex', alignItems: 'center', gap: 10, padding: '10px 24px', 
+                                    borderRadius: 14, border: '1px solid rgba(255,255,255,0.2)', 
+                                    background: 'linear-gradient(135deg, #22c55e, #15803d)', 
+                                    color: '#fff', fontSize: 15, fontWeight: 700, cursor: 'pointer', 
+                                    boxShadow: '0 8px 20px rgba(21,128,61,0.3), inset 0 1px 1px rgba(255,255,255,0.3)', 
+                                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                    letterSpacing: '0.3px'
+                                }} 
+                                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(21,128,61,0.4), inset 0 1px 1px rgba(255,255,255,0.4)'; e.currentTarget.style.filter = 'brightness(1.05)'; }} 
+                                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(21,128,61,0.3), inset 0 1px 1px rgba(255,255,255,0.3)'; e.currentTarget.style.filter = 'brightness(1)'; }}
+                            >
+                                <div style={{ background: 'rgba(255,255,255,0.2)', padding: 6, borderRadius: 8, display: 'flex' }}>
+                                    <HiDownload size={20} /> 
+                                </div>
+                                ส่งออกรายงาน Excel (CSV)
                             </button>
                             <select 
                                 value={filterStatus} 
