@@ -12,7 +12,7 @@ import CourseDetailModal from '../components/CourseDetailModal';
 import RegistrantsModal from '../components/RegistrantsModal';
 import EvaluationModal from '../components/EvaluationModal';
 import TopNavbar from '../components/TopNavbar';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'xlsx-js-style';
 
 export default function MyRegistrations() {
     const navigate = useNavigate();
@@ -100,14 +100,58 @@ export default function MyRegistrations() {
 
         // Adjust column widths to make it look spacious and not crammed
         ws['!cols'] = [
-            { wch: 8 },   // ลำดับ
-            { wch: 45 },  // ชื่อหลักสูตร
-            { wch: 20 },  // วันที่อบรม
-            { wch: 20 },  // วันที่ลงทะเบียน
-            { wch: 18 },  // สถานะการอนุมัติ
-            { wch: 18 },  // สถานะการประเมิน
-            { wch: 35 }   // หมายเหตุ
+            { wpx: 60 },   // ลำดับ
+            { wpx: 300 },  // ชื่อหลักสูตร
+            { wpx: 150 },  // วันที่อบรม
+            { wpx: 150 },  // วันที่ลงทะเบียน
+            { wpx: 120 },  // สถานะการอนุมัติ
+            { wpx: 120 },  // สถานะการประเมิน
+            { wpx: 250 }   // หมายเหตุ
         ];
+
+        // Apply styles to all cells
+        const range = XLSX.utils.decode_range(ws['!ref']);
+        for (let R = range.s.r; R <= range.e.r; ++R) {
+            for (let C = range.s.c; C <= range.e.c; ++C) {
+                const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+                if (!ws[cellRef]) continue;
+
+                // Base style for all cells
+                ws[cellRef].s = {
+                    font: { name: 'Arial', sz: 10, color: { rgb: "333333" } },
+                    border: {
+                        top: { style: 'thin', color: { rgb: "E2E8F0" } },
+                        bottom: { style: 'thin', color: { rgb: "E2E8F0" } },
+                        left: { style: 'thin', color: { rgb: "E2E8F0" } },
+                        right: { style: 'thin', color: { rgb: "E2E8F0" } }
+                    },
+                    alignment: { vertical: 'center', wrapText: true }
+                };
+
+                // Header styling
+                if (R === 0) {
+                    ws[cellRef].s.fill = { fgColor: { rgb: "2563EB" } }; // Blue header
+                    ws[cellRef].s.font = { name: 'Arial', sz: 11, bold: true, color: { rgb: "FFFFFF" } };
+                    ws[cellRef].s.alignment.horizontal = 'center';
+                } else {
+                    // Row styling
+                    // Center align specific columns
+                    if (C === 0 || C === 2 || C === 3 || C === 4 || C === 5) {
+                        ws[cellRef].s.alignment.horizontal = 'center';
+                    } else {
+                        ws[cellRef].s.alignment.horizontal = 'left';
+                    }
+                    
+                    // Add subtle background for alternating rows (optional) or color code status
+                    if (C === 4) {
+                        if (ws[cellRef].v === 'ผ่านการอนุมัติ') ws[cellRef].s.font.color = { rgb: "10B981" };
+                        else if (ws[cellRef].v === 'ไม่อนุมัติ') ws[cellRef].s.font.color = { rgb: "EF4444" };
+                        else ws[cellRef].s.font.color = { rgb: "F59E0B" };
+                        ws[cellRef].s.font.bold = true;
+                    }
+                }
+            }
+        }
 
         XLSX.utils.book_append_sheet(wb, ws, 'การลงทะเบียนของฉัน');
         XLSX.writeFile(wb, 'My_Registrations.xlsx');
