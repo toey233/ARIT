@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS courses (
     id TEXT PRIMARY KEY,
     title VARCHAR(500) NOT NULL,
     description TEXT DEFAULT '',
+    objectives TEXT DEFAULT '',
     instructor VARCHAR(255) DEFAULT '',
     "instructorSignature" TEXT DEFAULT '',
     director VARCHAR(255) DEFAULT '',

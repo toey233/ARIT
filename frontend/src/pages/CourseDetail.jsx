@@ -148,11 +148,7 @@ export default function CourseDetail() {
                             วัตถุประสงค์
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                            {[
-                                'เพื่อพัฒนาทักษะและความรู้ด้านเทคโนโลยีสารสนเทศ',
-                                'เพื่อเสริมสร้างความสามารถในการนำเทคโนโลยีไปประยุกต์ใช้',
-                                'เพื่อสร้างเครือข่ายการเรียนรู้ระหว่างบุคลากร',
-                            ].map((obj, i) => (
+                            {course.objectives ? course.objectives.split('\n').filter(line => line.trim()).map((obj, i) => (
                                 <div key={i} style={{
                                     display: 'flex', alignItems: 'flex-start', gap: 12,
                                     padding: '14px 16px', background: '#f0fdf4',
@@ -161,7 +157,9 @@ export default function CourseDetail() {
                                     <HiOutlineCheckCircle size={20} color="#16a34a" style={{ flexShrink: 0, marginTop: 1 }} />
                                     <p style={{ fontSize: 14, color: '#15803d', lineHeight: 1.6 }}>{obj}</p>
                                 </div>
-                            ))}
+                            )) : (
+                                <p style={{ fontSize: 14, color: '#94a3b8' }}>ไม่มีข้อมูลวัตถุประสงค์</p>
+                            )}
                         </div>
                     </div>
                 );

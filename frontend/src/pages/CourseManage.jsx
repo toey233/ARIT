@@ -28,7 +28,7 @@ const COURSE_CATEGORIES = [
 
 const TARGET_AUDIENCES = ['นักศึกษาปริญญาตรี', 'นักศึกษาปริญญาโท', 'นักศึกษาปริญญาเอก', 'อาจารย์', 'บุคคลภายใน', 'บุคคลภายนอก'];
 
-const emptyForm = { title: '', description: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false, targetAudience: [] };
+const emptyForm = { title: '', description: '', objectives: '', instructor: '', instructorSignature: '', director: '', directorSignature: '', startDate: '', endDate: '', location: '', maxParticipants: 30, category: '', materials: '', image: '', topics: '', trainingDate: '', trainingDateStart: '', trainingDateEnd: '', duration: '', certificateBackground: '', customNamePosY: '55%', hideAutoText: false, targetAudience: [] };
 
 // คอมโพเนนต์หลักสำหรับหน้า "จัดการหลักสูตร" (สำหรับผู้ดูแลระบบ เพื่อเพิ่ม/แก้ไข/ลบหลักสูตร)
 export default function CourseManage() {
@@ -196,7 +196,7 @@ export default function CourseManage() {
         } catch(e) { }
 
         setForm({
-            title: course.title, description: course.description, instructor: course.instructor, instructorSignature: course.instructorSignature || '', director: course.director || '', directorSignature: course.directorSignature || '',
+            title: course.title, description: course.description, objectives: course.objectives || '', instructor: course.instructor, instructorSignature: course.instructorSignature || '', director: course.director || '', directorSignature: course.directorSignature || '',
             startDate: course.startDate?.slice(0, 16), endDate: course.endDate?.slice(0, 16),
             location: course.location, maxParticipants: course.maxParticipants, category: course.category, materials: course.materials || '', image: course.image || '', topics: course.topics || '', trainingDate: course.trainingDate || '', trainingDateStart: '', trainingDateEnd: '', duration: course.duration || '', certificateBackground: course.certificateBackground || '', customNamePosY: course.customNamePosY || '55%', hideAutoText: course.hideAutoText || false,
             targetAudience: parsedTarget
@@ -255,6 +255,10 @@ export default function CourseManage() {
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">รายละเอียด *</label>
                                 <textarea name="description" value={form.description} onChange={handleChange} className="input-field h-24 resize-none" />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-semibold text-surface-700 mb-1">วัตถุประสงค์</label>
+                                <textarea name="objectives" value={form.objectives} onChange={handleChange} className="input-field h-20 resize-none" placeholder="ระบุวัตถุประสงค์ (แต่ละข้อขึ้นบรรทัดใหม่)" />
                             </div>
                             <div className="md:col-span-2">
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">หัวข้อการอบรม</label>
