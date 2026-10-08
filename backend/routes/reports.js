@@ -7,7 +7,20 @@ const router = express.Router();
 // Overview statistics (admin)
 router.get('/overview', authenticateToken, authorizeRoles('admin'), async (req, res) => {
     try {
-        const usersResult = await query('SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE role = \'user\') AS students, COUNT(*) FILTER (WHERE role = \'staff\') AS staff, COUNT(*) FILTER (WHERE role = \'admin\') AS admins FROM users');
+        const usersResult = await query(`
+            SELECT 
+                COUNT(*) AS total, 
+                COUNT(*) FILTER (WHERE role = 'user') AS students, 
+                COUNT(*) FILTER (WHERE role = 'staff') AS staff, 
+                COUNT(*) FILTER (WHERE role = 'admin') AS admins,
+                COUNT(*) FILTER (WHERE "userType" = 'นักศึกษาปริญญาตรี') AS ut_bachelor,
+                COUNT(*) FILTER (WHERE "userType" = 'นักศึกษาปริญญาโท') AS ut_master,
+                COUNT(*) FILTER (WHERE "userType" = 'นักศึกษาปริญญาเอก') AS ut_doctorate,
+                COUNT(*) FILTER (WHERE "userType" = 'อาจารย์') AS ut_teacher,
+                COUNT(*) FILTER (WHERE "userType" = 'บุคคลภายใน') AS ut_internal,
+                COUNT(*) FILTER (WHERE "userType" = 'บุคคลภายนอก') AS ut_external
+            FROM users
+        `);
         const coursesResult = await query('SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE status = \'open\') AS open FROM courses');
         const regsResult = await query('SELECT COUNT(*) AS total, COUNT(*) FILTER (WHERE status = \'pending\') AS pending, COUNT(*) FILTER (WHERE status = \'approved\') AS approved, COUNT(*) FILTER (WHERE status = \'rejected\') AS rejected FROM registrations');
         const evalsResult = await query('SELECT COUNT(*) AS total, COALESCE(AVG(rating), 0) AS avg_rating FROM evaluations');
@@ -24,6 +37,12 @@ router.get('/overview', authenticateToken, authorizeRoles('admin'), async (req, 
             totalStudents: parseInt(u.students),
             totalStaff: parseInt(u.staff),
             totalAdmins: parseInt(u.admins),
+            ut_bachelor: parseInt(u.ut_bachelor || 0),
+            ut_master: parseInt(u.ut_master || 0),
+            ut_doctorate: parseInt(u.ut_doctorate || 0),
+            ut_teacher: parseInt(u.ut_teacher || 0),
+            ut_internal: parseInt(u.ut_internal || 0),
+            ut_external: parseInt(u.ut_external || 0),
             totalCourses: parseInt(c.total),
             openCourses: parseInt(c.open),
             totalRegistrations: parseInt(r.total),

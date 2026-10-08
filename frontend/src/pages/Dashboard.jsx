@@ -98,6 +98,39 @@ export default function Dashboard() {
                 </div>
             )}
 
+            {/* Admin User Types Stats */}
+            {user?.role === 'admin' && stats && (
+                <div className="mt-6">
+                    <h2 className="section-title mb-4">จำนวนผู้ใช้งานแต่ละประเภท</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                        <div className="stat-card bg-indigo-50/30 border-indigo-100">
+                            <span className="text-xs font-bold text-indigo-700 block mb-1">1. นักศึกษาปริญญาตรี</span>
+                            <span className="text-2xl font-bold text-indigo-600">{stats.ut_bachelor} <span className="text-xs font-medium text-indigo-400">คน</span></span>
+                        </div>
+                        <div className="stat-card bg-violet-50/30 border-violet-100">
+                            <span className="text-xs font-bold text-violet-700 block mb-1">2. นักศึกษาปริญญาโท</span>
+                            <span className="text-2xl font-bold text-violet-600">{stats.ut_master} <span className="text-xs font-medium text-violet-400">คน</span></span>
+                        </div>
+                        <div className="stat-card bg-fuchsia-50/30 border-fuchsia-100">
+                            <span className="text-xs font-bold text-fuchsia-700 block mb-1">3. นักศึกษาปริญญาเอก</span>
+                            <span className="text-2xl font-bold text-fuchsia-600">{stats.ut_doctorate} <span className="text-xs font-medium text-fuchsia-400">คน</span></span>
+                        </div>
+                        <div className="stat-card bg-blue-50/30 border-blue-100">
+                            <span className="text-xs font-bold text-blue-700 block mb-1">4. อาจารย์</span>
+                            <span className="text-2xl font-bold text-blue-600">{stats.ut_teacher} <span className="text-xs font-medium text-blue-400">คน</span></span>
+                        </div>
+                        <div className="stat-card bg-emerald-50/30 border-emerald-100">
+                            <span className="text-xs font-bold text-emerald-700 block mb-1">5. บุคคลภายใน</span>
+                            <span className="text-2xl font-bold text-emerald-600">{stats.ut_internal} <span className="text-xs font-medium text-emerald-400">คน</span></span>
+                        </div>
+                        <div className="stat-card bg-amber-50/30 border-amber-100">
+                            <span className="text-xs font-bold text-amber-700 block mb-1">6. บุคคลภายนอก</span>
+                            <span className="text-2xl font-bold text-amber-600">{stats.ut_external} <span className="text-xs font-medium text-amber-400">คน</span></span>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Quick Actions */}
             <div>
                 <h2 className="section-title mb-4">เมนูลัด</h2>
