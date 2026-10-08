@@ -4,8 +4,8 @@ const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Overview statistics (admin)
-router.get('/overview', authenticateToken, authorizeRoles('admin'), async (req, res) => {
+// Overview statistics (admin and staff)
+router.get('/overview', authenticateToken, authorizeRoles('admin', 'staff'), async (req, res) => {
     try {
         const usersResult = await query(`
             SELECT 

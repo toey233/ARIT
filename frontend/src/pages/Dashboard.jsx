@@ -27,7 +27,7 @@ export default function Dashboard() {
             setCourses(coursesRes.data.slice(0, 4));
             setNews(newsRes.data.slice(0, 3));
 
-            if (user?.role === 'admin') {
+            if (['admin', 'staff'].includes(user?.role)) {
                 const statsRes = await api.get('/reports/overview');
                 setStats(statsRes.data);
             }
@@ -98,8 +98,8 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Admin User Types Stats */}
-            {user?.role === 'admin' && stats && (
+            {/* Admin/Staff User Types Stats */}
+            {['admin', 'staff'].includes(user?.role) && stats && (
                 <div className="mt-6">
                     <h2 className="section-title mb-4">จำนวนผู้ใช้งานแต่ละประเภท</h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
