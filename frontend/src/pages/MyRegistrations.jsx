@@ -5,7 +5,8 @@ import toast from 'react-hot-toast';
 import { 
     HiOutlineClipboardList, HiArrowLeft, HiOutlineLibrary, 
     HiOutlineBookOpen, HiOutlineAcademicCap, HiOutlineClock,
-    HiOutlineLocationMarker, HiCheckCircle, HiOutlineExclamationCircle
+    HiOutlineLocationMarker, HiCheckCircle, HiOutlineExclamationCircle,
+    HiDownload
 } from 'react-icons/hi';
 import CourseDetailModal from '../components/CourseDetailModal';
 import RegistrantsModal from '../components/RegistrantsModal';
@@ -61,6 +62,43 @@ export default function MyRegistrations() {
         );
     }
 
+    const exportToCSV = () => {
+        if (registrations.length === 0) {
+            toast.error('ไม่มีข้อมูลให้ดาวน์โหลด');
+            return;
+        }
+        
+        const BOM = '\uFEFF'; // Add BOM for Excel UTF-8 compatibility
+        const headers = ['ชื่อหลักสูตร,วันที่อบรม,วันที่ลงทะเบียน,สถานะ'];
+        const csvData = registrations.map(reg => {
+            const courseDate = formatDate(reg.courseStartDate);
+            const regDate = formatDate(reg.registeredAt);
+            let statusText = 'รออนุมัติ';
+            if (reg.status === 'approved') statusText = 'ผ่านการอนุมัติ';
+            else if (reg.status === 'rejected') statusText = 'ไม่อนุมัติ';
+            return `"${reg.courseName}","${courseDate}","${regDate}","${statusText}"`;
+        });
+        
+        const csvContent = BOM + headers.concat(csvData).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'my_registrations.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const stats = {
+        total: registrations.length,
+        approved: registrations.filter(r => r.status === 'approved').length,
+        rejected: registrations.filter(r => r.status === 'rejected').length,
+        pending: registrations.filter(r => r.status === 'pending').length,
+        evaluated: registrations.filter(r => r.status === 'approved' && evalStatus[r.courseId]).length,
+        pending_evaluation: registrations.filter(r => r.status === 'approved' && !evalStatus[r.courseId]).length,
+    };
+
     const filteredRegistrations = registrations.filter(reg => {
         if (filterStatus === 'all') return true;
         if (filterStatus === 'approved') return reg.status === 'approved';
@@ -100,9 +138,42 @@ export default function MyRegistrations() {
                         </p>
                     </div>
 
-                    {/* Filter Section */}
+                    {/* Stats Section */}
                     {registrations.length > 0 && (
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 16, marginBottom: 32 }}>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>ทั้งหมด</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#1e293b' }}>{stats.total}</div>
+                            </div>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>ผ่านการอนุมัติ</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#10b981' }}>{stats.approved}</div>
+                            </div>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>โดนปฏิเสธ</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#ef4444' }}>{stats.rejected}</div>
+                            </div>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>รออนุมัติ</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#f59e0b' }}>{stats.pending}</div>
+                            </div>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>ประเมินแล้ว</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#3b82f6' }}>{stats.evaluated}</div>
+                            </div>
+                            <div style={{ background: '#fff', borderRadius: 16, padding: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.03)', border: '1px solid #e2e8f0', textAlign: 'center' }}>
+                                <div style={{ fontSize: 13, color: '#64748b', fontWeight: 600, marginBottom: 8 }}>รอประเมิน</div>
+                                <div style={{ fontSize: 28, fontWeight: 800, color: '#8b5cf6' }}>{stats.pending_evaluation}</div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Filter and Export Section */}
+                    {registrations.length > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
+                            <button onClick={exportToCSV} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(16,185,129,0.3)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                                <HiDownload size={18} /> ดาวน์โหลดเอกสาร (CSV)
+                            </button>
                             <select 
                                 value={filterStatus} 
                                 onChange={(e) => {
