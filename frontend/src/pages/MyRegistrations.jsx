@@ -12,6 +12,7 @@ import CourseDetailModal from '../components/CourseDetailModal';
 import RegistrantsModal from '../components/RegistrantsModal';
 import EvaluationModal from '../components/EvaluationModal';
 import TopNavbar from '../components/TopNavbar';
+import * as XLSX from 'xlsx';
 
 export default function MyRegistrations() {
     const navigate = useNavigate();
@@ -64,17 +65,16 @@ export default function MyRegistrations() {
         );
     }
 
-    const exportToCSV = () => {
+    const exportToExcel = () => {
         if (registrations.length === 0) {
             toast.error('ไม่มีข้อมูลให้ดาวน์โหลด');
             return;
         }
         
-        const BOM = '\uFEFF'; // Add BOM for Excel UTF-8 compatibility
-        const headers = ['ลำดับ,ชื่อหลักสูตร,วันที่อบรม,วันที่ลงทะเบียน,สถานะการอนุมัติ,สถานะการประเมิน,หมายเหตุ'];
-        const csvData = registrations.map((reg, index) => {
+        const data = registrations.map((reg, index) => {
             const courseDate = formatDate(reg.courseTrainingDate || reg.courseStartDate);
-            const regDate = formatDate(reg.registeredAt);
+            const regDate = reg.registeredAt ? formatDate(reg.registeredAt) : '-';
+            
             let statusText = 'รออนุมัติ';
             if (reg.status === 'approved') statusText = 'ผ่านการอนุมัติ';
             else if (reg.status === 'rejected') statusText = 'ไม่อนุมัติ';
@@ -84,20 +84,33 @@ export default function MyRegistrations() {
                 evalText = evalStatus[reg.courseId] ? 'ประเมินแล้ว' : 'รอประเมิน';
             }
 
-            const safeCourseName = reg.courseName ? reg.courseName.replace(/"/g, '""') : '';
-            const safeRemark = reg.rejectReason ? reg.rejectReason.replace(/"/g, '""') : '';
-            return `${index + 1},"${safeCourseName}","${courseDate}","${regDate}","${statusText}","${evalText}","${safeRemark}"`;
+            return {
+                'ลำดับ': index + 1,
+                'ชื่อหลักสูตร': reg.courseName || '-',
+                'วันที่อบรม': courseDate,
+                'วันที่ลงทะเบียน': regDate,
+                'สถานะการอนุมัติ': statusText,
+                'สถานะการประเมิน': evalText,
+                'หมายเหตุ': reg.rejectReason || '-'
+            };
         });
-        
-        const csvContent = BOM + headers.concat(csvData).join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'my_registrations.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(data);
+
+        // Adjust column widths to make it look spacious and not crammed
+        ws['!cols'] = [
+            { wch: 8 },   // ลำดับ
+            { wch: 45 },  // ชื่อหลักสูตร
+            { wch: 20 },  // วันที่อบรม
+            { wch: 20 },  // วันที่ลงทะเบียน
+            { wch: 18 },  // สถานะการอนุมัติ
+            { wch: 18 },  // สถานะการประเมิน
+            { wch: 35 }   // หมายเหตุ
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, 'การลงทะเบียนของฉัน');
+        XLSX.writeFile(wb, 'My_Registrations.xlsx');
     };
 
     const stats = {
@@ -182,7 +195,7 @@ export default function MyRegistrations() {
                     {registrations.length > 0 && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16, marginBottom: 20 }}>
                             <button 
-                                onClick={exportToCSV} 
+                                onClick={exportToExcel} 
                                 style={{ 
                                     display: 'flex', alignItems: 'center', gap: 10, padding: '10px 24px', 
                                     borderRadius: 14, border: '1px solid rgba(255,255,255,0.2)', 
@@ -198,7 +211,7 @@ export default function MyRegistrations() {
                                 <div style={{ background: 'rgba(255,255,255,0.2)', padding: 6, borderRadius: 8, display: 'flex' }}>
                                     <HiDownload size={20} /> 
                                 </div>
-                                ส่งออกรายงาน Excel (CSV)
+                                ดาวน์โหลดรายงาน Excel
                             </button>
                             <select 
                                 value={filterStatus} 
