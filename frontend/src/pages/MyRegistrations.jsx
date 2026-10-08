@@ -22,6 +22,7 @@ export default function MyRegistrations() {
     const [confirmCancel, setConfirmCancel] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
+    const [filterStatus, setFilterStatus] = useState('all');
     const itemsPerPage = 7;
 
     useEffect(() => {
@@ -60,6 +61,16 @@ export default function MyRegistrations() {
         );
     }
 
+    const filteredRegistrations = registrations.filter(reg => {
+        if (filterStatus === 'all') return true;
+        if (filterStatus === 'approved') return reg.status === 'approved';
+        if (filterStatus === 'rejected') return reg.status === 'rejected';
+        if (filterStatus === 'pending') return reg.status === 'pending';
+        if (filterStatus === 'evaluated') return reg.status === 'approved' && evalStatus[reg.courseId];
+        if (filterStatus === 'pending_evaluation') return reg.status === 'approved' && !evalStatus[reg.courseId];
+        return true;
+    });
+
     return (
         <div style={{ minHeight: '100vh', background: '#f8fafc', position: 'relative', overflow: 'hidden', fontFamily: "'Noto Sans Thai', sans-serif" }}>
             {/* Library Theme Background Elements */}
@@ -89,20 +100,45 @@ export default function MyRegistrations() {
                         </p>
                     </div>
 
-                    {registrations.length === 0 ? (
+                    {/* Filter Section */}
+                    {registrations.length > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+                            <select 
+                                value={filterStatus} 
+                                onChange={(e) => {
+                                    setFilterStatus(e.target.value);
+                                    setCurrentPage(1); // Reset page on filter change
+                                }}
+                                style={{
+                                    padding: '10px 16px', borderRadius: 12, border: '1px solid #cbd5e1', 
+                                    background: '#fff', color: '#334155', fontSize: 14, fontWeight: 600,
+                                    outline: 'none', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                                }}
+                            >
+                                <option value="all">ดูทั้งหมด</option>
+                                <option value="approved">ผ่านการอนุมัติ</option>
+                                <option value="pending">รออนุมัติ</option>
+                                <option value="rejected">โดนปฏิเสธ</option>
+                                <option value="pending_evaluation">รอทำการประเมิน</option>
+                                <option value="evaluated">ทำการประเมินแล้ว</option>
+                            </select>
+                        </div>
+                    )}
+
+                    {filteredRegistrations.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', borderRadius: 24, border: '1px solid rgba(255,255,255,0.5)', boxShadow: '0 10px 40px rgba(0,0,0,0.03)' }}>
                             <div style={{ width: 80, height: 80, margin: '0 auto 20px', background: '#f1f5f9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <HiOutlineClipboardList size={40} color="#cbd5e1" />
                             </div>
-                            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#334155', marginBottom: 8 }}>ยังไม่มีประวัติการลงทะเบียน</h3>
-                            <p style={{ color: '#94a3b8', marginBottom: 24 }}>คุณยังไม่ได้ลงทะเบียนในหลักสูตรใดๆ กลับไปที่หน้าหลักเพื่อค้นหาหลักสูตรที่น่าสนใจ</p>
+                            <h3 style={{ fontSize: 20, fontWeight: 700, color: '#334155', marginBottom: 8 }}>ยังไม่มีประวัติการลงทะเบียน หรือไม่พบข้อมูลตามเงื่อนไข</h3>
+                            <p style={{ color: '#94a3b8', marginBottom: 24 }}>กรุณาปรับตัวกรองการค้นหา หรือกลับไปที่หน้าหลักเพื่อค้นหาหลักสูตรที่น่าสนใจ</p>
                             <button onClick={() => navigate('/#courses')} style={{ background: 'linear-gradient(135deg, #2563eb, #3b82f6)', color: '#fff', border: 'none', padding: '12px 28px', borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(37,99,235,0.3)' }}>
                                 เรียกดูหลักสูตร
                             </button>
                         </div>
                     ) : (
                         <div style={{ display: 'grid', gap: 20 }}>
-                            {registrations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((reg, idx) => (
+                            {filteredRegistrations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((reg, idx) => (
                                 <div key={reg.id} style={{
                                     background: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(16px)', borderRadius: 20, padding: 24,
                                     boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: '1px solid rgba(255,255,255,1)',
@@ -189,9 +225,9 @@ export default function MyRegistrations() {
                         </div>
                     )}
 
-                    {registrations.length > itemsPerPage && (
+                    {filteredRegistrations.length > itemsPerPage && (
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 32, gap: 8, flexWrap: 'wrap' }}>
-                            {Array.from({ length: Math.ceil(registrations.length / itemsPerPage) }, (_, i) => i + 1).map(page => (
+                            {Array.from({ length: Math.ceil(filteredRegistrations.length / itemsPerPage) }, (_, i) => i + 1).map(page => (
                                 <button
                                     key={page}
                                     onClick={() => setCurrentPage(page)}
