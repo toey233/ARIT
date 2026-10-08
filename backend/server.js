@@ -85,6 +85,7 @@ app.listen(PORT, () => {
         .then(() => pool.query('ALTER TABLE users ADD COLUMN IF NOT EXISTS "userType" VARCHAR(100) DEFAULT \'\';'))
         .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS "targetAudience" TEXT DEFAULT \'[]\';'))
         .then(() => pool.query('ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS details TEXT DEFAULT \'{}\';'))
+        .then(() => pool.query('ALTER TABLE courses ADD COLUMN IF NOT EXISTS objectives TEXT DEFAULT \'\';'))
         .then(() => pool.query('ALTER TABLE evaluations ADD COLUMN IF NOT EXISTS "applicationRating" INTEGER CHECK ("applicationRating" >= 1 AND "applicationRating" <= 5);'))
         // Create indexes for performance optimization
         .then(() => pool.query('CREATE INDEX IF NOT EXISTS idx_courses_status ON courses(status);'))
