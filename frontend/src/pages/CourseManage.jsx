@@ -579,6 +579,7 @@ export default function CourseManage() {
                                         </td>
                                         <td className="py-3 px-4 hidden md:table-cell">
                                             <span style={{
+                                                display: 'inline-block', lineHeight: 1.4,
                                                 padding: '3px 10px', borderRadius: 50, fontSize: 11, fontWeight: 600,
                                                 color: catColor, background: `${catColor}15`, border: `1px solid ${catColor}30`,
                                             }}>{course.category || 'ทั่วไป'}</span>
