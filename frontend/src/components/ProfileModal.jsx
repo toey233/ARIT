@@ -220,12 +220,12 @@ export default function ProfileModal({ user, onClose }) {
                                     onChange={e => setFormData({...formData, userType: e.target.value})} 
                                 >
                                     <option value="">เลือกประเภทผู้ใช้งาน</option>
-                                    <option value="นักศึกษาปริญญาตรี">1. นักศึกษาปริญญาตรี</option>
-                                    <option value="นักศึกษาปริญญาโท">2. นักศึกษาปริญญาโท</option>
-                                    <option value="นักศึกษาปริญญาเอก">3. นักศึกษาปริญญาเอก</option>
-                                    <option value="อาจารย์">4. อาจารย์</option>
-                                    <option value="บุคคลภายใน">5. บุคคลภายใน</option>
-                                    <option value="บุคคลภายนอก">6. บุคคลภายนอก</option>
+                                    <option value="นักศึกษาปริญญาตรี">นักศึกษาปริญญาตรี</option>
+                                    <option value="นักศึกษาปริญญาโท">นักศึกษาปริญญาโท</option>
+                                    <option value="นักศึกษาปริญญาเอก">นักศึกษาปริญญาเอก</option>
+                                    <option value="อาจารย์">อาจารย์</option>
+                                    <option value="บุคคลภายใน">บุคคลภายใน</option>
+                                    <option value="บุคคลภายนอก">บุคคลภายนอก</option>
                                 </select>
                             ) : (
                                 <div style={S.value}>{formData.userType || '-'}</div>
@@ -243,16 +243,16 @@ export default function ProfileModal({ user, onClose }) {
                                         onChange={e => setFormData({...formData, department: e.target.value})} 
                                     >
                                         <option value="">เลือกคณะ/หน่วยงาน</option>
-                                        <option value="คณะวิทยาศาสตร์และเทคโนโลยี">1. คณะวิทยาศาสตร์และเทคโนโลยี</option>
-                                        <option value="คณะครุศาสตร์">2. คณะครุศาสตร์</option>
-                                        <option value="คณะวิทยาการจัดการ">3. คณะวิทยาการจัดการ</option>
-                                        <option value="คณะมนุษยศาสตร์และสังคมศาสตร์">4. คณะมนุษยศาสตร์และสังคมศาสตร์</option>
-                                        <option value="คณะเทคโนโลยีการเกษตร">5. คณะเทคโนโลยีการเกษตร</option>
-                                        <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์">6. คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
-                                        <option value="คณะนิติศาสตร์">7. คณะนิติศาสตร์</option>
-                                        <option value="คณะวิศวกรรมศาสตร์">8. คณะวิศวกรรมศาสตร์</option>
-                                        <option value="คณะพยาบาลศาสตร์">9. คณะพยาบาลศาสตร์</option>
-                                        <option value="บัณฑิตวิทยาลัย">10. บัณฑิตวิทยาลัย</option>
+                                        <option value="คณะวิทยาศาสตร์และเทคโนโลยี">คณะวิทยาศาสตร์และเทคโนโลยี</option>
+                                        <option value="คณะครุศาสตร์">คณะครุศาสตร์</option>
+                                        <option value="คณะวิทยาการจัดการ">คณะวิทยาการจัดการ</option>
+                                        <option value="คณะมนุษยศาสตร์และสังคมศาสตร์">คณะมนุษยศาสตร์และสังคมศาสตร์</option>
+                                        <option value="คณะเทคโนโลยีการเกษตร">คณะเทคโนโลยีการเกษตร</option>
+                                        <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์">คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
+                                        <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
+                                        <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
+                                        <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
+                                        <option value="บัณฑิตวิทยาลัย">บัณฑิตวิทยาลัย</option>
                                     </select>
                                 ) : formData.userType === 'บุคคลภายใน' ? (
                                     <select 

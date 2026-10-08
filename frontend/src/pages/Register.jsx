@@ -197,12 +197,12 @@ export default function Register() {
                                     <HiOutlineUser className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
                                     <select name="userType" value={form.userType} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.userType ? '#fff' : '#9ca3af' }}>
                                         <option value="" disabled className="bg-surface-800 text-surface-400">เลือกประเภทผู้ใช้งาน</option>
-                                        <option value="นักศึกษาปริญญาตรี" className="bg-surface-800 text-white">1. นักศึกษาปริญญาตรี</option>
-                                        <option value="นักศึกษาปริญญาโท" className="bg-surface-800 text-white">2. นักศึกษาปริญญาโท</option>
-                                        <option value="นักศึกษาปริญญาเอก" className="bg-surface-800 text-white">3. นักศึกษาปริญญาเอก</option>
-                                        <option value="อาจารย์" className="bg-surface-800 text-white">4. อาจารย์</option>
-                                        <option value="บุคคลภายใน" className="bg-surface-800 text-white">5. บุคคลภายใน</option>
-                                        <option value="บุคคลภายนอก" className="bg-surface-800 text-white">6. บุคคลภายนอก</option>
+                                        <option value="นักศึกษาปริญญาตรี" className="bg-surface-800 text-white">นักศึกษาปริญญาตรี</option>
+                                        <option value="นักศึกษาปริญญาโท" className="bg-surface-800 text-white">นักศึกษาปริญญาโท</option>
+                                        <option value="นักศึกษาปริญญาเอก" className="bg-surface-800 text-white">นักศึกษาปริญญาเอก</option>
+                                        <option value="อาจารย์" className="bg-surface-800 text-white">อาจารย์</option>
+                                        <option value="บุคคลภายใน" className="bg-surface-800 text-white">บุคคลภายใน</option>
+                                        <option value="บุคคลภายนอก" className="bg-surface-800 text-white">บุคคลภายนอก</option>
                                     </select>
                                     <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
                                 </div>
@@ -216,16 +216,16 @@ export default function Register() {
                                             <>
                                                 <select name="department" value={form.department} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" required style={{ appearance: 'none', background: 'rgba(255,255,255,0.05)', color: form.department ? '#fff' : '#9ca3af' }}>
                                                     <option value="" disabled className="bg-surface-800 text-surface-400">เลือกคณะ/หน่วยงาน</option>
-                                                    <option value="คณะวิทยาศาสตร์และเทคโนโลยี" className="bg-surface-800 text-white">1. คณะวิทยาศาสตร์และเทคโนโลยี</option>
-                                                    <option value="คณะครุศาสตร์" className="bg-surface-800 text-white">2. คณะครุศาสตร์</option>
-                                                    <option value="คณะวิทยาการจัดการ" className="bg-surface-800 text-white">3. คณะวิทยาการจัดการ</option>
-                                                    <option value="คณะมนุษยศาสตร์และสังคมศาสตร์" className="bg-surface-800 text-white">4. คณะมนุษยศาสตร์และสังคมศาสตร์</option>
-                                                    <option value="คณะเทคโนโลยีการเกษตร" className="bg-surface-800 text-white">5. คณะเทคโนโลยีการเกษตร</option>
-                                                    <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์" className="bg-surface-800 text-white">6. คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
-                                                    <option value="คณะนิติศาสตร์" className="bg-surface-800 text-white">7. คณะนิติศาสตร์</option>
-                                                    <option value="คณะวิศวกรรมศาสตร์" className="bg-surface-800 text-white">8. คณะวิศวกรรมศาสตร์</option>
-                                                    <option value="คณะพยาบาลศาสตร์" className="bg-surface-800 text-white">9. คณะพยาบาลศาสตร์</option>
-                                                    <option value="บัณฑิตวิทยาลัย" className="bg-surface-800 text-white">10. บัณฑิตวิทยาลัย</option>
+                                                    <option value="คณะวิทยาศาสตร์และเทคโนโลยี" className="bg-surface-800 text-white">คณะวิทยาศาสตร์และเทคโนโลยี</option>
+                                                    <option value="คณะครุศาสตร์" className="bg-surface-800 text-white">คณะครุศาสตร์</option>
+                                                    <option value="คณะวิทยาการจัดการ" className="bg-surface-800 text-white">คณะวิทยาการจัดการ</option>
+                                                    <option value="คณะมนุษยศาสตร์และสังคมศาสตร์" className="bg-surface-800 text-white">คณะมนุษยศาสตร์และสังคมศาสตร์</option>
+                                                    <option value="คณะเทคโนโลยีการเกษตร" className="bg-surface-800 text-white">คณะเทคโนโลยีการเกษตร</option>
+                                                    <option value="คณะรัฐศาสตร์และรัฐประศาสนศาสตร์" className="bg-surface-800 text-white">คณะรัฐศาสตร์และรัฐประศาสนศาสตร์</option>
+                                                    <option value="คณะนิติศาสตร์" className="bg-surface-800 text-white">คณะนิติศาสตร์</option>
+                                                    <option value="คณะวิศวกรรมศาสตร์" className="bg-surface-800 text-white">คณะวิศวกรรมศาสตร์</option>
+                                                    <option value="คณะพยาบาลศาสตร์" className="bg-surface-800 text-white">คณะพยาบาลศาสตร์</option>
+                                                    <option value="บัณฑิตวิทยาลัย" className="bg-surface-800 text-white">บัณฑิตวิทยาลัย</option>
                                                 </select>
                                                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-surface-500">▼</div>
                                             </>
