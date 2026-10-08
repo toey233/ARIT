@@ -49,8 +49,10 @@ export default function MyRegistrations() {
     };
 
     const formatDate = (dateStr) => {
-        if (!dateStr) return '';
-        return new Date(dateStr).toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
+        if (!dateStr) return '-';
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr; // Fallback to raw string if not parseable
+        return d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: 'numeric' });
     };
 
     if (loading) {
@@ -71,7 +73,7 @@ export default function MyRegistrations() {
         const BOM = '\uFEFF'; // Add BOM for Excel UTF-8 compatibility
         const headers = ['ลำดับ,ชื่อหลักสูตร,วันที่อบรม,วันที่ลงทะเบียน,สถานะการอนุมัติ,สถานะการประเมิน,หมายเหตุ'];
         const csvData = registrations.map((reg, index) => {
-            const courseDate = formatDate(reg.courseStartDate);
+            const courseDate = formatDate(reg.courseTrainingDate || reg.courseStartDate);
             const regDate = formatDate(reg.registeredAt);
             let statusText = 'รออนุมัติ';
             if (reg.status === 'approved') statusText = 'ผ่านการอนุมัติ';
@@ -82,8 +84,9 @@ export default function MyRegistrations() {
                 evalText = evalStatus[reg.courseId] ? 'ประเมินแล้ว' : 'รอประเมิน';
             }
 
-            const remark = reg.rejectReason ? reg.rejectReason.replace(/"/g, '""') : '';
-            return `${index + 1},"${reg.courseName}","${courseDate}","${regDate}","${statusText}","${evalText}","${remark}"`;
+            const safeCourseName = reg.courseName ? reg.courseName.replace(/"/g, '""') : '';
+            const safeRemark = reg.rejectReason ? reg.rejectReason.replace(/"/g, '""') : '';
+            return `${index + 1},"${safeCourseName}","${courseDate}","${regDate}","${statusText}","${evalText}","${safeRemark}"`;
         });
         
         const csvContent = BOM + headers.concat(csvData).join('\n');
@@ -249,7 +252,7 @@ export default function MyRegistrations() {
                                     <div style={{ flex: '1 1 300px', paddingLeft: 8 }}>
                                         <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e293b', marginBottom: 12, lineHeight: 1.4 }}>{reg.courseName}</h3>
                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px 24px', fontSize: 13, color: '#64748b' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><HiOutlineClock size={16} /> อบรม: {formatDate(reg.courseStartDate)}</div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><HiOutlineClock size={16} /> อบรม: {formatDate(reg.courseTrainingDate || reg.courseStartDate)}</div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}><HiOutlineClipboardList size={16} /> ลงทะเบียน: {formatDate(reg.registeredAt)}</div>
                                         </div>
                                         {reg.status === 'rejected' && reg.rejectReason && (

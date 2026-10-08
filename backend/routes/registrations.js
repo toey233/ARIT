@@ -95,7 +95,7 @@ router.get('/', authenticateToken, async (req, res) => {
     try {
         let sql = `
             SELECT r.*,
-                c.title AS "courseName", c."startDate" AS "courseStartDate", c."endDate" AS "courseEndDate", c.category AS "courseCategory", c.duration AS "courseDuration",
+                c.title AS "courseName", c."startDate" AS "courseStartDate", c."endDate" AS "courseEndDate", c.category AS "courseCategory", c.duration AS "courseDuration", c."trainingDate" AS "courseTrainingDate",
                 u."firstName" || ' ' || u."lastName" AS "userName", u.email AS "userEmail", u."studentId" AS "userStudentId",
                 u."userType" AS "userType", u.department AS "userDepartment",
                 EXISTS (SELECT 1 FROM evaluations e WHERE e."userId" = r."userId" AND e."courseId" = r."courseId") AS "hasEvaluated"
