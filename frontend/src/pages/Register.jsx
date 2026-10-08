@@ -29,11 +29,30 @@ export default function Register() {
         }
     };
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (e) => {
+        let { name, value } = e.target;
+        
+        // กรองให้กรอกได้เฉพาะตัวเลข และจำกัดความยาว
+        if (name === 'phone') {
+            value = value.replace(/\D/g, '').slice(0, 10);
+        } else if (name === 'studentId') {
+            value = value.replace(/\D/g, '').slice(0, 12);
+        }
+        
+        setForm({ ...form, [name]: value });
+    };
 
     // ฟังก์ชันกดส่งข้อมูลฟอร์มสมัครสมาชิก
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (form.phone && form.phone.length !== 10) {
+            return toast.error('เบอร์โทรศัพท์ต้องมี 10 หลัก');
+        }
+        if (form.studentId && form.studentId.length !== 12) {
+            return toast.error('รหัสนักศึกษาต้องมี 12 หลัก');
+        }
+        
         if (form.password !== form.confirmPassword) {
             return toast.error('รหัสผ่านไม่ตรงกัน');
         }
@@ -159,14 +178,14 @@ export default function Register() {
                                 <label className="block text-sm font-medium text-surface-300 mb-1.5">เบอร์โทร</label>
                                 <div className="relative">
                                     <HiOutlinePhone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-                                    <input type="text" name="phone" value={form.phone} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="08X-XXX-XXXX" />
+                                    <input type="text" name="phone" value={form.phone} onChange={handleChange} maxLength="10" pattern="\d{10}" title="กรุณากรอกเบอร์โทรศัพท์ 10 หลัก" className="input-field pl-10 py-2.5 text-sm" placeholder="0812345678" />
                                 </div>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-surface-300 mb-1.5">รหัสนักศึกษา</label>
                                 <div className="relative">
                                     <HiOutlineIdentification className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-                                    <input type="text" name="studentId" value={form.studentId} onChange={handleChange} className="input-field pl-10 py-2.5 text-sm" placeholder="รหัสนักศึกษา" />
+                                    <input type="text" name="studentId" value={form.studentId} onChange={handleChange} maxLength="12" pattern="\d{12}" title="กรุณากรอกรหัสนักศึกษา 12 หลัก" className="input-field pl-10 py-2.5 text-sm" placeholder="รหัสนักศึกษา 12 หลัก" />
                                 </div>
                             </div>
                         </div>
