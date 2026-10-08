@@ -5,6 +5,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone, HiOutlineIdentification, HiOutlineOfficeBuilding, HiOutlineAcademicCap, HiOutlineDocumentText, HiOutlineArrowLeft } from 'react-icons/hi';
+import TopNavbar from '../components/TopNavbar';
 
 // คอมโพเนนต์หน้า "สมัครสมาชิก"
 export default function Register() {
@@ -60,13 +61,10 @@ export default function Register() {
             position: 'relative', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
             backgroundImage: 'url(https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2000)',
             backgroundSize: 'cover', backgroundPosition: 'center',
-            overflow: 'hidden', padding: '40px 20px',
+            overflow: 'hidden', padding: '100px 20px 40px',
         }}>
-            {/* Back to Home Button */}
-            <Link to="/" className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 text-white hover:bg-white/20 backdrop-blur-md transition-all border border-white/20 shadow-lg">
-                <HiOutlineArrowLeft className="w-5 h-5" />
-                <span className="font-medium text-sm hidden sm:inline">กลับหน้าหลัก</span>
-            </Link>
+            {/* Top Navbar */}
+            <TopNavbar />
 
             {/* Unified Dark Overlay */}
             <div style={{

@@ -6,6 +6,7 @@ import {
     HiOutlineAcademicCap, HiOutlineBadgeCheck, HiDownload 
 } from 'react-icons/hi';
 import CertificateModal from '../components/CertificateModal';
+import TopNavbar from '../components/TopNavbar';
 
 export default function Certificates() {
     const navigate = useNavigate();
@@ -55,21 +56,9 @@ export default function Certificates() {
 
             <div style={{ position: 'relative', zIndex: 10 }}>
                 {/* Header */}
-                <header style={{ 
-                    background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(12px)', 
-                    padding: '16px 24px', borderBottom: '1px solid rgba(0,0,0,0.05)', position: 'sticky', top: 0, zIndex: 40 
-                }}>
-                    <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center' }}>
-                        <button onClick={() => navigate('/#courses')} style={{
-                            display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none',
-                            color: '#475569', fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'color 0.2s'
-                        }} onMouseEnter={e => e.currentTarget.style.color = '#2563eb'} onMouseLeave={e => e.currentTarget.style.color = '#475569'}>
-                            <HiArrowLeft size={18} /> กลับหน้าหลัก
-                        </button>
-                    </div>
-                </header>
+                <TopNavbar />
 
-                <main style={{ maxWidth: 1000, margin: '40px auto 60px', padding: '0 24px' }}>
+                <main style={{ maxWidth: 1000, margin: '100px auto 60px', padding: '0 24px' }}>
                     {/* Page Title Section */}
                     <div style={{ textAlign: 'center', marginBottom: 48 }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: 20, background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#fff', marginBottom: 16, boxShadow: '0 10px 25px rgba(245,158,11,0.2)' }}>
