@@ -35,11 +35,27 @@ export default function UserManage() {
     };
 
     const handleAddChange = (e) => {
-        setAddForm({ ...addForm, [e.target.name]: e.target.value });
+        let { name, value } = e.target;
+        if (name === 'phone') {
+            value = value.replace(/\D/g, '').slice(0, 10);
+        } else if (name === 'studentId') {
+            value = value.replace(/\D/g, '').slice(0, 12);
+        }
+        setAddForm({ ...addForm, [name]: value });
     };
 
     const handleAddSubmit = async (e) => {
         e.preventDefault();
+        
+        if (addForm.phone && addForm.phone.length !== 10) {
+            toast.error('เบอร์โทรศัพท์ต้องมี 10 หลัก');
+            return;
+        }
+        if (addForm.studentId && addForm.studentId.length !== 12) {
+            toast.error('รหัสนักศึกษาต้องมี 12 หลัก');
+            return;
+        }
+        
         if (addForm.password !== addForm.confirmPassword) {
             toast.error('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
             return;
@@ -121,7 +137,7 @@ export default function UserManage() {
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">เบอร์โทรศัพท์</label>
-                                <input name="phone" value={addForm.phone} onChange={handleAddChange} className="input-field" />
+                                <input name="phone" value={addForm.phone} onChange={handleAddChange} maxLength="10" className="input-field" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">รหัสผ่าน *</label>
@@ -158,7 +174,7 @@ export default function UserManage() {
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">รหัสนักศึกษา/บุคลากร</label>
-                                <input name="studentId" value={addForm.studentId} onChange={handleAddChange} className="input-field" />
+                                <input name="studentId" value={addForm.studentId} onChange={handleAddChange} maxLength="12" className="input-field" />
                             </div>
                             <div>
                                 <label className="block text-sm font-semibold text-surface-700 mb-1">คณะ/สังกัด</label>

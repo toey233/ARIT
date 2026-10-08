@@ -86,6 +86,13 @@ export default function ProfileModal({ user, onClose }) {
     };
 
     const handleSave = async () => {
+        if (formData.phone && formData.phone.length !== 10) {
+            return alert('เบอร์โทรศัพท์ต้องมี 10 หลัก');
+        }
+        if (formData.studentId && formData.studentId.length !== 12) {
+            return alert('รหัสนักศึกษาต้องมี 12 หลัก');
+        }
+        
         setLoading(true);
         try {
             const res = await api.put('/auth/me', formData);
@@ -180,7 +187,8 @@ export default function ProfileModal({ user, onClose }) {
                                 <input 
                                     style={S.input} 
                                     value={formData.phone} 
-                                    onChange={e => setFormData({...formData, phone: e.target.value})} 
+                                    onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10)})} 
+                                    maxLength="10"
                                     placeholder="08X-XXX-XXXX"
                                 />
                             ) : (
@@ -194,7 +202,8 @@ export default function ProfileModal({ user, onClose }) {
                                 <input 
                                     style={S.input} 
                                     value={formData.studentId} 
-                                    onChange={e => setFormData({...formData, studentId: e.target.value})} 
+                                    onChange={e => setFormData({...formData, studentId: e.target.value.replace(/\D/g, '').slice(0, 12)})} 
+                                    maxLength="12"
                                     placeholder="เช่น 6631700XXXX"
                                 />
                             ) : (
