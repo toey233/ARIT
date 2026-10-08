@@ -185,7 +185,7 @@ export default function Register() {
                                 <label className="block text-sm font-medium text-surface-300 mb-1.5">รหัสนักศึกษา</label>
                                 <div className="relative">
                                     <HiOutlineIdentification className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-500" />
-                                    <input type="text" name="studentId" value={form.studentId} onChange={handleChange} maxLength="12" pattern="\d{12}" title="กรุณากรอกรหัสนักศึกษา 12 หลัก" className="input-field pl-10 py-2.5 text-sm" placeholder="รหัสนักศึกษา 12 หลัก" />
+                                    <input type="text" name="studentId" value={form.studentId} onChange={handleChange} maxLength="12" pattern="\d{12}" title="กรุณากรอกรหัสนักศึกษา 12 หลัก" className="input-field pl-10 py-2.5 text-sm" placeholder="รหัสนักศึกษา" />
                                 </div>
                             </div>
                         </div>
