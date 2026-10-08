@@ -65,23 +65,23 @@ export default function Dashboard() {
             {user?.role === 'admin' && stats && (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <Link to="/user-manage" className="stat-card cursor-pointer transition-transform">
-                        <div className="flex items-center gap-2 text-surface-500">
+                        <div className="flex items-center gap-2 text-surface-500 mb-1">
                             <HiOutlineUsers className="w-5 h-5 text-blue-500" />
-                            <span className="text-sm">ผู้ใช้ทั้งหมด</span>
+                            <span className="text-base font-semibold">ผู้ใช้ทั้งหมด</span>
                         </div>
                         <p className="text-3xl font-bold text-surface-900">{stats.totalUsers}</p>
                     </Link>
                     <Link to="/course-manage" className="stat-card cursor-pointer transition-transform">
-                        <div className="flex items-center gap-2 text-surface-500">
+                        <div className="flex items-center gap-2 text-surface-500 mb-1">
                             <HiOutlineAcademicCap className="w-5 h-5 text-emerald-500" />
-                            <span className="text-sm">หลักสูตร</span>
+                            <span className="text-base font-semibold">หลักสูตร</span>
                         </div>
                         <p className="text-3xl font-bold text-surface-900">{stats.totalCourses}</p>
                     </Link>
                     <Link to="/registration-manage" className="stat-card cursor-pointer transition-transform">
-                        <div className="flex items-center gap-2 text-surface-500">
+                        <div className="flex items-center gap-2 text-surface-500 mb-1">
                             <HiOutlineClipboardList className="w-5 h-5 text-amber-500" />
-                            <span className="text-sm">ลงทะเบียน</span>
+                            <span className="text-base font-semibold">ลงทะเบียน</span>
                         </div>
                         <p className="text-3xl font-bold text-surface-900">{stats.totalRegistrations}</p>
                         {stats.pendingRegistrations > 0 && (
@@ -89,9 +89,9 @@ export default function Dashboard() {
                         )}
                     </Link>
                     <Link to="/reports" className="stat-card cursor-pointer transition-transform">
-                        <div className="flex items-center gap-2 text-surface-500">
+                        <div className="flex items-center gap-2 text-surface-500 mb-1">
                             <HiOutlineStar className="w-5 h-5 text-yellow-500" />
-                            <span className="text-sm">คะแนนเฉลี่ย</span>
+                            <span className="text-base font-semibold">คะแนนเฉลี่ย</span>
                         </div>
                         <p className="text-3xl font-bold text-surface-900">{stats.averageRating || '-'}</p>
                     </Link>

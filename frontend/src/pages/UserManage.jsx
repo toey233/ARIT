@@ -194,28 +194,28 @@ export default function UserManage() {
                     className={`stat-card cursor-pointer transition-all ${filterRole === 'all' ? 'ring-2 ring-primary-500 shadow-md bg-primary-50/50' : 'hover:bg-surface-50'}`}
                     onClick={() => { setFilterRole('all'); setCurrentPage(1); }}
                 >
-                    <span className="text-sm font-semibold text-surface-700">ผู้ใช้ทั้งหมด</span>
+                    <span className="text-base font-bold text-surface-700">ผู้ใช้ทั้งหมด</span>
                     <span className="text-2xl font-bold text-surface-900">{users.length}</span>
                 </div>
                 <div 
                     className={`stat-card cursor-pointer transition-all ${filterRole === 'user' ? 'ring-2 ring-emerald-500 shadow-md bg-emerald-50/50' : 'hover:bg-surface-50'}`}
                     onClick={() => { setFilterRole('user'); setCurrentPage(1); }}
                 >
-                    <span className="text-sm font-semibold text-surface-700">นักศึกษา/ผู้ใช้</span>
+                    <span className="text-base font-bold text-surface-700">นักศึกษา/ผู้ใช้</span>
                     <span className="text-2xl font-bold text-emerald-600">{users.filter(u => u.role === 'user').length}</span>
                 </div>
                 <div 
                     className={`stat-card cursor-pointer transition-all ${filterRole === 'staff' ? 'ring-2 ring-amber-500 shadow-md bg-amber-50/50' : 'hover:bg-surface-50'}`}
                     onClick={() => { setFilterRole('staff'); setCurrentPage(1); }}
                 >
-                    <span className="text-sm font-semibold text-surface-700">เจ้าหน้าที่</span>
+                    <span className="text-base font-bold text-surface-700">เจ้าหน้าที่</span>
                     <span className="text-2xl font-bold text-amber-500">{users.filter(u => u.role === 'staff').length}</span>
                 </div>
                 <div 
                     className={`stat-card cursor-pointer transition-all ${filterRole === 'admin' ? 'ring-2 ring-red-500 shadow-md bg-red-50/50' : 'hover:bg-surface-50'}`}
                     onClick={() => { setFilterRole('admin'); setCurrentPage(1); }}
                 >
-                    <span className="text-sm font-semibold text-surface-700">ผู้ดูแลระบบ</span>
+                    <span className="text-base font-bold text-surface-700">ผู้ดูแลระบบ</span>
                     <span className="text-2xl font-bold text-red-500">{users.filter(u => u.role === 'admin').length}</span>
                 </div>
             </div>
